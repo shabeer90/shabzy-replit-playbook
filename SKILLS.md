@@ -47,6 +47,7 @@ Replit's docs: [App Testing](https://docs.replit.com/features/agent/app-testing)
 | find-skills | vercel-labs/skills | CEO | Finding an existing skill before a new kind of task (see above) |
 | skill-creator | anthropics/skills | CEO | Writing a project skill when nothing fits |
 | ponytail | local copy; record the source when installing | the builder | The smallest change that fully solves the task |
+| caveman | juliusbrussee/caveman (core `caveman` skill only, pinned to a commit) | CEO, in chat | Shorter chat replies: answer first, no padding, code and errors exact. Written work (code, docs, commits, PRs, memory) stays in plain prose. Switch on with `/caveman`, off with `normal mode`. |
 | humanizer | blader/humanizer | cmo-reviewer, and anyone writing for a person | Rewriting text so it reads like a person wrote it, with no AI tells |
 | codebase-design | mattpocock/skills | cto-reviewer | Module and interface design |
 
@@ -109,3 +110,11 @@ So nobody re-evaluates these from scratch:
 - **stop-slop (hardikpandya/stop-slop):** the same job as `humanizer`, which is more detailed and maintained.
 - **EveryInc compound-engineering `ce-code-review` and `ce-test-browser`:** a heavier multi-reviewer plugin that overlaps our own review agents.
 - **Community "engineering-manager" skills on skills.sh:** these are about managing people, not reviewing features.
+- **The Caveman CLI and its other features (juliusbrussee/caveman):** "Read less", "Auto", "Blocks", "Waste fixes" and "Browse" fail the vetting above:
+  - the installer runs `npx ...@latest`;
+  - it reconfigures every agent and login on the machine;
+  - it sits between tools and the model;
+  - "Auto" sends session data to their service once you sign in.
+
+  Only the core `caveman` skill is used. By the repo's own measurement it's about 3% shorter than telling the agent "Answer concisely", so it's a style choice, not a big token saving.
+

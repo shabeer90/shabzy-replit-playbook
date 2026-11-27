@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.4.0 (27 Nov 2026)
+
+- **SKILLS.md:**
+  - adds the core `caveman` skill (juliusbrussee/caveman), pinned to a commit, for shorter chat replies; written work stays in plain prose;
+  - lists the Caveman CLI under "Looked at, not chosen", with the reasons.
+- **Upgrade (optional):** `npx skills add juliusbrussee/caveman --skill caveman`, then check `skills-lock.json` records it.
+
 ## 2.3.1 (27 Nov 2026)
 
 - Proofread after the Impact Connect lessons: README lists all three projects and every template file; changelog wording no longer points at unfixed issues; patch versions defined; consistency fixes across learnings, QA verdicts, ROADMAP and SKILLS.
