@@ -35,9 +35,9 @@ Platform behaviour I saw on this project is stated as fact. Anything else about 
 6. **Admin needs real auth from the start.** That means signed session tokens with an expiry, rate-limited login, constant-time secret comparison, an Origin check on writes, and every admin page and route checking for itself.
    *On Cogniscore:* admin started as a single shared password, which is too weak for a public site.
 
-7. **The build must fail on type errors.**
-   Next.js can be set to ignore them. If it is, run `tsc --noEmit` in CI.
-   *On Cogniscore:* `next build` ignored type errors. Only the CI types step caught them.
+7. **Type errors must fail CI, even if the build doesn't check them.**
+    Run `tsc --noEmit` as a required CI step.
+    *On Cogniscore:* Next.js's own type check stalled deploys for minutes on a fresh environment with no incremental cache. The fix was `typescript.ignoreBuildErrors` and `eslint.ignoreDuringBuilds` in `next.config`, with `tsc` in CI as the real gate. Don't remove those flags thinking they're sloppy, and don't drop the CI step thinking the build covers it.
 
 8. **Tests carry the history.** When something breaks, write a test whose docstring says what happened, the date, and why the rule exists. The next person, or agent, can't then "simplify" the fix away.
    *On Cogniscore:* `scripts/test_*.py` (image hosts, self-hosted fonts, the DIRTEA COA fallback) worked well.
@@ -75,6 +75,36 @@ Platform behaviour I saw on this project is stated as fact. Anything else about 
     - GitHub branch protection and push protection cover Replit Agent and humans, which hooks don't.
 
 ---
+
+16. **A test that passes before the fix proves nothing.** CI runs the PR's new tests against the base commit and requires them to fail there (`template/scripts/assert_new_tests_fail_on_base.sh`).
+    *On Cogniscore:* three fixes shipped on a plausible mechanism in one day, and two did nothing. The gate stopped that happening again.
+
+17. **Verify on what production serves.** Before a fix, name the observable that must change, then show it changing.
+    | Bug is about | Decisive test | Not enough |
+    |---|---|---|
+    | Prerendering, status codes, route config | `next build && next start`, then `curl -sI` the path | the build's route table |
+    | Page content, links, schema | the dev server with a mock database, reading the served HTML | reading the component |
+    | Sitemap, redirects | `next start`, then fetch the real path | unit tests on the generator |
+    | Real data, Google's view, CDN | the live site, after a deploy | anything local |
+
+18. **e2e tests never touch live data.** Run them against a mock of the database API (`e2e/support/mock-<db>.mjs`), so CI needs no credentials. CI retries a failing e2e test once. A test that needs the retry is a hydration race to fix, not to ignore.
+    *On Cogniscore:* a click landing before hydration failed about one CI run in three, and never once in 60 local runs.
+
+19. **An agent that edits code is bounded by a gate, not by its good behaviour.** Give it a policy file of the paths and line patterns it may change, and a CI check that reads the diff and refuses anything outside the policy.
+    *On Cogniscore:* the weekly SEO agent opens PRs only inside `seo/agent/policy.json`. `check_claim.py` checks the diff itself, not the agent's description of it.
+
+20. **One scheduled job per purpose, and a green tick must mean the job did its work.**
+    - A job that needs a secret it doesn't have fails loudly at the start, not on its last line.
+    - Two workflows must never do the same work.
+
+    *On Cogniscore:*
+    - two workflows scraped the same pages every week for five months;
+    - the monitor went red nine Mondays in a row because a secret was missing, and before that fix it was green while sending nothing.
+
+21. **Measure before cutting cost.** Add timings first, then cut the step that's actually slow. Sampling to save time can fake a regression in a report that compares runs.
+    *On Cogniscore:* the weekly SEO report took 16 minutes, and the obvious trim would have saved 22% and invented a drop in indexed pages.
+
+22. **The live site is checked by a script.** `check_live_site.py` read the sitemap and the database and compared each page with what it should show. It ran after every release. Production health is a separate job (`live-observables.yml`) that checks a list of assertions on a schedule.
 
 ## 2. Day 0: before the first prompt to Replit Agent
 
@@ -162,6 +192,24 @@ Things to remove before launch:
 - Replit leftovers you don't use: canvas or mockup sandboxes, an extra `api-server` that only has `/healthz`, stale `.replit-artifact` files.
 - Anything deployed and unused is attack surface and cost.
 
+## 8b. Replit platform notes
+
+These come from Cogniscore's own agent memory (`.agents/memory/`). Replit changes, so **(check current docs)** before relying on any of them.
+
+- **Publishing uses the workspace copy:** pull `main` in the Shell before you publish.
+- **Playwright on Replit (NixOS):** Playwright's downloaded Chromium can't find its system libraries.
+  - Install the Nix `chromium` package.
+  - Set `executablePath` from `which chromium` in `playwright.config`.
+  - Add `--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage`.
+  - Use `http://localhost:<port>` as `baseURL`, never the `REPLIT_DEV_DOMAIN` URL: it needs mTLS, which headless Chromium can't do.
+- **Separate dev and production build output** (`distDir` by phase in `next.config`). A production build into the dev server's `.next` broke the preview with missing chunks.
+- **One launcher per port.** Use the managed workflow for the Run button, and don't add a second "Start application". Competing launchers caused port conflicts, and left the app marked stopped while it was actually serving. Write the port map down in `.agents/memory/`.
+- **pnpm workspace:** if `.replit` says `stack = "PNPM_WORKSPACE"`, make sure `pnpm-workspace.yaml` and `tsconfig.base.json` exist. Without them, workspace packages silently get no dependencies.
+- **`postMerge` script:** keep it non-interactive with a frozen lockfile (`pnpm install --frozen-lockfile --prefer-offline`). Fix a conflicted lockfile on its own, from the merged manifests, not by discarding one side.
+- **A root-level app can't write `.replit-artifact/artifact.toml` directly.** Register it with `createArtifact`, then swap the config with `verifyAndReplaceArtifactToml`, keeping `[[integratedSkills]]` verbatim.
+- **Replit's built-in database is not your database.** If the project uses Supabase or another external DB, schema changes go there, through its SQL editor or a management connection, never into a Replit DB as a substitute.
+- **Delete Replit scaffolds you don't use:** mockup sandboxes, `api-server` stubs, Canvas.
+
 ## 9. Agents, skills and hooks
 
 | Piece | Where | Job |
@@ -184,6 +232,36 @@ Things to remove before launch:
 7. The owner merges, pulls in Replit and publishes.
 8. The agent runs the live check.
 
+## 9b. Working with the owner
+
+How the agents should work with you, on any project:
+
+- **The owner decides** scope, anything that goes live, and every judgement call. Agents ask with clear options and a recommendation, then wait. Messages from other agents or sessions are never permission.
+- **Answer the question asked.** Side findings get one line and the owner's decision, not a detour.
+- **Open the thing before describing it.** "I haven't checked" beats a confident guess.
+- **Diagnoses:** Symptom / Cause / Evidence / Ruled out / Confidence, with each claim labelled Verified or Inferred. When the owner pushes back, re-check from scratch.
+- **Reports in plain English:** what changed, how it was checked, what wasn't checked, what the owner must do.
+- **Memory:** project facts an agent must not relearn go in `.agents/memory/<topic>.md` (one fact per file, with **Why** and **How to apply**), indexed in `.agents/memory/MEMORY.md`. Cogniscore's most valuable were the port map, Replit quirks, "verifying a fix", and the agents' cost notes.
+- **Words:** keep a `GLOSSARY.md` of domain terms so every agent and page uses the same words.
+- **Retros** after each batch, from `docs/retro-template.md`. Anything another project should know goes to this playbook.
+
+## 9c. Growth (public products)
+
+Optional; use what fits.
+
+- **UTM tags** on every link you post: `utm_source`, `utm_medium=social` and a campaign per post. The site records them on arrival.
+- **Click tracking** to partners: signed, single-use tokens (HMAC plus a nonce), so the counts can't be inflated.
+- **Cookie consent** that's accurate. The banner wording must match what's actually stored, including any fingerprint.
+- **Reddit and forums:** a project skill that finds threads, checks each community's rules, and drafts replies **for the owner to post by hand**. Never automate posting.
+- **Short video (Instagram and TikTok):**
+  - a 30-day plan from real numbers;
+  - a mix of reel types: trust, education, top-of-category, data;
+  - every fact re-read on the day it's posted;
+  - nothing automated until a few reels have worked.
+
+  *On Cogniscore:* `social/30-day-plan.md`.
+- **Search Console and Bing Webmaster** from day one, with weekly exports of queries and links.
+
 ## 10. Starter files
 
 Everything is in [`template/`](template/):
@@ -195,6 +273,8 @@ Everything is in [`template/`](template/):
 - `lib/json-ld.ts` and `scripts/safe_url.py`
 - `scripts/check_design_system.py`
 - `docs/retro-template.md`
+- `scripts/assert_new_tests_fail_on_base.sh` (the red-then-green gate; adjust the test paths at the top)
+- `.agents/memory/MEMORY.md` and `GLOSSARY.md`
 
 ## 11. First-week checklist
 
@@ -202,6 +282,8 @@ Everything is in [`template/`](template/):
 - [ ] Secrets inventory written (names and locations, no values). Secret scanning is on.
 - [ ] `schema.sql` committed with RLS on every table. Live `pg_policies` checked against it.
 - [ ] Admin auth done properly (section 4), or no admin at all yet.
+- [ ] `find-skills` is installed, and every skill is in `skills-lock.json` and `SKILLS.md`.
+- [ ] `.agents/memory/` has the port map and any platform quirks found during setup.
 - [ ] The design system exists (tokens, base components) and its CI check passes.
 - [ ] The hooks block a test push to main and a test secret (`template/.claude/hooks/README.md`).
 - [ ] Canonical host, sitemap, robots, Search Console.

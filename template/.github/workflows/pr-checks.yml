@@ -14,6 +14,7 @@ jobs:
       - uses: actions/checkout@<sha> # v4
         with:
           persist-credentials: false
+          fetch-depth: 0   # the red-then-green gate needs the base commit
       - uses: pnpm/action-setup@<sha> # v4
       - uses: actions/setup-node@<sha> # v4
         with:
@@ -33,6 +34,9 @@ jobs:
       - name: Tests
         run: python -m pytest -q
       - run: pnpm build
+      - name: New tests must fail on base (a test that passes before the fix proves nothing)
+        if: github.event_name == 'pull_request'
+        run: scripts/assert_new_tests_fail_on_base.sh "origin/${{ github.base_ref }}"
   e2e:
     needs: checks
     runs-on: ubuntu-latest
@@ -47,4 +51,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
-      - run: pnpm build && pnpm exec playwright test
+      # e2e runs against a mock of the database API (e2e/support/), never live data. Retries once.
+      - run: pnpm build && pnpm exec playwright test --retries=1

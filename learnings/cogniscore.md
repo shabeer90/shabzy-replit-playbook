@@ -18,6 +18,12 @@ A UK site that scores mushroom and nootropic supplements on how completely brand
 | Jun–Nov | Hand-seeded data and model sub-scores published without the rubric | Scores couldn't be reproduced from the published rules | Rule 9 |
 | Nov | Admin was a single shared password | Too weak for a public site | Rule 6 |
 | Nov | `next build` ignored type errors | Broken types reached main | Rule 7 |
+| Nov | Three fixes shipped on a plausible mechanism; two did nothing | Wasted deploys and false "fixed" reports | Rules 16, 17; red-then-green CI gate |
+| Jun–Nov | Two workflows scraped the same pages weekly | Double requests to every brand site | Rule 20 |
+| Sep–Nov | The monitor was green while sending nothing, then red nine weeks for a missing secret | Nobody noticed failures | Rule 20 |
+| Nov | e2e click raced hydration on CI only | About one CI run in three re-run | Rule 18 |
+| Nov | Next.js's type check stalled deploys | Deploy timeouts | Rule 7 (corrected) |
+| Nov | Playwright's Chromium failed on Replit's NixOS | e2e couldn't run on Replit | Section 8b |
 | Nov | Unused Replit leftovers (Canvas, an api-server with only `/healthz`) deployed | Attack surface and confusion | Section 8 |
 
 ## What worked
@@ -30,3 +36,5 @@ A UK site that scores mushroom and nootropic supplements on how completely brand
 - **Retros per batch** in `docs/`: outcome, what worked, what went wrong, decisions, still open.
 - **Ponytail** for coding: small diffs, nothing extra.
 - **Auto-fix on every PR:** the app watches CI and review comments.
+- **A policy-gated SEO agent:** a weekly agent opens PRs, and a CI gate refuses anything outside its policy file.
+- **Agent memory in `.agents/memory/`:** platform quirks and decisions, written once.
