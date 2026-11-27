@@ -6,7 +6,7 @@ Paste this as the first message to the agent in a new project. Replace the bits 
 
 We're starting a new project: **<one line: what it is and who it's for>**. It's <a public website / a web app / an internal portal>, and it <has / doesn't have> a database. Run it <lite / full> (`template/ORG.md`, "Lite or full"); on lite, skip the steps and agents that section leaves out.
 
-Set it up from my playbook at https://github.com/shabeer90/shabzy-replit-playbook before writing any feature code. You're the CEO of this project's AI company, as described in the playbook's `template/ORG.md`. The hooks, review agents and skills only bind Claude Code (PLAYBOOK section 2). If you're Replit Agent, tell me before you start.
+Set it up from my playbook at https://github.com/shabeer90/shabzy-replit-playbook before writing any feature code. You're the CEO of this project's AI company, as described in the playbook's `template/ORG.md`. The hooks, review agents and skills only bind Claude Code (PLAYBOOK section 2). If you're Replit Agent, follow `template/replit.md` by hand, since the hooks won't stop you, and tell me which steps need Claude Code (the hook tests in step 6 and the reviews in step 12).
 
 1. Check that PLAYBOOK section 3 (Day 0) is done: the repo on GitHub with `main` protected, imported into Replit, secret scanning on, and a non-production database if there's a database. List what's missing and wait until I've done it.
 2. Read `PLAYBOOK.md`, `SKILLS.md` and `template/ORG.md` in that repo.
