@@ -24,13 +24,13 @@
 - **Evidence:** the server's own analytics (3,479 hits on 20 Nov 2026, ahead of the homepage); fixed with a host allowlist and a test.
 - **Home:** [PLAYBOOK rule 11](../PLAYBOOK.md#1-the-rules); host allowlist in `config/`.
 
-## 3. Scores couldn't be reproduced
+## 3. Early scores couldn't be reproduced
 
 - **When:** Jun to Nov 2026
 - **Kind:** Went wrong
-- **What happened:** hand-seeded data and model-written sub-scores were published without the published rubric being applied.
-- **Impact:** published scores couldn't be reproduced from the published rules.
-- **Evidence:** an audit that re-applied the rubric to every live product's raw data.
+- **What happened:** hand-seeded data and model-written sub-scores were published before the rubric was applied in code.
+- **Impact:** early scores couldn't be reproduced from the published rules. Fixed: every live product was rescored on a scorer that applies the rubric in code.
+- **Evidence:** the project's read-only score audit on 27 Nov 2026. All 188 live products are on scorer 1.7 and match the rubric. The only findings were 11 products that aren't on the site.
 - **Home:** [PLAYBOOK rule 9](../PLAYBOOK.md#1-the-rules).
 
 ## 4. Next.js's type check stalled deploys
@@ -87,14 +87,10 @@
 - **Evidence:** the error output and the working `playwright.config` change.
 - **Home:** [PLAYBOOK section 11](../PLAYBOOK.md#11-replit-platform-notes).
 
-## 10. Unused Replit leftovers were deployed
+## 10. Unused Replit services
 
-- **When:** Nov 2026
-- **Kind:** Went wrong
-- **What happened:** a Canvas mockup sandbox and an api-server with only `/healthz` were deployed alongside the site.
-- **Impact:** extra attack surface and confusion about what was live.
-- **Evidence:** the deployment config and the security audit.
-- **Home:** [PLAYBOOK section 10](../PLAYBOOK.md#10-release-loop-on-replit).
+- **Kind:** Held back
+- **Home:** [PLAYBOOK section 10](../PLAYBOOK.md#10-release-loop-on-replit). Details follow once it's fixed in Cogniscore.
 
 ## 11. Evidence files drove every data write
 
