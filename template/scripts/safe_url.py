@@ -1,5 +1,5 @@
 """Keep a URL from scraped or third-party data only if it's a plain https URL that can't break out of
-an attribute or a script body. On Cogniscore a brand page's og:image closed a JSON-LD script (stored XSS)."""
+an attribute or a script body, such as closing a JSON-LD script tag (stored XSS)."""
 from urllib.parse import urlsplit
 
 _UNSAFE = set('<>"\'` \t\r\n\\')

@@ -55,11 +55,7 @@ Home: [Supply chain security baseline](../PLAYBOOK.md#5-security-baseline-check-
 
 ## 7. Private error logging checks
 
-*On Ihsan:* synthetic checks showed that a generic error fallback and no uncaught browser errors did not establish safe console logging.
-
-Evidence reviewed: synthetic browser error-handling checks and their review summary. This was an unresolved logging limitation at contribution time, not evidence of real-data disclosure or external transmission. No affected-data details, private paths or reproduction payloads are included.
-
-Home: [security reviewer](../template/.claude/agents/security-reviewer.md). This check is not assigned to a second reviewer.
+Held back until fixed in Ihsan. The general check is in the [security reviewer](../template/.claude/agents/security-reviewer.md).
 
 ## 8. Accurate public metric definitions
 

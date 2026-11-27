@@ -20,25 +20,20 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
    *On Cogniscore:* Replit publishes from its own workspace copy, not from GitHub. The live site lagged `main` several times until someone ran `git pull origin main` in the Replit Shell and republished. A merged PR is not a deployed PR.
 
 2. **No secret ever goes in a tracked file.** That includes `.replit`, `[userenv]` and scripts.
-   *On Cogniscore:* two GitHub tokens, a Resend key and an Anthropic key were committed to `.replit`. Deleting them later didn't help, because git history keeps them. Every key that touches a repo must be revoked and reissued, not just deleted.
+   *On an earlier project:* provider keys were committed to a Replit config file. Deleting them later didn't help, because git history keeps them. Every key that touches a repo must be revoked and reissued, not just deleted.
    Only values that are public by design belong in `.replit`, such as a Supabase URL or publishable key.
 
 3. **Decide database access rules on day one, per table and per column.**
    Write the RLS policy for each table when you create it, and give the anon role only the columns the page shows.
-   *On Cogniscore:* the anon policies written in the repo were wider than the pages needed.
 
 4. **Public routes never use the service-role key for anything a visitor can trigger without a limit.**
-   *On Cogniscore:* public form endpoints wrote with the service role and no limits.
 
 5. **Treat third-party text as hostile all the way to the page.** That means scraped pages, model output and brand data.
    - Validate URLs: https only, with no quotes or `<>`.
    - Sanitise HTML.
    - Escape `<` in every JSON-LD `<script>`.
 
-   *On Cogniscore:* a brand's `og:image` could close a JSON-LD script tag and run script on the site.
-
 6. **Admin needs real auth from the start.** That means signed session tokens with an expiry, rate-limited login, constant-time secret comparison, an Origin check on writes, and every admin page and route checking for itself.
-   *On Cogniscore:* admin started as a single shared password, which is too weak for a public site.
    *On Ihsan:* an open staff tab could keep confidential records visible after access changed. Live revalidation now hides them when verification fails, including offline failures (section 5).
 
 7. **Type errors must fail CI, even if the build doesn't check them.**
@@ -46,7 +41,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     *On Cogniscore:* Next.js's own type check stalled deploys for minutes on a fresh environment with no incremental cache. The fix was `typescript.ignoreBuildErrors` and `eslint.ignoreDuringBuilds` in `next.config`, with `tsc` in CI as the real gate. Don't remove those flags thinking they're sloppy, and don't drop the CI step thinking the build covers it.
 
 8. **Tests carry the history.** When something breaks, write a test whose docstring says what happened, the date, and why the rule exists. The next person, or agent, can't then "simplify" the fix away.
-   *On Cogniscore:* `scripts/test_*.py` (image hosts, self-hosted fonts, the DIRTEA COA fallback) worked well.
+   *On Cogniscore:* `scripts/test_*.py` (image hosts, self-hosted fonts, a brand scraper's COA fallback) worked well.
 
 9. **Evidence first, then the write.** Any published fact comes from a saved source file in the repo. Write a dry run first and compare it with the live result.
    *On Cogniscore:* the batch releases that ran from `evidence/brands/` were repeatable to the decimal. Hand-seeded data was the biggest source of wrong scores.
@@ -230,13 +225,13 @@ docs/JOURNEYS.md        the user journeys that must always work
 | Area | Minimum |
 |---|---|
 | Secrets | Only in Replit Secrets and GitHub secrets. A secret-scan in CI. A server-only key never gets a `NEXT_PUBLIC_` prefix. |
-| Admin | A signed session token with an expiry. Rate-limited login. Middleware, plus a check in every route and layout. `SameSite=Strict`, `Secure`, `HttpOnly`. Revalidate live authorisation on return, reconnection and periodically while visible. Hide cached confidential screens during return checks and after failed or unavailable verification; cancel private requests and clear private caches on lost or unverified access. Preserve drafts only across successful same-account checks. |
+| Admin | A signed session token with an expiry. Rate-limited login. Middleware, plus a check in every route and layout. `SameSite=Strict`, `Secure`, `HttpOnly`. Re-check access when the user returns to the tab, reconnects, and every few minutes while it's open. While that check runs, or if it fails or can't reach the server, hide confidential screens, cancel private requests and clear private caches. Keep unsaved drafts only if the check confirms the same account. |
 | Writes from the public | Size caps, a rate limit (not keyed only on the first `X-Forwarded-For` entry), the anon key or a narrow RPC. Never the service role unchecked. |
 | Rendering | No `dangerouslySetInnerHTML` without sanitising. JSON-LD through one helper that escapes `<`. Outbound links allowlisted to http(s). |
 | Fetching URLs from data | An SSRF guard: block private IPs, re-check every redirect, pin DNS. |
 | Headers | HSTS and a CSP on public pages. Don't trust `X-Forwarded-Host`; pin the site URL. |
 | CI | Actions pinned to a SHA. Never `pull_request_target`. `workflow_dispatch` inputs passed via `env:`, never `${{ }}` inside `run:`. `persist-credentials: false`. Tokens with write access kept in protected environments. |
-| Supply chain | A lockfile with integrity hashes. Nothing installed unpinned at runtime (`npx x@latest`). Review what Replit's `postMerge` script runs. Check the installed resolution and audit results after dependency fixes. More-specific pnpm overrides can defeat a broad override; editing the manifest is not evidence of remediation. |
+| Supply chain | A lockfile with integrity hashes. Nothing installed unpinned at runtime (`npx x@latest`). Review what Replit's `postMerge` script runs. After a dependency fix, check what actually got installed and re-run the audit. A more specific pnpm override can beat a broad one, so editing `package.json` doesn't prove the fix. |
 | LLM | Model output is data. Validate it against the source before publishing, and add a human approval step for anything public. |
 
 *On Ihsan:* a range-specific pnpm override kept an affected dependency installed after a broad override was changed. The resolved graph and audit, not the edit, established remediation.
@@ -278,11 +273,11 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 
 - For AI assistants (GEO), each page answers its main question plainly near the top, with specific, attributed facts. AI crawlers are allowed in `robots.txt` unless the owner decides otherwise.
 
-**Private portals are an exception to the public indexing baseline.** Put `noindex` in initial HTML before JavaScript and in app-owned response directives (`X-Robots-Tag`), including app-controlled redirects and errors. Set crawler rules at hostname-root `/robots.txt`, not just inside a portal subpath. Scope them to private routes on shared hosts so public founder pages stay crawlable; blanket disallow belongs only on wholly private hosts. Keep private URLs out of public sitemaps.
+**Private portals are an exception to the public indexing baseline.** Put `noindex` in initial HTML before JavaScript and in app-owned response directives (`X-Robots-Tag`), including app-controlled redirects and errors. Set crawler rules at hostname-root `/robots.txt`, not just inside a portal subpath. Scope them to private routes on a shared host, so the public pages stay crawlable; blanket disallow belongs only on wholly private hosts. Keep private URLs out of public sitemaps.
 
 Crawler instructions are not access controls. Protected routes still need authentication. Disallowing a crawl can stop the crawler reading `noindex`; a blocked URL may still appear in search. Neither directive guarantees immediate removal.
 
-*On Ihsan:* the private staff portal needed its own initial HTML and response directives, with root robots rules scoped separately from public founder pages.
+*On Ihsan:* the private staff portal needed its own initial HTML and response directives, with root robots rules scoped so its public pages stayed crawlable.
 
 ## 9. Writing and design quality
 
@@ -325,7 +320,7 @@ These are project observations from Cogniscore and Ihsan, not platform guarantee
 - **Preview proxy and synthetic QA:** check what reaches the app before assuming a browser-supplied client IP isolates a login bucket. Keep reserved synthetic-account transport inside the non-production test harness, targeting the real local API with unchanged password, session and rate-limit checks (rule 18). Never route real-user credentials this way, weaken production authentication, or raise, disable or globally reset limits to pass QA.
   *On Ihsan:* preview IP handling made repeated synthetic logins share a rate-limit bucket. A test-only local transport isolated those logins without changing application security.
 - **Preview crawler headers:** check app-owned HTTP responses directly at the local service and production server, then check the proxied response separately. A proxy's `noindex` is not evidence that the app sends it, and is not a reason to remove platform headers. Current proxy header behaviour is environment-specific **(check current docs)**.
-  *On Ihsan:* the preview proxy added broad `noindex` headers, including on public founder pages. Direct app checks separated the app's policy from the proxy's additions.
+  *On Ihsan:* the preview proxy added broad `noindex` headers, including on public pages. Direct app checks separated the app's policy from the proxy's additions.
 - **Separate dev and production build output** (`distDir` by phase in `next.config`). A production build into the dev server's `.next` broke the preview with missing chunks.
 - **One launcher per port.** Use the managed workflow for the Run button, and don't add a second "Start application". Competing launchers caused port conflicts, and left the app marked stopped while it was actually serving. Write the port map down in `.agents/memory/`.
 - **pnpm workspace:** if `.replit` says `stack = "PNPM_WORKSPACE"`, make sure `pnpm-workspace.yaml` and `tsconfig.base.json` exist. Without them, workspace packages silently get no dependencies.

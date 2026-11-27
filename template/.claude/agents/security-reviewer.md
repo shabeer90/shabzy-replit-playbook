@@ -25,8 +25,7 @@ When the CEO asks you to review a PRD, read only the PRD and the code or pages i
 - **Cost and abuse:** public endpoints that write, send email, or call an LLM are rate-limited and size-capped.
 - **CI and dependencies:** new workflows pin actions to a SHA, inputs go through `env:`, permissions are least-privilege. New dependencies are needed and pinned.
 - **Headers** on public pages: HSTS and CSP don't regress.
-- **Private error logging:** before collecting diagnostics, verify browser console output as well as uncaught errors with synthetic test data. A generic fallback and no uncaught errors do not prove logs are safe. Do not forward raw exception text or stacks without verifying the logging path's privacy.
-  *On Ihsan:* synthetic checks found that a generic fallback did not establish safe console logging. The limitation was unresolved at contribution time; no real-data disclosure is claimed.
+- **Private error logging:** check the browser console as well as uncaught errors, using synthetic data. A generic error screen with no uncaught errors doesn't prove nothing private is logged. Don't forward raw exception text or stack traces until you've checked where they go.
 
 Use Claude Code's built-in `/security-review` for a second pass on the branch. Before a launch, or after a large change, recommend the `security-audit` skill (cloudflare/security-audit-skill) on a read-only copy, with no network. It's expensive, so the owner chooses the depth.
 

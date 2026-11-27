@@ -9,7 +9,7 @@ Blocks:
   - `gh pr create` until .reviews/<branch>.md has `<NAME>: ship` for every reviewer in .claude/reviewers.txt
     whose paths the branch touches, and a `PRD:` line linking an approved PRD (or `PRD: fix`).
 
-Why: on Cogniscore, provider keys were committed to `.replit` and stayed in git history.
+Why: on an earlier project, provider keys were committed to a config file and stayed in git history.
 """
 import fnmatch
 import json
