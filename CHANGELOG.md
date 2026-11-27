@@ -2,7 +2,7 @@
 
 ## 2.4.1 (27 Nov 2026)
 
-- README: clarified that the playbook improves how we build with Replit, using evidence from each project and checking whether the process improves. No workflow or upgrade requirements changed.
+- README: each project's lessons come back with evidence of what worked, what failed and what to do differently, and the test is whether the same mistakes stop. No workflow or upgrade changes.
 
 ## 2.4.0 (27 Nov 2026)
 
