@@ -6,29 +6,23 @@ Install community skills with the [Skills CLI](https://skills.sh), which records
 npx skills add <github-owner/repo> --skill <name>
 ```
 
-Every CLI-installed skill must be in `skills-lock.json`. On Cogniscore, 7 of 15 were missing, so nobody could tell where they came from or whether they had changed. Platform-managed guidance and Claude Code built-ins are separate sources, not missing lockfile entries.
+Every CLI-installed skill must be in `skills-lock.json`. On Cogniscore, 7 of 15 were missing, so nobody could tell where they came from or whether they had changed. Replit's own guidance and Claude Code's built-in commands aren't installed this way, so they don't belong in the lockfile.
 
-For community skills, check the installed instructions and lockfile source before use. For Claude Code built-ins, check the current session's command list and permissions, not the Skills CLI. The owning roles below stay the same whichever environment runs the work.
+## Replit's built-in guidance and tools
 
-## Replit-provided guidance and tools
+Replit gives its Agent its own instructions and tools. They aren't skills from the Skills CLI, and a similar name doesn't make them the same thing. Before relying on one, check what the current session can actually do. A tool that worked last week, or a file that mentions it, doesn't prove it's available now. If a tool is missing, say what you used instead and what that left unchecked (see [review records](template/ORG.md#review-records)). Don't install a community skill just to fill the gap.
 
-Replit supplies instructions and tools to Agent in its task environment. Replit is the provider of those instructions; they are not community packages installed with the Skills CLI. Their names do not establish equivalence to community skills or Claude Code built-ins.
+What Ihsan's Replit environment offered (yours may differ, **check current docs**):
 
-Before execution, read the guidance exposed to the current session and check which tools are actually callable, with what permissions. A file, role name or past successful run does not establish present tool access. If a tool is missing, record the substitute and uncovered checks using the [review handoff](template/ORG.md#review-records). Do not install an overlapping skill just to match a name.
-
-These examples reflect Ihsan's environment, not a portable tool set or a guarantee for every Replit session:
-
-| Replit-provided guidance | Purpose | Existing owning role | Execution-time availability check |
+| Replit guidance | Used for | Owner | Check before using |
 |---|---|---|---|
-| Design | Design consultation and frontend work | head-of-design | Read current design instructions; check the supported consultation/delegation mode and whether it can render or test the result |
-| Testing guidance and available browser tools | Exercise user journeys and capture evidence | qa-tester | Check current browser tools and test-runner access; report direct Playwright use as such, not as a specialized callback |
-| Deployment | Inspect release status and plan an authorized release | CEO; owner approves publishing | Check current deployment guidance, read-only status access and release permissions; inspection is not permission to publish |
-| Workflows | Run and inspect managed development services | CEO | Check the configured service/workflow and available start/status controls; reuse the managed service rather than launch a duplicate |
-| Database investigation | Inspect production data without writes | head-of-data | Check database guidance, the actual target and supported read-only production access; managed-database access does not establish access to an external database |
+| Design | Design advice and frontend work | head-of-design | Can it render and test the result here? |
+| App testing and browser tools | Running user journeys | qa-tester | Which browser tools and test runner work in this session? If you ran Playwright directly, say so. |
+| Deployment | Release status and planning a release | CEO; the owner approves publishing | Read-only status only; looking isn't permission to publish |
+| Workflows | Running the app's managed services | CEO | Use the existing managed service; don't start a second one |
+| Database | Read-only checks on production data | head-of-data | Which database is it really pointed at? Replit's own database isn't your external one. |
 
-Official references: [App Testing](https://docs.replit.com/features/agent/app-testing), [Workflows](https://docs.replit.com/features/workspace-tools/workflows) and [development and production databases](https://docs.replit.com/features/data-and-storage/development-and-production). Exact guidance, callbacks and permissions remain environment-specific: **(check current docs)**.
-
-*On Ihsan:* earlier design consultation informed the plan. A later integrated review lacked specialized architecture/browser callbacks, so independent general workers assessed source and ran Playwright. Managed workflows and read-only release investigation supported that review; they did not establish signed-in production success.
+Replit's docs: [App Testing](https://docs.replit.com/features/agent/app-testing), [Workflows](https://docs.replit.com/features/workspace-tools/workflows), [development and production databases](https://docs.replit.com/features/data-and-storage/development-and-production).
 
 ## Finding and adding skills
 

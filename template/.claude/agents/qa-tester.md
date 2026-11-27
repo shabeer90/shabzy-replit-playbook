@@ -37,31 +37,25 @@ Write your section in `.reviews/<branch>.md` (replace `/` with `-` in the branch
 
 ```
 ## QA
-- Reviewed revision/build:
-- Environment: frontend/server build, API/database target, synthetic data and auth mode.
-- Actual method/tools and independence from builder:
+Revision and environment: <commit; which build and server; which API and database; test accounts>
+Done by: <tools used; confirm you didn't build this>
 
-| Case / assertion | Method | Result | Evidence | Not established |
+| Case | How tested | Result | Evidence | Not proven |
 |---|---|---|---|---|
-| ... | mocked responses / real synthetic integration / production-built frontend | pass / FAIL / not tested | test name, command and result, or safe artifact reference | ... |
+| ... | mocked / real test accounts / production build | pass / FAIL / not tested | test name or command output | ... |
 
-Untested areas: what, why, and the existing owner of each remaining check.
-Implementation verification: passed / failed / incomplete, for the scope above.
-Live-release verification: not performed here; link the CEO's separate record if available.
-Privacy: observations supplied to security; link its verdict and remaining limits.
+Not tested: <what, why, and who owns that check>
+Live release: not checked here (the CEO checks it after release)
+Privacy: <what you passed to security, with a link to its verdict>
 QA: ship | fix first
 ```
 
-Label methods precisely; combine labels when a test uses more than one:
+Say exactly how each case was tested:
+- **Mocked:** say which responses were faked. A mocked login doesn't test passwords or sessions.
+- **Real test accounts:** name the non-production services and say how the test data was cleaned up.
+- **Production build:** name the build and server, and whether the API and auth behind it were real, mocked or dev. It isn't the full production stack.
+- **Signed-in checks on the live site** aren't QA's job. They're the CEO's, after release (rule 18).
 
-- **Source review:** code was inspected, not executed. Link the owning reviewer's result; QA does not repeat code review.
-- **Mocked responses:** state which identity/API/database responses were replaced. A mocked login does not test passwords or sessions.
-- **Real synthetic integration:** identify the non-production services and real auth/database paths exercised, plus exact fixture cleanup.
-- **Production-built frontend:** identify the served build and server, and whether its API, auth and other frontends were real, mocked or development services. This is not necessarily a complete production stack.
-- **Authenticated live-release checks:** belong to the CEO's separately authorized release check, not this QA suite (rule 18). That record needs deployed artifact identity, method, journey evidence and untested areas. A public login fetch is not a signed-in check.
-
-Separate functionality assertions from privacy assertions. A working fallback does not establish private logs; no uncaught browser errors does not establish safe console output. Link the [security reviewer's logging check](security-reviewer.md#check) rather than duplicating its ownership. Keep private evidence in the project, not a public report.
-
-*On Ihsan:* real synthetic staff sign-in and mocked error cases ran against local production-built staff assets. Another portal still used a development frontend. The report separated implementation evidence and remaining coverage limits from release readiness; signed-in production remained unverified. Passing local tests did not establish that the live release contained the reviewed build.
+Keep what works separate from what's private. A working error screen doesn't prove nothing private was logged; that's the [security reviewer's check](security-reviewer.md#check). Keep private evidence in the project, not in a public report.
 
 Use `QA: ship` only when every case passes, or a failure is listed under **Owner decisions** with the owner's call. Say plainly what you could not test, and why.

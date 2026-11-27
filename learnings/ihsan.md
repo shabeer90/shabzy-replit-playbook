@@ -71,7 +71,7 @@ Home: [PLAYBOOK rule 9](../PLAYBOOK.md#1-the-rules); no separate metric policy w
 
 Evidence reviewed: current platform instructions and integrated review reports. Specialized architecture/browser callbacks were unavailable in the later review; no claim is made that they ran. Official platform references are linked in the owning section.
 
-Home: [Replit-provided guidance and tools](../SKILLS.md#replit-provided-guidance-and-tools).
+Home: [Replit's built-in guidance and tools](../SKILLS.md#replits-built-in-guidance-and-tools).
 
 ## 10. Honest review records
 
@@ -87,7 +87,7 @@ Home: [Review records](../template/ORG.md#review-records).
 
 Evidence reviewed: scoped workflow task and product plan. Consultation did not authorize publishing or changes to real application records.
 
-Home: [Specialist handoffs](../template/ORG.md#specialist-handoffs).
+Home: [Handing work to another agent](../template/ORG.md#handing-work-to-another-agent).
 
 ## 12. Separate implementation and release verdicts
 

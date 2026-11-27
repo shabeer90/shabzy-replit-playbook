@@ -1,9 +1,9 @@
 # Changelog
 
-## 3.0.0 (unreleased)
+## 2.1.0 (27 Nov 2026)
 
 - Four further approved Ihsan lessons: distinguish Replit-provided guidance from installed skills in `SKILLS.md`; record actual review methods and bounded specialist handoffs in `template/ORG.md`; separate implementation, privacy and live-release evidence in the QA report. Raw entries extend `learnings/ihsan.md`.
-- **Upgrade from 2.x:** use the provider/availability notes when choosing tools, and copy the handoff/review-record guidance and expanded QA report into existing projects. This is a major version because existing projects should adopt the reporting changes. No new roles, numbered rules, installed skills, hooks or CI behaviour.
+- **Upgrade from 2.0.0 (optional):** copy the new QA report and the handoff and review-record sections of `ORG.md`. Nothing enforced changed: no new rules, reviewers, skills, hooks or CI.
 
 ## 2.0.0 (27 Nov 2026)
 
