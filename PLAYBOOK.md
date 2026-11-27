@@ -92,7 +92,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     Was "read page content on the dev server" until Ihsan showed the production bundle can break where the dev server works.
     *On Ihsan:* different dependency versions split a shared hook from its provider in the production bundle, despite passing development checks. Replaying the served bundle with synthetic responses reproduced the blank page. Built-frontend regression checks verified the local fix, not a signed-in live release.
     *On Impact Connect:* a direct-execution guard in an imported logo validator ran its CLI exit path after bundling and stopped the server. Moving the CLI into a separate entry point removed that startup path; source-module checks alone missed it.
-    *On Personal Website:* a lazy-route hydration fallback replaced prerendered content and caused layout shift; a blanket SPA rewrite also served unknown slugs with 200. Matching hydration boundaries and explicit routes with a 404 catch-all addressed them, though live route status was not checked.
+    *On Personal Website:* Replit's dev workflow hid a hydration fallback that replaced prerendered content. The static artifact also had a blanket production rewrite alongside route-specific redirects; it was removed so the 404 catch-all could apply. The built-site trace showed the hydration issue, but live route status was not checked.
 
 18. **e2e tests never touch production or live data.** Keep mocked database-API tests (`e2e/support/mock-<db>.mjs`) for fast, credential-free checks. Add controlled non-production integration tests when real passwords, sessions, roles or database behaviour matter.
     - Use a confirmed non-production service and database, with owned synthetic accounts and records only. Never write real customer records, even in development.
@@ -251,18 +251,13 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 - `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing.
 - JSON-LD per page type (Organization, WebSite, Product/Review, BreadcrumbList, FAQ), through the escaping helper.
 - Self-hosted fonts, and `next/image` limited to a host allowlist in `config/`.
-- A test that every page template has a title, description, canonical, H1 and JSON-LD, and that titles name the page's subject.
-  *On Personal Website:* a title that exists can still say too little; the case studies replaced “name — company” with wording about the work.
+- A test that every page template has a title, description, canonical, H1 and JSON-LD.
 - Search Console and Bing Webmaster verified on day one. Export links and queries weekly.
 - Internal links: every sitemap page linked from at least a few others.
-  - Keep the home page's article preview current by sorting from publication dates instead of maintaining the entries by hand.
-    *On Personal Website:* the hard-coded four-row list left out newer posts until it was generated from the article dates.
 - Missing image paths return a real 404, with `Cache-Control: no-store`, not the SPA's HTML.
   *On Impact Connect:* missing uploads could fall through to the application response. Explicit missing-asset handling now returns 404 without caching; this does not establish what every affected browser had cached.
 - Social preview tags use absolute HTTPS image URLs and a raster format supported by the target sharing services. Fetch and decode the image, check its intended dimensions, and compare Open Graph, Twitter and JSON-LD references.
   *On Impact Connect:* generated blog previews needed a PNG derivative and absolute metadata URLs. The production-bundle smoke test decodes a 1200×630 PNG and checks that the references agree.
-- For article covers, serve compressed sources sized for the rendered viewport, keep a fallback, and verify every referenced variant.
-  *On Personal Website:* 20 covers gained 640px and 900px WebP sources; both sets totalled about 1.2 MB, compared with 17 MB for the originals.
 - For AI assistants (GEO), each page answers its main question plainly near the top, with specific, attributed facts. AI crawlers are allowed in `robots.txt` unless the owner decides otherwise.
 - Public article text, public profile content and displayed statistics are available in initial HTML without JavaScript. Use the same public data and access rules for ordinary visitors and crawlers, including unfamiliar user agents. Test the served content, not just metadata or an excerpt.
   *On Impact Connect:* full article and public founder content replaced incomplete crawler output, with statistics from the API's shared cache. HTTP checks cover ordinary visitors and named and unknown crawlers; they do not prove indexing or rankings.
@@ -284,8 +279,6 @@ Crawler instructions are not access controls. Protected routes still need authen
 - `design/DESIGN.md` first: audience, one feeling, three named reference sites, type, colour, grid, motion, what the brand never does. The owner approves it.
 - Real content and data in every design, never filler.
 - Restraint on screens people work in; a point of view on pages that persuade.
-- Check keyboard focus indicators on every background they appear against. Keep a visible segment at 3:1 contrast; use two colors when one accent cannot work on both light and dark surfaces.
-  *On Personal Website:* the cyan-only outline measured 1.08:1 on a light panel; a dark halo now preserves visibility on light panels while cyan remains clear on dark pages.
 - `impeccable` for craft and critique, `ui-ux-pro-max` for palette and type data, `web-design-guidelines` for accessibility.
 
 ## 10. Release loop on Replit
@@ -294,6 +287,8 @@ Crawler instructions are not access controls. Protected routes still need authen
 2. In the Replit Shell, run `git pull origin main` (and `pnpm install` if the lockfile changed).
 3. Publish or redeploy in Replit. You must do this after **any** site code or `next.config` change; ISR pages don't pick up config changes alone.
 4. Check live with a script, not by eye: fetch the changed pages and compare them with the database or the expected output. On Cogniscore this was `check_live_site.py`.
+    - For static artifacts, check `.replit-artifact/artifact.toml` and `public/_redirects` together; test both a known route and an unknown path over HTTP.
+    - If the Replit dev workflow renders client-only pages but the published artifact is prerendered, test hydration in a browser against the built artifact too.
 5. Write down what shipped in `docs/` (a retro per batch: what worked, what went wrong, and the decisions taken).
 
 Things to remove before launch:
