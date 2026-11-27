@@ -1,14 +1,19 @@
-# Replit new-project playbook
+# Playbook
 
-Read this before starting a project on Replit. Each rule is something that went wrong, or worked, on a real project. "*On <project>:*" says what happened, so you can judge whether a rule fits the next one. Rules without a project line are how we've chosen to work, not lessons yet.
+Read this before starting a project. Each rule is something that went wrong, or worked, on a real project. "*On <project>:*" says what happened, so you can judge whether a rule fits the next one. Rules without a project line are how we've chosen to work, not lessons yet.
 
-The files these rules refer to are in [`template/`](template/). Start a project with [STARTER-PROMPT.md](STARTER-PROMPT.md). Add what you learn through [CONTRIBUTING.md](CONTRIBUTING.md).
+- **Start a project:** [STARTER-PROMPT.md](STARTER-PROMPT.md).
+- **Files:** in [`template/`](template/), including [ORG.md](template/ORG.md), which defines how the AI company is organised.
+- **Skills:** [SKILLS.md](SKILLS.md).
+- **Adding what you learn:** [CONTRIBUTING.md](CONTRIBUTING.md).
 
-Platform behaviour I saw on this project is stated as fact. Anything else about Replit is marked **(check current docs)**, because platforms change.
+Behaviour of Replit, GitHub or Claude Code that wasn't confirmed on a project is marked **(check current docs)**. Platforms change.
 
 ---
 
 ## 1. The rules
+
+Rule numbers are permanent. New rules are added at the end. A rule that turns out wrong is rewritten in place, with one line saying what changed.
 
 1. **GitHub is the source of truth. Replit only runs and publishes.**
    Make every change on a branch and merge it through a pull request. Replit pulls `main` and publishes.
@@ -48,7 +53,7 @@ Platform behaviour I saw on this project is stated as fact. Anything else about 
 10. **Dangerous scripts are never run by hand or by CI by accident.** These are seeders, resets and anything that writes live data. Put a test or a guard in place that blocks them.
     *On Cogniscore:* scoring was kept out of CI (`test_no_ci_scoring.py`). The seed and reset scripts were off-limits.
 
-11. **SEO is built in, not added later.** This means:
+11. **On a public site, SEO is built in, not added later.** This means:
     - one canonical host;
     - a sitemap;
     - JSON-LD;
@@ -66,15 +71,13 @@ Platform behaviour I saw on this project is stated as fact. Anything else about 
     - `scripts/check_design_system.py` fails CI on raw colours and arbitrary Tailwind values outside the design system.
     *On Cogniscore:* the colours lived in the Tailwind config, with no owner and no check. The rule is new from here.
 
-14. **Every change gets a CTO review before the owner sees it.** The `cto-reviewer` agent covers correctness, security, data rules, size, the design system, tests and SEO, and ends with ship, fix first or rethink.
-    *On Cogniscore:* the review and audit passes caught real bugs, but only when someone asked for one. The rule is new from here.
+14. **Every change is reviewed by the agents who own that area, never by the one who wrote it.** The reviewers are em, qa, cto, security, design, cmo and data (`template/ORG.md`). `.claude/reviewers.txt` says which ones a project has, and which paths wake each one. Each writes a verdict to `.reviews/<branch>.md`, and the guard hook blocks `gh pr create` until every required reviewer says `ship`. That makes the reviews automatic, not something anyone has to ask for.
+    *On Cogniscore:* the security audit, the SEO audits and the data retros each found real problems, but only when someone asked. The rule is new from here.
 
 15. **Rules that matter are enforced, not just written.**
     - Hooks (`.claude/hooks/guard.py`) block secrets, pushes to main and the project's dangerous scripts.
     - CI blocks type errors, design drift and failing tests.
     - GitHub branch protection and push protection cover Replit Agent and humans, which hooks don't.
-
----
 
 16. **A test that passes before the fix proves nothing.** CI runs the PR's new tests against the base commit and requires them to fail there (`template/scripts/assert_new_tests_fail_on_base.sh`).
     *On Cogniscore:* three fixes shipped on a plausible mechanism in one day, and two did nothing. The gate stopped that happening again.
@@ -106,7 +109,71 @@ Platform behaviour I saw on this project is stated as fact. Anything else about 
 
 22. **The live site is checked by a script.** `check_live_site.py` read the sitemap and the database and compared each page with what it should show. It ran after every release. Production health is a separate job (`live-observables.yml`) that checks a list of assertions on a schedule.
 
-## 2. Day 0: before the first prompt to Replit Agent
+23. **Every project runs as an AI company.** The owner is the board. The main session is the CEO. The CPO, CTO and CMO and their teams are agents with one owner per job (`template/ORG.md`). No two agents do the same check.
+
+24. **Reviews cost tokens, so they're scoped.**
+    - Reviewers wake only for their paths.
+    - They sign off in one line when the change doesn't really touch their area.
+    - Each runs on a model that fits the stakes.
+    - Expensive skills (full audits, full crawls) run only when the owner decides.
+    - The retro records what each batch cost.
+
+25. **A finding seen twice becomes a check.** A test, a hook rule or a CI step, so no reviewer has to spot it a third time. This is how the work gets cheaper and more autonomous from one project to the next.
+
+26. **Autonomy is earned, one level at a time, and only the owner moves it** (the ladder in `template/ORG.md`). Secrets, live data writes, merging code and spending money are never delegated.
+
+27. **Words read like a person wrote them.** Every user-facing word, and every report to the owner, is plain and specific, with no AI tells. The CMO reviewer checks with the `humanizer` skill.
+    *On Cogniscore:* drafts were rewritten for plain English again and again, by hand. The rule is new from here.
+
+28. **The product looks agency-built, not AI-made.** head-of-design writes `design/DESIGN.md`, with real references and a point of view, before any component exists, using the `impeccable` skill. Generic AI patterns (purple gradients, glass cards, three equal icon cards, emoji icons, invented stats) are never the default.
+
+29. **No PRD, no feature: the project is not a feature factory.**
+    - `docs/ROADMAP.md` is the only list of what gets built, with at most three items under **Now**. Every other idea, including Replit Agent's suggestions, is parked with its source and date.
+    - Anything bigger than a small fix needs a PRD that the leadership agents have reviewed and the owner has approved.
+    - The guard hook won't open a PR without a link to one.
+
+    *On the owner's Replit projects:* Replit kept suggesting features, and building them was tempting. Products drifted, and what was actually planned got forgotten.
+
+30. **The user's end-to-end journey always works.**
+    - `docs/JOURNEYS.md` lists the paths a user takes from start to done, each with an e2e test.
+    - QA runs all of them on every PR that touches the app, and the EM won't sign off if one broke.
+    - After a release, the CEO runs them against the live site.
+
+    A feature that works on its own but breaks the journey is a failed feature.
+
+## 2. How the company works
+
+Each project is run as an AI company. [`template/ORG.md`](template/ORG.md) is the single source for:
+- who owns what (the owner as board; the CEO, CPO, CTO, CMO and their teams);
+- how work moves from ask to PRD to live;
+- how the roadmap stops a feature factory;
+- the token budget;
+- the autonomy ladder.
+
+The agent files are in [`template/.claude/agents/`](template/.claude/agents/).
+
+| Role | Agent | Runs |
+|---|---|---|
+| CEO | the main session | Always |
+| CPO | `cpo` | Writes the PRD for any work bigger than a small fix; keeps `docs/ROADMAP.md`; parks unplanned ideas |
+| Head of Design | `head-of-design` | Before new UI; reviews UI changes (DESIGN) |
+| CTO | `cto-reviewer` | Reviews code changes (CTO) |
+| Engineering manager | `em-reviewer` | Reviews every PR against its PRD and the journeys (EM) |
+| QA | `qa-tester` | Runs every user journey end to end, plus the new feature, in a browser (QA) |
+| Security | `security-reviewer` | Reviews code and config changes (SECURITY) |
+| Head of Data | `head-of-data` | Projects with a database: designs schema changes, reviews data changes (DATA) |
+| CMO | `cmo-reviewer` | Reviews user-facing words, plus SEO and GEO on public sites (CMO) |
+
+The guard hook (`template/.claude/hooks/guard.py`) also blocks:
+- secrets in files;
+- pushes to `main` and force pushes;
+- `--no-verify`;
+- the project's dangerous scripts.
+
+Hooks bind Claude Code only. If Replit Agent builds something, have Claude Code run the reviews on that branch before you merge.
+
+## 3. Day 0: before the first prompt to an agent
+
 
 - [ ] **Create the GitHub repo first.** Protect `main`: PRs required, CI required.
 - [ ] **Import the repo into Replit.** Decide now who writes code: Replit Agent, Claude Code, or both. If both, they both work through branches and PRs.
@@ -121,7 +188,9 @@ Platform behaviour I saw on this project is stated as fact. Anything else about 
 - [ ] **Separate test and live environments.** Use a second Supabase project, or at least a separate schema, so agents and tests never write live data.
 - [ ] **Buy the domain and decide www or apex now.** Pick one canonical host and redirect the other.
 
-## 3. Repo skeleton
+
+## 4. Repo skeleton
+
 
 ```
 app/ or src/            site code
@@ -133,11 +202,18 @@ evidence/               saved source files for every published fact (if a conten
 docs/                   runbooks, retros, decisions
 config/                 allowlists (image hosts etc.), read by code and tests
 .github/workflows/      pr-checks.yml first; scheduled jobs later
-CLAUDE.md               rules for agents
+AGENTS.md, CLAUDE.md    rules for agents
+ORG.md                  who owns what
+design/DESIGN.md        the visual direction
+docs/prd/               PRDs (cpo writes; leadership reviews; owner approves)
+docs/ROADMAP.md         the only list of what gets built
+docs/JOURNEYS.md        the user journeys that must always work
 .replit                 runtime config only: no secrets
 ```
 
-## 4. Security baseline (check before launch)
+
+## 5. Security baseline (check before launch)
+
 
 | Area | Minimum |
 |---|---|
@@ -151,7 +227,9 @@ CLAUDE.md               rules for agents
 | Supply chain | A lockfile with integrity hashes. Nothing installed unpinned at runtime (`npx x@latest`). Review what Replit's `postMerge` script runs. |
 | LLM | Model output is data. Validate it against the source before publishing, and add a human approval step for anything public. |
 
-## 5. Database (Supabase)
+
+## 6. Database (Supabase)
+
 
 - Write `schema.sql` before the first table exists. Enable RLS on **every** table and write a policy for each role.
 - **Anon:** SELECT only, on the columns the page needs (column-level `GRANT`). No INSERT policies unless the feature needs one.
@@ -159,18 +237,23 @@ CLAUDE.md               rules for agents
 - Check the live state now and then: `select * from pg_policies;` and the column grants. The repo SQL and the live DB drift apart.
 - Every table that records an event (clicks, requests) needs a retention rule and an index on the time column.
 
-## 6. CI baseline (`pr-checks.yml`)
+
+## 7. CI baseline (`pr-checks.yml`)
+
 
 1. Install from the lockfile.
 2. Type check (`tsc --noEmit`).
 3. Unit tests (`pytest scripts agents`, `node --test`).
 4. Build.
-5. e2e (Playwright) against the built app.
-6. Turn on Auto-fix or a CI monitor on every PR, and never auto-merge.
+5. New tests must fail on the base commit (rule 16).
+6. e2e (Playwright) against the built app, with a mock database (rule 18).
+7. Turn on Auto-fix or a CI monitor on every PR, and never auto-merge.
 
 Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get the least permission they need and only the secrets they use.
 
-## 7. SEO baseline (launch gate)
+
+## 8. SEO and GEO baseline (public sites, launch gate)
+
 
 - One canonical host, with the other redirecting via 308. The `metadataBase`/canonical tag on every page.
 - `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing.
@@ -180,7 +263,23 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 - Search Console and Bing Webmaster verified on day one. Export links and queries weekly.
 - Internal links: every sitemap page linked from at least a few others.
 
-## 8. Release loop on Replit
+- For AI assistants (GEO), each page answers its main question plainly near the top, with specific, attributed facts. AI crawlers are allowed in `robots.txt` unless the owner decides otherwise.
+
+## 9. Writing and design quality
+
+**Writing (every project).** The test is whether a busy person would read it once and understand it.
+- Short sentences, the reader's words, numbers instead of adjectives.
+- No AI tells: staged contrasts, one-line closers, forced threes, dashes everywhere, inflated words, bold on every item, chat leftovers.
+- The `humanizer` skill rewrites a draft; the CMO reviewer checks every user-facing change. The project's voice is in `AGENTS.md`.
+
+**Design (anything with a UI).** The test is whether it could pass as the work of a good agency for this specific client.
+- `design/DESIGN.md` first: audience, one feeling, three named reference sites, type, colour, grid, motion, what the brand never does. The owner approves it.
+- Real content and data in every design, never filler.
+- Restraint on screens people work in; a point of view on pages that persuade.
+- `impeccable` for craft and critique, `ui-ux-pro-max` for palette and type data, `web-design-guidelines` for accessibility.
+
+## 10. Release loop on Replit
+
 
 1. Merge the PR on GitHub.
 2. In the Replit Shell, run `git pull origin main` (and `pnpm install` if the lockfile changed).
@@ -192,7 +291,9 @@ Things to remove before launch:
 - Replit leftovers you don't use: canvas or mockup sandboxes, an extra `api-server` that only has `/healthz`, stale `.replit-artifact` files.
 - Anything deployed and unused is attack surface and cost.
 
-## 8b. Replit platform notes
+
+## 11. Replit platform notes
+
 
 These come from Cogniscore's own agent memory (`.agents/memory/`). Replit changes, so **(check current docs)** before relying on any of them.
 
@@ -210,29 +311,9 @@ These come from Cogniscore's own agent memory (`.agents/memory/`). Replit change
 - **Replit's built-in database is not your database.** If the project uses Supabase or another external DB, schema changes go there, through its SQL editor or a management connection, never into a Replit DB as a substitute.
 - **Delete Replit scaffolds you don't use:** mockup sandboxes, `api-server` stubs, Canvas.
 
-## 9. Agents, skills and hooks
 
-| Piece | Where | Job |
-|---|---|---|
-| Rules for every agent | `AGENTS.md` (`CLAUDE.md` imports it; `replit.md` points to it) | One set of rules, whichever agent is working |
-| head-of-design | `.claude/agents/head-of-design.md` | Owns tokens and `components/ui/`; adds missing components; reviews UI |
-| cto-reviewer | `.claude/agents/cto-reviewer.md` | Reviews every change before the PR is handed over |
-| ponytail skill | see [SKILLS.md](SKILLS.md) | The smallest complete change, on all coding |
-| Other skills | [SKILLS.md](SKILLS.md) | Installed with the Skills CLI and recorded in `skills-lock.json` |
-| guard hook | `.claude/hooks/guard.py` | Blocks secrets, pushes to main, force pushes, `--no-verify`, blocked scripts |
-| Auto-fix | Claude Code desktop, per PR | Watches CI and review comments on every PR; never auto-merges |
+## 12. Working with the owner
 
-**How a feature flows:**
-1. The owner asks.
-2. The agent checks `components/ui/`. If something is missing, head-of-design adds it.
-3. The agent builds with ponytail.
-4. Tests are added.
-5. cto-reviewer reviews, and the agent fixes what it confirms.
-6. The agent opens a PR and turns on Auto-fix.
-7. The owner merges, pulls in Replit and publishes.
-8. The agent runs the live check.
-
-## 9b. Working with the owner
 
 How the agents should work with you, on any project:
 
@@ -245,7 +326,9 @@ How the agents should work with you, on any project:
 - **Words:** keep a `GLOSSARY.md` of domain terms so every agent and page uses the same words.
 - **Retros** after each batch, from `docs/retro-template.md`. Anything another project should know goes to this playbook.
 
-## 9c. Growth (public products)
+
+## 13. Growth (public products)
+
 
 Optional; use what fits.
 
@@ -262,31 +345,40 @@ Optional; use what fits.
   *On Cogniscore:* `social/30-day-plan.md`.
 - **Search Console and Bing Webmaster** from day one, with weekly exports of queries and links.
 
-## 10. Starter files
+
+## 14. Starter files
 
 Everything is in [`template/`](template/):
-- `AGENTS.md`, `CLAUDE.md`, `replit.md`
-- `.claude/` (agents, hooks, settings)
-- `.github/workflows/pr-checks.yml`
-- `.gitignore`
-- `design/tokens/` and `components/ui/README.md`
-- `lib/json-ld.ts` and `scripts/safe_url.py`
-- `scripts/check_design_system.py`
-- `docs/retro-template.md`
-- `scripts/assert_new_tests_fail_on_base.sh` (the red-then-green gate; adjust the test paths at the top)
-- `.agents/memory/MEMORY.md` and `GLOSSARY.md`
+- **Agent rules and roles:** `AGENTS.md`, `CLAUDE.md`, `replit.md`, `ORG.md`.
+- **`.claude/`:**
+  - the agents;
+  - `reviewers.txt`;
+  - `hooks/guard.py` and `blocked-commands.txt`;
+  - `settings.json`.
+- **Design:** `design/DESIGN.md`, `design/tokens/`, `components/ui/README.md`.
+- **Product:** `docs/prd/` (README and `_template.md`), `docs/ROADMAP.md`, `docs/JOURNEYS.md`.
+- **CI and tooling:**
+  - `.github/workflows/pr-checks.yml` and `.gitignore`;
+  - `scripts/check_design_system.py`;
+  - `scripts/assert_new_tests_fail_on_base.sh` (adjust the test paths at the top).
+- **Helpers:** `lib/json-ld.ts`, `scripts/safe_url.py`.
+- **Memory and words:** `docs/retro-template.md`, `.agents/memory/MEMORY.md`, `GLOSSARY.md`.
 
-## 11. First-week checklist
+## 15. First-week checklist
+
 
 - [ ] The CI gate is green and required on `main`.
 - [ ] Secrets inventory written (names and locations, no values). Secret scanning is on.
 - [ ] `schema.sql` committed with RLS on every table. Live `pg_policies` checked against it.
-- [ ] Admin auth done properly (section 4), or no admin at all yet.
+- [ ] Admin auth done properly (section 5), or no admin at all yet.
 - [ ] `find-skills` is installed, and every skill is in `skills-lock.json` and `SKILLS.md`.
 - [ ] `.agents/memory/` has the port map and any platform quirks found during setup.
 - [ ] The design system exists (tokens, base components) and its CI check passes.
-- [ ] The hooks block a test push to main and a test secret (`template/.claude/hooks/README.md`).
+- [ ] The hooks block a test push to main, a test secret, and a PR with no reviews (`template/.claude/hooks/README.md`).
+- [ ] `.claude/reviewers.txt` lists the right reviewers and paths for this project.
+- [ ] `design/DESIGN.md` approved; voice written in `AGENTS.md`.
+- [ ] `docs/ROADMAP.md` has the first three items under **Now**, each with an approved PRD; `docs/JOURNEYS.md` lists the core journeys, each with an e2e test.
 - [ ] Canonical host, sitemap, robots, Search Console.
 - [ ] A live-check script exists for the main pages.
-- [ ] The release loop (section 8) written into `docs/`, with who presses Publish.
+- [ ] The release loop (section 10) written into `docs/`, with who presses Publish.
 - [ ] A security pass before launch: run an audit (Cloudflare `security-audit` skill or similar) on a read-only copy, outside the repo, with no network.
