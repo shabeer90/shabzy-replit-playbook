@@ -90,6 +90,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     | Real data, Google's view, CDN | the live site, after a deploy | anything local |
 
     *On Ihsan:* different dependency versions split a shared hook from its provider in the production bundle, despite passing development checks. Replaying the served bundle with synthetic responses reproduced the blank page. Built-frontend regression checks verified the local fix, not a signed-in live release.
+    *On Impact Connect:* a direct-execution guard in an imported logo validator ran its CLI exit path after bundling and stopped the server. Moving the CLI into a separate entry point removed that startup path; source-module checks alone missed it.
 
 18. **e2e tests never touch production or live data.** Keep mocked database-API tests (`e2e/support/mock-<db>.mjs`) for fast, credential-free checks. Add controlled non-production integration tests when real passwords, sessions, roles or database behaviour matter.
     - Use a confirmed non-production service and database, with owned synthetic accounts and records only. Never write real customer records, even in development.
@@ -117,6 +118,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 
 22. **The live site is checked by a script, not by eye.** After every release, a script compares each sitemap page with what the database says it should show. A separate scheduled job checks production health. List the command under *Live check* in `AGENTS.md`.
     *On Cogniscore:* `check_live_site.py` and `live-observables.yml`.
+    *On Impact Connect:* the logo validator checked file existence in its configured database environment, not the published image response. A production image check must read the intended production records, fetch their public URLs and decode the bytes; a file or HTTP 200 alone is not proof.
 
 23. **Every project runs as an AI company.** The owner is the board. The main session is the CEO. The CPO, CTO and CMO and their teams are agents with one owner per job (`template/ORG.md`). No two agents do the same check.
 
@@ -234,6 +236,10 @@ docs/JOURNEYS.md        the user journeys that must always work
 6. e2e (Playwright) against the built app, using the test modes and safeguards in [rule 18](#1-the-rules).
 7. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
 
+For apps with split routes, check the built manifest's transitive static imports. Private routes must stay out of the public entry graph, and protected screens out of the login graph. Set a JavaScript size budget for the project and fail the check when the built JavaScript exceeds it. Deferring code is not access control; private APIs still need authentication.
+
+*On Impact Connect:* `tests/routeBundles.check.mjs` checks the emitted Vite graph and a 1.25 MiB JavaScript budget. It guards route boundaries and bundle size, not live page speed.
+
 Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get the least permission they need and only the secrets they use.
 
 ## 8. SEO and GEO baseline (public sites, launch gate)
@@ -245,8 +251,14 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 - A test that every page template has a title, description, canonical, H1 and JSON-LD.
 - Search Console and Bing Webmaster verified on day one. Export links and queries weekly.
 - Internal links: every sitemap page linked from at least a few others.
+- Missing image paths return a real 404, with `Cache-Control: no-store`, not the SPA's HTML.
+  *On Impact Connect:* missing uploads could fall through to the application response. Explicit missing-asset handling now returns 404 without caching; this does not establish what every affected browser had cached.
+- Social preview tags use absolute HTTPS image URLs and a raster format supported by the target sharing services. Fetch and decode the image, check its intended dimensions, and compare Open Graph, Twitter and JSON-LD references.
+  *On Impact Connect:* generated blog previews needed a PNG derivative and absolute metadata URLs. The production-bundle smoke test decodes a 1200×630 PNG and checks that the references agree.
 
 - For AI assistants (GEO), each page answers its main question plainly near the top, with specific, attributed facts. AI crawlers are allowed in `robots.txt` unless the owner decides otherwise.
+- Public article text, public profile content and displayed statistics are available in initial HTML without JavaScript. Use the same public data and access rules for ordinary visitors and crawlers, including unfamiliar user agents. Test the served content, not just metadata or an excerpt.
+  *On Impact Connect:* full article and public founder content replaced incomplete crawler output, with statistics from the API's shared cache. HTTP checks cover ordinary visitors and named and unknown crawlers; they do not prove indexing or rankings.
 
 **Private portals are an exception to the public indexing baseline.** Put `noindex` in initial HTML before JavaScript and in app-owned response directives (`X-Robots-Tag`), including app-controlled redirects and errors. Set crawler rules at hostname-root `/robots.txt`, not just inside a portal subpath. Scope them to private routes on a shared host, so the public pages stay crawlable; blanket disallow belongs only on wholly private hosts. Keep private URLs out of public sitemaps.
 
@@ -281,9 +293,12 @@ Things to remove before launch:
 
 ## 11. Replit platform notes
 
-These are project observations from Cogniscore and Ihsan, not platform guarantees. Replit changes, so **(check current docs)** before relying on them.
+These are project observations from Cogniscore, Ihsan and Impact Connect, not platform guarantees. Replit changes, so **(check current docs)** before relying on them.
 
 - **Publishing uses the workspace copy:** pull `main` in the Shell before you publish.
+- **Uploaded assets need durable storage:** do not treat the published filesystem as the permanent copy. Await the storage write and check its result before reporting that an upload is durable. If it fails, report failure or clearly mark the upload as not backed up; retries alone are not success.
+  *On Impact Connect:* logo paths depended on uploaded files. Backup calls were made awaitable with retries, but the helper still returns `false` when they fail, so callers must handle that result. This is not evidence that every production logo is backed up.
+  [Replit's current guidance](https://docs.replit.com/build/troubleshooting) says published filesystems are not persistent; use [App Storage](https://docs.replit.com/features/data-and-storage/object-storage) or another durable store for uploads (checked 27 Nov 2026).
 - **Playwright on Replit (NixOS):** Playwright's downloaded Chromium can't find its system libraries.
   - Install the Nix `chromium` package.
   - Set `executablePath` from `which chromium` in `playwright.config`.

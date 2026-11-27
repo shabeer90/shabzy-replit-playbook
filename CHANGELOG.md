@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.0 (27 Nov 2026)
+
+- Seven approved Impact Connect lessons: CLI isolation in bundled servers, confirmed upload backups, decoded production image checks, missing-asset responses, raster social previews, initial public HTML and built route-graph checks. Raw evidence and limits are in `learnings/impact-connect.md`; examples extend rules 17 and 22, and checklists extend sections 7, 8 and 11.
+- **Upgrade from 2.2.x:** adopt the new route-graph, public-content, image-response, social-preview and upload-durability checks where they apply. The examples do not certify a live release. No rule numbers, reviewer roles, skills, hooks or executable CI changed; projects must wire their own applicable checks.
+
 ## 2.2.2 (27 Nov 2026)
 
 - Cogniscore lesson 3 marked fixed, with the audit that shows it. Lesson 10 held back, because the service it describes is still deployed.
