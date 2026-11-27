@@ -116,9 +116,9 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 21. **Measure before cutting cost.** Add timings first, then cut the step that's actually slow. Sampling to save time can fake a regression in a report that compares runs.
     *On Cogniscore:* the weekly SEO report took 16 minutes, and the obvious trim would have saved 22% and invented a drop in indexed pages.
 
-22. **The live site is checked by a script, not by eye.** After every release, a script compares each sitemap page with what the database says it should show. A separate scheduled job checks production health. List the command under *Live check* in `AGENTS.md`.
+22. **The live site is checked by a script, not by eye.** After every release, a script compares each sitemap page with what the database says it should show. A separate scheduled job checks production health. List the command under *Live check* in `AGENTS.md`. Image checks fetch each published image URL and decode the bytes; a file existing, or an HTTP 200, isn't proof.
     *On Cogniscore:* `check_live_site.py` and `live-observables.yml`.
-    *On Impact Connect:* the logo validator checked file existence in its configured database environment, not the published image response. A production image check must read the intended production records, fetch their public URLs and decode the bytes; a file or HTTP 200 alone is not proof.
+    *On Impact Connect:* the logo validator checked that files existed, not what the published image URLs returned, so it couldn't confirm the live site had no broken logos.
 
 23. **Every project runs as an AI company.** The owner is the board. The main session is the CEO. The CPO, CTO and CMO and their teams are agents with one owner per job (`template/ORG.md`). No two agents do the same check.
 
