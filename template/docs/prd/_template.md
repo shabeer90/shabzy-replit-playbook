@@ -35,7 +35,7 @@ User-facing copy, written plainly (the CMO reviews it).
 Security, cost, legal or claims risks, and how each is handled.
 
 ## Review
-Each leadership agent whose area this touches adds a line. The CEO decides which are needed.
+Each leadership agent whose area this touches adds a line. The CPO lists which are needed; the CEO runs them.
 - CTO: approve | changes needed: <notes>
 - CMO: approve | changes needed: <notes>
 - Security: approve | changes needed: <notes>

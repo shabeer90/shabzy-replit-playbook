@@ -2,7 +2,7 @@
 
 This is how I start and run my projects. I build them on Replit with Claude Code and Replit Agent. Each project is run like a small company where the agents do the work and I make the decisions.
 
-Most of what's here I learned the hard way, first on Cogniscore, then on Ihsan, Impact Connect, Adam Accounting and my personal website. This repo exists so the next project doesn't repeat those mistakes. When a project teaches me something new, it goes back in here, with the evidence for what worked, what failed and what to do differently next time. The test is whether the same mistakes stop coming back.
+Most of what's here I learned the hard way, on Cogniscore, Impact Connect, Ihsan, Adam Accounting and my personal website. This repo exists so the next project doesn't repeat those mistakes. When a project teaches me something new, it goes back in here, with the evidence for what worked, what failed and what to do differently next time. The test is whether the same mistakes stop coming back.
 
 ## Starting a new project
 
@@ -30,7 +30,7 @@ Paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into the project. The agent f
 
 **Nothing gets built without a PRD.** Replit is quick to suggest new features, and it's tempting to build them all. My projects drifted that way. Now every idea goes on a parked list in `docs/ROADMAP.md`, and only work with an approved PRD gets built.
 
-**The user's journey has to work end to end.** A new feature that works on its own but breaks the path a user takes through the product isn't finished. The QA and engineering-manager agents check every journey on every change.
+**The user's journey has to work end to end.** A new feature that works on its own but breaks the path a user takes through the product isn't finished. QA runs every journey on every change to the app, and the engineering manager won't sign off if one broke.
 
 ## The template, file by file
 

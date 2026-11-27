@@ -49,7 +49,7 @@
 - **What happened:** the contact route awaited the email SDK but ignored its returned error. It now checks both the error and the provider's returned message ID. When email fails and the submission was not saved to the database, the route returns failure rather than a success response.
 - **Impact:** a failed, unsaved enquiry no longer gets reported as accepted merely because the awaited call returned. A saved enquiry can still succeed when its notification fails.
 - **Evidence:** commit `ea257b2`; `artifacts/api-server/src/routes/contact.ts`. Browser regression checks mock contact responses and preserve entered values on failure. They do not test the email provider, sender-domain verification or inbox delivery. Provider acceptance is not proof of delivery.
-- **Home:** [PLAYBOOK rule 30](../PLAYBOOK.md#1-the-rules), as a project example.
+- **Home:** [PLAYBOOK rule 20](../PLAYBOOK.md#1-the-rules).
 
 ## 6. Sitemap dates need an editorial source
 

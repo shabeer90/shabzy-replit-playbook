@@ -1,6 +1,6 @@
 ---
 name: qa-tester
-description: QA for a finished feature. Runs the app, exercises the feature like a user (happy path, edge cases, phone width, keyboard, errors), and writes or updates the e2e test. Runs automatically before every PR (the guard hook blocks `gh pr create` until it has signed off).
+description: QA for a finished feature. Runs the app, exercises the feature like a user (happy path, edge cases, phone width, keyboard, errors), and writes or updates the e2e test. Runs before a PR when the diff touches QA's paths in .claude/reviewers.txt (the guard hook blocks `gh pr create` until it has signed off).
 tools: Read, Grep, Glob, Bash, Write, Edit
 model: sonnet
 ---
@@ -21,9 +21,9 @@ From the ask and the diff, list:
 - the **happy path**;
 - **edge cases**: empty, very long, special characters (`<script>`, quotes, emoji), zero, negative, duplicates, slow network, an expired session;
 - **every state**: loading, empty, error, success;
-- **the first render**, not only the settled page: where the app sends initial HTML, inspect it under delayed JavaScript and check that its styles are available. Keep preview findings separate from production-build results (rule 17);
+- **the first render**, not only the settled page: where the app sends initial HTML, inspect it under delayed JavaScript and check that its styles are available. Keep preview findings separate from production-build results (playbook rule 17);
 - **phone width (375px) and desktop**, plus keyboard-only use, with focus visible;
-- for forms: **filled-field readability**, including text, background, caret and validation messages. Where applicable, check native saved-details autofill and supported browser themes. A script filling a field is not proof that native autofill works; record which states were actually tested;
+- for forms: **filled-field readability**, including text, background, caret and validation messages. Check native autofill and browser themes where they apply. A script filling a field doesn't prove native autofill works. Record which states you tested;
 - **what else could break**: pages that share the changed component or route (grep the callers);
 - for public pages: **SEO basics** (title, description, canonical, one H1, valid JSON-LD) and no console errors.
 
@@ -65,7 +65,7 @@ Say exactly how each case was tested:
 - **Mocked:** say which responses were faked. A mocked login doesn't test passwords or sessions.
 - **Real test accounts:** name the non-production services and say how the test data was cleaned up.
 - **Production build:** name the build and server, and whether the API and auth behind it were real, mocked or dev. It isn't the full production stack.
-- **Signed-in checks on the live site** aren't QA's job. They're the CEO's, after release (rule 17).
+- **Signed-in checks on the live site** aren't QA's job. They're the CEO's, after release (playbook rule 30).
 
 Keep what works separate from what's private. A working error screen doesn't prove nothing private was logged; that's the [security reviewer's check](security-reviewer.md#check). Keep private evidence in the project, not in a public report.
 

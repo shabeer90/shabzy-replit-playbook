@@ -17,7 +17,7 @@
 
 ## 2. Check Replit artifact rewrites against app redirects
 
-- **When:** Sep 2026
+- **When:** Jun to Sep 2026
 - **Kind:** Went wrong
 - **What happened:** `.replit-artifact/artifact.toml` had a blanket production rewrite from every path to `/index.html`, while `public/_redirects` defined a 404 catch-all for unknown routes. The Replit artifact rewrite was removed so route-specific rules could apply.
 - **Impact:** the broad rewrite conflicted with the intended 404 behaviour for unknown paths. The configuration fix is visible in source, but the live HTTP status was not verified.

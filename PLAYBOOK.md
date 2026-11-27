@@ -47,7 +47,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 9. **Evidence first, then the write.** Any published fact comes from a saved source file in the repo. Write a dry run first and compare it with the live result.
    *On Cogniscore:* the batch releases that ran from `evidence/brands/` were repeatable to the decimal. Hand-seeded data was the biggest source of wrong scores.
    *On Ihsan:* metric definitions separated application submissions from unique startups, and distinct primary email addresses from verified people. Those labels are not interchangeable.
-   *On Adam Accounting:* sitemap modification dates were omitted where no editorial record supported them; a build date was not treated as a content edit.
+   *On Adam Accounting:* sitemap dates come only from editorial records; pages without one get no date, rather than the build date.
 
 10. **Dangerous scripts are never run by hand or by CI by accident.** These are seeders, resets and anything that writes live data. Put a test or a guard in place that blocks them.
     *On Cogniscore:* scoring was kept out of CI (`test_no_ci_scoring.py`). The seed and reset scripts were off-limits.
@@ -108,13 +108,19 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 19. **An agent that edits code is bounded by a gate, not by its good behaviour.** Give it a policy file of the paths and line patterns it may change, and a CI check that reads the diff and refuses anything outside the policy.
     *On Cogniscore:* the weekly SEO agent opens PRs only inside `seo/agent/policy.json`. `check_claim.py` checks the diff itself, not the agent's description of it.
 
-20. **One scheduled job per purpose, and a green tick must mean the job did its work.**
+20. **One scheduled job per purpose, and success must mean the work was done.**
     - A job that needs a secret it doesn't have fails loudly at the start, not on its last line.
     - Two workflows must never do the same work.
+    - The same goes for any call that writes somewhere else (storage, email, payments, webhooks): check the returned result and report failure. A call that returned without throwing hasn't succeeded. Test the path where the provider returns an error.
+
+    Was "a green tick must mean the job did its work" until Impact Connect and Adam Accounting showed request-path calls failing the same way.
 
     *On Cogniscore:*
     - two workflows scraped the same pages every week for five months;
     - the monitor went red nine Mondays in a row because a secret was missing, and before that fix it was green while sending nothing.
+
+    *On Impact Connect:* a storage helper returns `false` on failure, so awaiting it proved nothing unless the caller checked the result.
+    *On Adam Accounting:* the contact route awaited the email SDK but ignored its returned error. It now checks the result and rejects unsaved enquiries when the provider fails. Provider acceptance still doesn't prove the email arrived.
 
 21. **Measure before cutting cost.** Add timings first, then cut the step that's actually slow. Sampling to save time can fake a regression in a report that compares runs.
     *On Cogniscore:* the weekly SEO report took 16 minutes, and the obvious trim would have saved 22% and invented a drop in indexed pages.
@@ -151,7 +157,6 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 
     A feature that works on its own but breaks the journey is a failed feature.
 
-    *On Adam Accounting:* the contact route awaited an email SDK call but ignored its returned error. It now checks the result and rejects unsaved enquiries when the provider fails; provider acceptance still does not prove inbox delivery.
 
 ## 2. How the company works
 
@@ -164,11 +169,7 @@ Each project is run as an AI company. [`template/ORG.md`](template/ORG.md) is th
 
 The agent files are in [`template/.claude/agents/`](template/.claude/agents/), and ORG.md's roles table says which agent owns what.
 
-The guard hook (`template/.claude/hooks/guard.py`) also blocks:
-- secrets in files;
-- pushes to `main` and force pushes;
-- `--no-verify`;
-- the project's dangerous scripts.
+What the guard hook blocks is listed in [`template/.claude/hooks/README.md`](template/.claude/hooks/README.md).
 
 Hooks bind Claude Code only. If Replit Agent builds something, have Claude Code run the reviews on that branch before you merge.
 
@@ -196,16 +197,21 @@ agents/ or jobs/        scheduled Python/Node jobs
 scripts/                one-off scripts + scripts/test_*.py (CI runs these)
 scripts/schema.sql      every table, RLS policy and grant (the source of truth for the DB)
 evidence/               saved source files for every published fact (if a content site)
-docs/                   runbooks, retros, decisions
 config/                 allowlists (image hosts etc.), read by code and tests
 .github/workflows/      pr-checks.yml first; scheduled jobs later
 AGENTS.md, CLAUDE.md    rules for agents
 ORG.md                  who owns what
 design/DESIGN.md        the visual direction
+docs/                   runbooks, retros, decisions
 docs/prd/               PRDs (cpo writes; leadership reviews; owner approves)
 docs/ROADMAP.md         the only list of what gets built
 docs/JOURNEYS.md        the user journeys that must always work
 .replit                 runtime config only: no secrets
+components/ui/          shared components every page uses
+design/tokens/          colour, type and spacing tokens
+e2e/                    Playwright journeys
+.agents/memory/         facts agents shouldn't relearn
+GLOSSARY.md             the project's words
 ```
 
 ## 5. Security baseline (check before launch)
@@ -242,7 +248,7 @@ docs/JOURNEYS.md        the user journeys that must always work
 6. e2e (Playwright) against the built app, using the test modes and safeguards in [rule 18](#1-the-rules).
 7. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
 
-For apps with split routes, check the built manifest's transitive static imports. Private routes must stay out of the public entry graph, and protected screens out of the login graph. Server-only page registries must stay out of the browser graph; a source-level SSR conditional does not establish that side effects were removed. Set a JavaScript size budget for the project and fail the check when the built JavaScript exceeds it. Deferring code is not access control; private APIs still need authentication.
+For apps with split routes, check the built manifest's transitive static imports. Private routes must stay out of the public entry graph, and protected screens out of the login graph. Server-only page registries must stay out of the browser graph; an SSR conditional in the source doesn't prove the imports' side effects are gone. Set a JavaScript size budget for the project and fail the check when the built JavaScript exceeds it. Deferring code is not access control; private APIs still need authentication.
 
 *On Impact Connect:* `tests/routeBundles.check.mjs` checks the emitted Vite graph and a 1.25 MiB JavaScript budget. It guards route boundaries and bundle size, not live page speed.
 
@@ -267,7 +273,7 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 - Search Console and Bing Webmaster verified on day one. Export links and queries weekly.
 - Internal links: every sitemap page linked from at least a few others.
 - Missing image paths return a real 404, with `Cache-Control: no-store`, not the SPA's HTML.
-  *On Impact Connect:* missing uploads could fall through to the application response. Explicit missing-asset handling now returns 404 without caching; this does not establish what every affected browser had cached.
+  *On Impact Connect:* missing uploads could fall through to the application response. Explicit missing-asset handling now returns 404 without caching; that doesn't tell us what browsers had already cached.
 - Social preview tags use absolute HTTPS image URLs and a raster format supported by the target sharing services. Fetch and decode the image, check its intended dimensions, and compare Open Graph, Twitter and JSON-LD references.
   *On Impact Connect:* generated blog previews needed a PNG derivative and absolute metadata URLs. The production-bundle smoke test decodes a 1200×630 PNG and checks that the references agree.
 - For AI assistants (GEO), each page answers its main question plainly near the top, with specific, attributed facts. AI crawlers are allowed in `robots.txt` unless the owner decides otherwise.
@@ -284,7 +290,7 @@ Crawler instructions are not access controls. Protected routes still need authen
 
 **Writing (every project).** The test is whether a busy person would read it once and understand it.
 - Short sentences, the reader's words, numbers instead of adjectives.
-- No AI tells: staged contrasts, one-line closers, forced threes, dashes everywhere, inflated words, bold on every item, chat leftovers.
+- No AI tells (the list is in `template/.claude/agents/cmo-reviewer.md`).
 - The `humanizer` skill rewrites a draft; the CMO reviewer checks every user-facing change. The project's voice is in `AGENTS.md`.
 
 **Design (anything with a UI).** The test is whether it could pass as the work of a good agency for this specific client.
@@ -298,7 +304,7 @@ Crawler instructions are not access controls. Protected routes still need authen
 1. Merge the PR on GitHub.
 2. In the Replit Shell, run `git pull origin main` (and `pnpm install` if the lockfile changed).
 3. Publish or redeploy in Replit. You must do this after **any** site code or `next.config` change; ISR pages don't pick up config changes alone.
-4. Check live with a script, not by eye: fetch the changed pages and compare them with the database or the expected output. On Cogniscore this was `check_live_site.py`.
+4. Run the live-check script (rule 22).
     - For static artifacts, check `.replit-artifact/artifact.toml` and `public/_redirects` together; test both a known route and an unknown path over HTTP.
     - If the Replit dev workflow renders client-only pages but the published artifact is prerendered, test hydration in a browser against the built artifact too.
 5. Write down what shipped in `docs/` (a retro per batch: what worked, what went wrong, and the decisions taken).
@@ -331,7 +337,6 @@ These are project observations from Cogniscore, Ihsan, Impact Connect and Adam A
 - **A root-level app can't write `.replit-artifact/artifact.toml` directly.** Register it with `createArtifact`, then swap the config with `verifyAndReplaceArtifactToml`, keeping `[[integratedSkills]]` verbatim.
   If publishing can't find an app whose artifact files are still there, compare the registered artifacts with the files before touching run commands. On Adam Accounting, registration was lost after an external CLI installer ran; resubmitting the existing manifests through the artifact tool fixed it ([lesson 4](learnings/adam-accounting.md#4-artifact-files-remained-after-their-registration-was-lost)). The installer's role wasn't reproduced **(check current docs)**. Read an installer before running it, and check what config it changed.
 - **Replit's built-in database is not your database.** If the project uses Supabase or another external DB, schema changes go there, through its SQL editor or a management connection, never into a Replit DB as a substitute.
-- **Delete Replit scaffolds you don't use:** mockup sandboxes, `api-server` stubs, Canvas.
 
 ## 12. Working with the owner
 
@@ -361,25 +366,10 @@ Optional; use what fits.
   - nothing automated until a few reels have worked.
 
   *On Cogniscore:* `social/30-day-plan.md`.
-- **Search Console and Bing Webmaster** from day one, with weekly exports of queries and links.
 
 ## 14. Starter files
 
-Everything is in [`template/`](template/):
-- **Agent rules and roles:** `AGENTS.md`, `CLAUDE.md`, `replit.md`, `ORG.md`.
-- **`.claude/`:**
-  - the agents;
-  - `reviewers.txt`;
-  - `hooks/guard.py` and `blocked-commands.txt`;
-  - `settings.json`.
-- **Design:** `design/DESIGN.md`, `design/tokens/`, `components/ui/README.md`.
-- **Product:** `docs/prd/` (README and `_template.md`), `docs/ROADMAP.md`, `docs/JOURNEYS.md`.
-- **CI and tooling:**
-  - `.github/workflows/pr-checks.yml` and `.gitignore`;
-  - `scripts/check_design_system.py`;
-  - `scripts/assert_new_tests_fail_on_base.sh` (adjust the test paths at the top).
-- **Helpers:** `lib/json-ld.ts`, `scripts/safe_url.py`.
-- **Memory and words:** `docs/retro-template.md`, `.agents/memory/MEMORY.md`, `GLOSSARY.md`.
+Everything is in [`template/`](template/). The README lists [each file and what it's for](README.md#the-template-file-by-file).
 
 ## 15. First-week checklist
 

@@ -68,4 +68,4 @@ Write your section in `.reviews/<branch>.md` (replace `/` with `-` in the branch
 
 ## Tokens
 
-`design/tokens/tokens.json` is the source. The Tailwind theme reads from it. Colour names describe a role (`surface`, `text-muted`, `accent`, `success`), not a hue, so a rebrand changes one file.
+See [`design/tokens/README.md`](../../design/tokens/README.md).
