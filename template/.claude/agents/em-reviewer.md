@@ -1,6 +1,6 @@
 ---
 name: em-reviewer
-description: Engineering manager review of a finished feature. Checks it does what was asked, nothing more, and is ready to hand over. Runs automatically before every PR (the guard hook blocks `gh pr create` until it has signed off).
+description: Engineering manager review of a finished feature. Checks it does what was asked, nothing more, and is ready to hand over. Runs before every PR on a full project (the guard hook blocks `gh pr create` until it has signed off).
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---

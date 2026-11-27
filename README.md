@@ -6,7 +6,7 @@ Most of what's here I learned the hard way, on Cogniscore, Impact Connect, Ihsan
 
 ## Starting a new project
 
-Open a new Replit project and paste [STARTER-PROMPT.md](STARTER-PROMPT.md) as your first message to the agent. The agent copies the `template/` folder into the project and walks you through setup. It asks you for the things only you can do, like GitHub settings, secrets and the domain. For a small site with no database, sign-in or payments, choose lite in the prompt: two reviewers instead of seven, and no leadership review.
+Open a new Replit project and paste [STARTER-PROMPT.md](STARTER-PROMPT.md) as your first message to the agent. The agent copies the `template/` folder into the project and walks you through setup. It asks you for the things only you can do, like GitHub settings, secrets and the domain. For a small site with no database, sign-in or payments, choose lite in the prompt: QA (plus CMO on a public site) instead of the full reviewer set, and no leadership review.
 
 ## Upgrading an existing project
 
@@ -19,7 +19,7 @@ Paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into the project. The agent f
 ## What's in here
 
 - **[PLAYBOOK.md](PLAYBOOK.md):** the rules. Most say which project they came from and what went wrong, so you can decide whether they apply to yours. The rest are how I've chosen to work. It also has the setup checklists.
-- **[modules/](modules/):** what only some projects need: public sites (SEO, GEO, growth), databases and sign-in, and Replit platform notes. A lite project reads the core plus the public-site module.
+- **[modules/](modules/):** what only some projects need: public sites (SEO, GEO, growth), databases and sign-in, and Replit platform notes. A lite project reads the core, plus the public-site module on a public site and the Replit module when Replit misbehaves.
 - **[template/ORG.md](template/ORG.md):** who does what. There's a CEO, CPO, CTO and CMO, each with their own agents, and I'm the board. It also covers how a piece of work goes from idea to live, and how to keep token use down.
 - **[SKILLS.md](SKILLS.md):** the skills the agents use, what each one is for, and how to check a new one before installing it.
 - **[template/](template/):** the files every project starts with: agent instructions, the review agents, a hook that blocks risky actions, CI, and starter files for design and product planning.
@@ -31,7 +31,7 @@ Paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into the project. The agent f
 
 **Nothing gets built without a PRD.** Replit is quick to suggest new features, and it's tempting to build them all. My projects drifted that way. Now every idea goes on a parked list in `docs/ROADMAP.md`, and only work with an approved PRD gets built.
 
-**The user's journey has to work end to end.** A new feature that works on its own but breaks the path a user takes through the product isn't finished. QA runs every journey on every change to the app, and the engineering manager won't sign off if one broke.
+**The user's journey has to work end to end.** A new feature that works on its own but breaks the path a user takes through the product isn't finished. QA runs every journey on every change to the app, and the engineering manager (QA on a lite project) won't sign off if one broke.
 
 ## The template, file by file
 

@@ -4,7 +4,7 @@
 - **Stack:** Next.js 15, Tailwind, Supabase, Python agents in GitHub Actions, Claude for scoring and content, Resend for email.
 - **Where it runs:** the site on Replit autoscale; scheduled jobs on GitHub Actions.
 - **Dates:** May to November 2026.
-- **Evidence:** the project's tests, workflows, agent memory and batch retros. Security lessons that aren't fixed yet are left out.
+- **Evidence:** the project's tests, workflows, agent memory and batch retros. Security lessons that aren't fixed yet are kept as Held back titles only.
 
 ## 1. A merged PR isn't a live PR
 
@@ -204,7 +204,7 @@
 
 - **When:** Nov 2026
 - **Kind:** Went wrong
-- **Repeat of:** Cogniscore lesson 8.
+- **Repeat of:** cogniscore lesson 8
 - **What happened:** the server-rendered search box showed text typed before React hydrated, but the app never picked it up or asked for suggestions. A browser test that held back the bootstrap script reproduced it every time.
 - **Impact:** a visitor on a slow start could lose their search with no error.
 - **Evidence:** `e2e/search-suggestions.spec.ts` failed 3 of 3 runs on the base and passed 3 of 3 with the fix (Cogniscore PR #64). This checks the browser journey, not production traffic.

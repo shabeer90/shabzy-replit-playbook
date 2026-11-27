@@ -1,6 +1,6 @@
 ---
 name: head-of-data
-description: Owns the database and data pipelines: schema, access rules (RLS, grants), migrations, data quality and anything that writes live data. Use before any schema or data change, and as a reviewer on every PR when DATA is listed in .claude/reviewers.txt.
+description: Owns the database and data pipelines: schema, access rules (RLS, grants), migrations, data quality and anything that writes live data. Use before any schema or data change, and as a reviewer when DATA is listed in .claude/reviewers.txt and the diff touches its paths.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: inherit
 ---

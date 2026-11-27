@@ -26,7 +26,7 @@ jobs:
           python-version: '<version>'
       - run: pip install -r requirements.txt pytest
       - name: Secrets in the tree
-        run: "! git grep -nE 'ghp_[A-Za-z0-9]{36}|github_pat_|sk-ant-|sk_live_|sb_secret_|BEGIN [A-Z ]*PRIVATE KEY' -- . ':!*.md' ':!.claude/hooks/guard.py' ':!.github/workflows/pr-checks.yml'"
+        run: "! git grep -nE 'ghp_[A-Za-z0-9]{36}|github_pat_|sk-ant-|sk_live_|sb_secret_|BEGIN [A-Z ]*PRIVATE KEY|AKIA[0-9A-Z]{16}|\\bre_[A-Za-z0-9]{8}_' -- . ':!*.md' ':!.claude/hooks/guard.py' ':!.github/workflows/pr-checks.yml'"
       - name: Types (the build may skip them)
         run: pnpm exec tsc --noEmit
       - name: Design system

@@ -1,6 +1,6 @@
 import { defineConfig } from "@playwright/test";
 
-// e2e runs against the built app, never the dev server (PLAYBOOK rule 17). Four projects passed
+// e2e runs against the built app, never the dev server (PLAYBOOK rule 17). Three projects passed
 // in dev and broke in the build. scripts/test_release_guards.py fails CI if this points at dev.
 const port = Number(process.env.E2E_PORT ?? 4173);
 

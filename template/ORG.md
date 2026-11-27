@@ -17,7 +17,7 @@ Every project runs as a small AI company. The owner is the board. Agents hold th
 | ↳ Head of Data | `head-of-data` | Schema, access rules, migrations, live writes, data quality (projects with a database) | UI |
 | **CMO** | `cmo-reviewer` | Every word a customer reads (no AI slop), claims, SEO and GEO on public sites; growth plans | Code, visuals |
 
-The builder is whichever agent writes the code, usually the CEO session or a subagent it starts. It never reviews its own work.
+The builder is whichever agent writes the code: usually Replit Agent (`replit.md`), sometimes the CEO session or a subagent it starts. It never reviews its own work.
 
 ## Lite or full
 
@@ -28,7 +28,7 @@ On lite:
 - **Reviewers:** QA, plus CMO on a public site. Comment out the rest in `.claude/reviewers.txt`.
 - **PRDs** are short, and the owner approves them without a leadership review.
 - **Agents:** head-of-design writes `design/DESIGN.md` once at the start. The CPO, Head of Data, CTO, EM and security reviewers aren't used.
-- **Skills:** only the *Every project* list in `SKILLS.md`.
+- **Skills:** the *Every project* and *Product, review and QA* lists in `SKILLS.md`.
 - **Reading:** `PLAYBOOK.md`, plus `modules/public-site.md` on a public site and `modules/replit-platform.md` when Replit misbehaves. Not `modules/database.md`.
 
 Move to full the day the project gets a database, sign-in or payments, and say so in the next PR.
@@ -57,7 +57,7 @@ It's easy, especially on Replit, to keep building whatever gets suggested next. 
    - **QA** runs every journey end to end, not only the new feature.
    - **EM** checks the build against the PRD and confirms the journeys passed.
 8. **Fix and re-run.** The builder fixes confirmed findings, and only the reviewer that raised each one re-runs.
-9. **Open the PR.** The hook allows `gh pr create` once the PRD is approved and every required reviewer says `ship`. The review file is pasted into the PR description (`.reviews/` is git-ignored), and Auto-fix is turned on.
+9. **Open the PR.** The hook allows `gh pr create` once the PRD is approved and every required reviewer says `ship`. The review file is pasted into the PR description (`.reviews/` is git-ignored), and Auto-fix is turned on. When Replit Agent built it, the PR is already open: Claude Code runs step 7 on that branch and pastes the review file into the PR, and the owner merges only once every required reviewer says `ship`.
 10. **Ship.** The owner merges, pulls in Replit and publishes. The CEO runs the live check and the journeys against the live site, then moves the PRD to **Shipped**.
 11. **Learn.** After each batch, the CEO writes a retro, and anything reusable goes to the playbook.
 

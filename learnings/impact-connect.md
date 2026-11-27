@@ -82,9 +82,9 @@
 
 - **When:** Mar 2026
 - **Kind:** Went wrong
-- **What happened:** a query refetch could reset the startup edit form after autofill had populated it. The fix initialized the form once per edited record rather than resetting it whenever the query returned.
+- **What happened:** a query refetch could reset the startup edit form after autofill had populated it. The fix initialised the form once per edited record rather than resetting it whenever the query returned.
 - **Impact:** background data refresh could erase work the user had not saved.
-- **Evidence:** commit `59c9735`; the initialization guard in `client/src/components/admin/StartupFormDialog.tsx`. The diff supports the refetch fix. No dedicated asynchronous form regression test was found in this review, and manual-edit preservation was not exercised here.
+- **Evidence:** commit `59c9735`; the initialisation guard in `client/src/components/admin/StartupFormDialog.tsx`. The diff supports the refetch fix. No dedicated asynchronous form regression test was found in this review, and manual-edit preservation was not exercised here.
 - **Home:** [QA feature-specific cases](../template/.claude/agents/qa-tester.md#feature-specific-cases).
 
 ## 10. Optional enrichment must not block a valid submission

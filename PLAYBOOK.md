@@ -5,7 +5,7 @@ Read this before starting a project. Most rules are something that went wrong, o
 - **Start a project:** [STARTER-PROMPT.md](STARTER-PROMPT.md).
 - **Files:** in [`template/`](template/), including [ORG.md](template/ORG.md), which defines how the AI company is organised.
 - **Skills:** [SKILLS.md](SKILLS.md).
-- **Modules,** read the ones that fit the project:
+- **Modules:** read the ones that fit the project.
   - [modules/public-site.md](modules/public-site.md): SEO and GEO launch baseline, and growth;
   - [modules/database.md](modules/database.md): database access rules, admin and sign-in;
   - [modules/replit-platform.md](modules/replit-platform.md): Replit quirks found on past projects.
@@ -20,8 +20,8 @@ Behaviour of Replit, GitHub or Claude Code that wasn't confirmed on a project is
 Rule numbers are permanent. New rules are added at the end. A rule that turns out wrong is rewritten in place, with one line saying what changed.
 
 1. **GitHub is the source of truth. Replit publishes only from `main`.**
-   Make every change on a branch and merge it through a pull request, whoever writes it (Claude Code or Replit Agent). Replit pulls `main` and publishes.
-   Was "Replit only runs and publishes" until 2.8.0, when Replit Agent became the usual builder.
+   Make every change on a branch and merge it through a pull request, whoever writes it (Claude Code or Replit Agent). Pull `main` in the Replit Shell, then publish.
+   Was "Replit only runs and publishes" until Cogniscore showed Replit Agent building and pushing (2.8.0).
    *On Cogniscore:* Replit publishes from its own workspace copy, not from GitHub. The live site lagged `main` several times until someone ran `git pull origin main` in the Replit Shell and republished. A merged PR is not a deployed PR.
 
 2. **No secret ever goes in a tracked file.** That includes `.replit`, `[userenv]` and scripts.
@@ -73,6 +73,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     - Tokens live in `design/tokens/`, and components in `components/ui/`.
     - Pages use only those. A component that's missing is added there first, never built as a one-off in a page.
     - `scripts/check_design_system.py` fails CI on raw colours and arbitrary Tailwind values outside the design system.
+
     *On Cogniscore:* the colours lived in the Tailwind config, with no owner and no check. The rule is new from here.
 
 14. **Every change is reviewed by the agents who own that area, never by the one who wrote it.** The reviewers are em, qa, cto, security, design, cmo and data (`template/ORG.md`). `.claude/reviewers.txt` says which ones a project has, and which paths wake each one. Each writes a verdict to `.reviews/<branch>.md`, and the guard hook blocks `gh pr create` until every required reviewer says `ship`. That makes the reviews automatic, not something anyone has to ask for.
@@ -152,14 +153,14 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 
 29. **No PRD, no feature: the project is not a feature factory.**
     - `docs/ROADMAP.md` is the only list of what gets built, with at most three items under **Now**. Every other idea, including Replit Agent's suggestions, is parked with its source and date.
-    - Anything bigger than a small fix needs a PRD that the leadership agents have reviewed and the owner has approved.
+    - Anything bigger than a small fix needs a PRD that the owner has approved, after a leadership review on full projects (lite skips it, `template/ORG.md`).
     - The guard hook won't open a PR without a link to an approved PRD, or `PRD: fix` for a small fix.
 
     *On the owner's Replit projects:* Replit kept suggesting features, and building them was tempting. Products drifted, and what was actually planned got forgotten.
 
 30. **The user's end-to-end journey always works.**
     - `docs/JOURNEYS.md` lists the paths a user takes from start to done, each with an e2e test.
-    - QA runs all of them on every PR that touches the app, and the EM won't sign off if one broke.
+    - QA runs all of them on every PR that touches the app, and the EM (QA on lite) won't sign off if one broke.
     - After a release, the CEO runs them against the live site.
 
     A feature that works on its own but breaks the journey is a failed feature.
@@ -205,6 +206,8 @@ scripts/schema.sql      every table, RLS policy and grant (the source of truth f
 evidence/               saved source files for every published fact (if a content site)
 config/                 allowlists (image hosts etc.), read by code and tests
 .github/workflows/      pr-checks.yml first; scheduled jobs later
+.claude/                agents, hooks, reviewers.txt, settings.json
+playwright.config.ts    e2e against the built app
 AGENTS.md, CLAUDE.md    rules for agents
 ORG.md                  who owns what
 design/DESIGN.md        the visual direction
@@ -315,7 +318,7 @@ Everything is in [`template/`](template/). The README lists [each file and what 
 - [ ] `find-skills` is installed, and every skill is in `skills-lock.json` and `SKILLS.md`.
 - [ ] `.agents/memory/` has the port map and any platform quirks found during setup.
 - [ ] The design system exists (tokens, base components) and its CI check passes.
-- [ ] The hooks block a test push to main, a test secret, and a PR with no reviews (`template/.claude/hooks/README.md`).
+- [ ] The hooks block a test push to main, a test secret, and a PR with no reviews, and allow a branch push (`template/.claude/hooks/README.md`).
 - [ ] `.claude/reviewers.txt` lists the right reviewers and paths for this project.
 - [ ] `design/DESIGN.md` approved; voice written in `AGENTS.md`.
 - [ ] `docs/ROADMAP.md` has the first three items under **Now**, each with an approved PRD; `docs/JOURNEYS.md` lists the core journeys, each with an e2e test.

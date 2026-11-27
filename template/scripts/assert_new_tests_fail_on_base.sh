@@ -26,15 +26,15 @@ mapfile -t PYFILES < <(git diff --name-only --diff-filter=AM "$BASE"...HEAD -- '
 # measure in either direction. Asked the normal question it passes on base, because the test it
 # describes passed there too; asked the test-only question it passes again, because the test was
 # never broken. Both refusals are true and useless, and what they cost is this: a comment that has
-# gone stale — a fix landed, the comment still tells the next reader the bug is open — is cheaper
+# gone stale (a fix landed, the comment still tells the next reader the bug is open) is cheaper
 # to leave wrong than to correct. A gate that makes the documentation around the tests rot is
 # doing harm.
 #
-# What counts as a comment depends on the language, and guessing cost nothing to check:
-#   .ts  — //, /*, */ and a leading * (a JSDoc continuation). A leading * is also a multiplication
+# What counts as a comment depends on the language, and checking was cheaper than guessing:
+#   .ts: //, /*, */ and a leading * (a JSDoc continuation). A leading * is also a multiplication
 #          carried onto the next line, but prettier puts an operator at the end of a line, and no
 #          line in e2e/ begins with one.
-#   .py  — # only. NOT a leading *, because in Python that is an unpacking and real code:
+#   .py: # only. NOT a leading *, because in Python that is an unpacking and real code:
 #          a call split over lines can start a line with `*args`. Docstrings are not
 #          prose either: a line inside one can look like anything.
 # Anything else is never prose, so a path this script grows later is examined until someone says
@@ -85,14 +85,14 @@ fi
 # A change that touches only tests cannot be evidenced the usual way, and asking it to be is a
 # contradiction: the gate runs the branch's tests against the base SOURCE, so with no source
 # change they necessarily pass there. Three specs were failing on main because the tests were
-# wrong — a hard-coded slug absent from the mock, a grep matching the comment that explained
-# why the thing it forbade was absent, and a hydration race — and the fix for each was in the
+# wrong: a hard-coded slug absent from the mock, a grep matching the comment that explained
+# why the thing it forbade was absent, and a hydration race. The fix for each was in the
 # test. The gate refused it with "the fix is not needed", which was true and useless.
 #
 # So for a test-only change the question is a different one, and still a real one: were these
 # tests actually failing before? Run the BASE's own copy of each MODIFIED test file and require
 # it to fail. A test that was already passing is a working test being changed, and no machine
-# can judge whether that is a correction or a quiet weakening — so that still gets refused.
+# can judge whether that is a correction or a quiet weakening, so that still gets refused.
 # Newly added files are not checked here: with no source change they evidence nothing either
 # way, and a new passing test is not what this gate exists to catch.
 TEST_ONLY=1
@@ -152,6 +152,11 @@ else
     git show "HEAD:$file" > "$WORKTREE/$file"
   done
 fi
+# playwright.config.ts serves the built app (rule 17), so base needs its own build first.
+# If base doesn't build, its specs report as "could not run", never as red.
+if [ -n "${SPECS[*]:-}" ]; then
+  (cd "$WORKTREE" && pnpm build >/dev/null 2>&1) || echo "  (base did not build; its specs will report as could not run)"
+fi
 
 passed=()
 unrunnable=()
@@ -161,7 +166,7 @@ flaky=()
 # A spec once failed on main in one CI run and passed on a re-run of
 # that same commit, with no code in between; this gate ran base's copy once, saw the second
 # kind of run, and refused the fix because "they were not broken". A test that passes four
-# times in five WAS broken on base — intermittently, which is the hardest kind to fix and the
+# times in five WAS broken on base, intermittently, which is the hardest kind to fix and the
 # kind every fix for was being turned away.
 #
 # Only ever applied to BASE's OWN copy of a test that already existed. A new test that passes
@@ -171,8 +176,8 @@ flaky=()
 BASE_ATTEMPTS="${BASE_ATTEMPTS:-5}"
 
 # One invocation, --repeat-each attempts. A loop of separate invocations would be the obvious
-# way to write this and costs five dev-server starts instead of one: in this worktree Playwright
-# brings up `pnpm run dev` every time, which is almost all of the ~23 seconds a run takes.
+# way to write this and costs five server starts instead of one: Playwright starts the webServer
+# from base's playwright.config.ts every time, which is most of the time a run takes.
 # With attempts of 1 this is exactly what the gate did before.
 spec_on_base() {
   local spec="$1" attempts="$2"
@@ -193,7 +198,7 @@ was_unreliable_on_base() {
 }
 
 # A non-zero exit is not enough on its own. A web server that never started, or a file that
-# would not compile, also exits non-zero — and reading that as "red" is exactly how a test
+# would not compile, also exits non-zero, and reading that as "red" is exactly how a test
 # that proves nothing gets waved through. Only a run that reported results counts.
 classify() {
   local label="$1" output="$2" failed_re="$3" passed_re="$4"
@@ -247,7 +252,7 @@ fi
 if [ ${#flaky[@]} -gt 0 ]; then
   echo
   echo "These passed on $BASE with this branch's copy, but the copy that was ON $BASE failed"
-  echo "within $BASE_ATTEMPTS runs, so they were broken there — intermittently:"
+  echo "within $BASE_ATTEMPTS runs, so they were broken there, intermittently:"
   printf '  %s\n' "${flaky[@]}"
   echo "A test that only sometimes passes is still a broken test, and the fix for one is real work."
 fi
