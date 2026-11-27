@@ -10,6 +10,7 @@
 
 - **When:** Nov 2026
 - **Kind:** Went wrong
+- **Repeat of:** impact-connect lesson 1, personal-website lesson 1
 - **What happened:** two installed versions of the same dependency split a shared hook from its provider in the production bundle. Development checks passed, but replaying the served production bundle with synthetic API responses showed a blank page.
 - **Impact:** a page that worked in development was blank in the production build.
 - **Evidence:** the startup recovery report and the production-build browser checks that verified the local fix. Signed-in production wasn't verified.

@@ -19,6 +19,7 @@
 
 - **When:** Nov 2026
 - **Kind:** Went wrong
+- **Repeat of:** impact-connect lesson 7
 - **What happened:** an eager page registry sat behind an SSR conditional in a shared application module. Browser bundling retained initialisation side effects from those imports. Moving the registry into a separate server-only module removed that path from the browser entry.
 - **Impact:** initial browser JavaScript fell from about 428KB to 198KB uncompressed, without removing page content.
 - **Evidence:** commit `7e43d53`; `artifacts/adam-accounting/src/App.tsx`, `src/ssr-pages.ts` and the recorded build measurements. The regression script enforces an initial JavaScript budget and exercises direct loads and navigation. A conditional in source alone did not establish the emitted boundary.
@@ -46,6 +47,7 @@
 
 - **When:** Nov 2026
 - **Kind:** Went wrong
+- **Repeat of:** impact-connect lesson 2, cogniscore lesson 7
 - **What happened:** the contact route awaited the email SDK but ignored its returned error. It now checks both the error and the provider's returned message ID. When email fails and the submission was not saved to the database, the route returns failure rather than a success response.
 - **Impact:** a failed, unsaved enquiry no longer gets reported as accepted merely because the awaited call returned. A saved enquiry can still succeed when its notification fails.
 - **Evidence:** commit `ea257b2`; `artifacts/api-server/src/routes/contact.ts`. Browser regression checks mock contact responses and preserve entered values on failure. They do not test the email provider, sender-domain verification or inbox delivery. Provider acceptance is not proof of delivery.

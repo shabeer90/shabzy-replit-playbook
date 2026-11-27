@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.7.0 (27 Nov 2026)
+
+- **Day-one checks in `template/`,** for the three mistakes that reached more than one project. Each fails CI until it's set up:
+  - `playwright.config.ts` serves the built app, and `scripts/test_release_guards.py` fails if e2e points at a dev server; `e2e/home.spec.ts` is the first journey;
+  - `scripts/check_bundle.py` fails when a public entry statically imports private code or exceeds the budget in `config/bundle.json` (Vite);
+  - `scripts/check_external_writes.py` fails when a known provider write (Resend, Supabase, Stripe) isn't wrapped in `checked()` from `lib/checked.ts`.
+- **Lite or full** (`template/ORG.md`): a lite project keeps the guard hook, CI, PRD-first, the journeys and the release loop, with QA (plus CMO on a public site) as its only reviewers.
+- **Repeat of:** an optional learnings field naming the earlier lesson about the same mistake. Backfilled on four lessons. `grep -n "Repeat of" learnings/*.md` is the list of what the playbook failed to prevent.
+- **Upgrade from 2.6.x (optional):** copy the three checks, fill in their config, and add them to `pr-checks.yml`. Small projects can switch to lite.
+
 ## 2.6.0 (27 Nov 2026)
 
 - **Rule 20 widened, not a new rule:** success must mean the work was done, for any call that writes somewhere else (storage, email, payments, webhooks), not only scheduled jobs. Cogniscore, Impact Connect and Adam Accounting each hit a version of this.

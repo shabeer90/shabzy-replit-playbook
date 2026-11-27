@@ -1,0 +1,6 @@
+{
+  "manifest": "dist/.vite/manifest.json",
+  "publicEntries": ["index.html"],
+  "privateSources": ["<src/pages/admin/>"],
+  "budgetKiB": 300
+}

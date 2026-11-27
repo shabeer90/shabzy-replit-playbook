@@ -39,6 +39,7 @@ Every `learnings/<project>.md` uses the same format, from [`learnings/_template.
 - **One numbered section per lesson**, with the same six fields in the same order:
   - **When**;
   - **Kind**: Went wrong, Worked or Held back;
+  - **Repeat of**, only when an earlier lesson covers the same mistake;
   - **What happened**;
   - **Impact**;
   - **Evidence**;
@@ -46,7 +47,7 @@ Every `learnings/<project>.md` uses the same format, from [`learnings/_template.
 - **Numbers are permanent.** New lessons go at the end.
 - **A security issue that isn't fixed yet is "Held back":** keep only the title, the Kind and the Home line, and fill it in once it's fixed.
 
-One format means any agent can read every project's lessons the same way, and spot when two projects learned the same thing.
+One format means any agent can read every project's lessons the same way, and spot when two projects learned the same thing. `grep -n "Repeat of" learnings/*.md` lists the mistakes the playbook failed to prevent; that list should shrink.
 
 ## The bar for a rule
 
