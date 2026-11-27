@@ -14,7 +14,7 @@
 - **What happened:** two installed versions of the same dependency split a shared hook from its provider in the production bundle. Development checks passed, but replaying the served production bundle with synthetic API responses showed a blank page.
 - **Impact:** a page that worked in development was blank in the production build.
 - **Evidence:** the startup recovery report and the production-build browser checks that verified the local fix. Signed-in production wasn't verified.
-- **Home:** [PLAYBOOK rule 17](../PLAYBOOK.md#1-the-rules); the QA agent refers to it.
+- **Home:** [PLAYBOOK rule 17](../PLAYBOOK.md#the-rules); the QA agent refers to it.
 
 ## 2. Real integration tests with synthetic accounts
 
@@ -23,7 +23,7 @@
 - **What happened:** synthetic test accounts exercised real password checks, sessions, role revocation and database behaviour against non-production services. Mocked responses still covered the failures that need to be repeatable.
 - **Impact:** login and access bugs that mocks can't show were testable without touching real data.
 - **Evidence:** the access re-check report, the synthetic-login helper and the metrics tests. Fixtures were rolled back or cleaned up exactly, and security checks and rate limits stayed on. One helper first cleaned up rate-limit entries too broadly and was narrowed to the test's own entries; that first version isn't a pattern to copy.
-- **Home:** [PLAYBOOK rule 18](../PLAYBOOK.md#1-the-rules); the CI baseline and QA agent refer to it.
+- **Home:** [PLAYBOOK rule 18](../PLAYBOOK.md#the-rules); the CI baseline and QA agent refer to it.
 
 ## 3. Replit's preview proxy changes what the app sees
 
@@ -32,7 +32,7 @@
 - **What happened:** the preview proxy made repeated synthetic logins share one rate-limit bucket, and it added `noindex` headers to every page, public pages included. A test-only route for synthetic accounts fixed the logins without weakening password, session or rate-limit checks.
 - **Impact:** QA logins hit rate limits, and the proxy's headers hid what the app itself sent.
 - **Evidence:** the synthetic-login helper, crawler-control tests and the crawler report. App responses were checked directly, separately from the proxied ones. Platform behaviour may differ elsewhere (check current docs).
-- **Home:** [PLAYBOOK section 11](../PLAYBOOK.md#11-replit-platform-notes).
+- **Home:** [Replit platform notes](../modules/replit-platform.md).
 
 ## 4. Private screens left open after access changed
 
@@ -41,7 +41,7 @@
 - **What happened:** an open staff tab could keep showing confidential content after the user's access changed. Access is now re-checked, and private screens are hidden when the check fails or can't reach the server. Unsaved work survives only if the same account is confirmed.
 - **Impact:** confidential records could stay visible to someone who'd lost access. This is fixed.
 - **Evidence:** the access-fix verification and closure reports, with synthetic role changes and network-failure tests run locally. It favours privacy over offline use and doesn't promise instant revocation.
-- **Home:** [the Admin row of the security baseline](../PLAYBOOK.md#5-security-baseline-check-before-launch), with an example under rule 6.
+- **Home:** [admin and sign-in](../modules/database.md#admin-and-sign-in), with an example under rule 6.
 
 ## 5. Keeping a private portal out of search
 
@@ -50,7 +50,7 @@
 - **What happened:** the staff portal got `noindex` in its first HTML and in its own response headers, and robots rules at the root of the host, scoped so the public founder pages stayed crawlable.
 - **Impact:** the portal is kept out of search without hiding the public pages.
 - **Evidence:** crawler-control tests and the login and crawler report, checked on local production builds. Live routing and headers were signed off separately. Robots rules aren't access control, and a disallow can stop a crawler from ever reading `noindex`.
-- **Home:** [the SEO and GEO baseline](../PLAYBOOK.md#8-seo-and-geo-baseline-public-sites-launch-gate).
+- **Home:** [the SEO and GEO baseline](../modules/public-site.md#seo-and-geo-baseline-launch-gate).
 
 ## 6. Editing the manifest didn't fix the dependency
 
@@ -59,7 +59,7 @@
 - **What happened:** a more specific pnpm override kept a vulnerable dependency installed after a broad override was changed.
 - **Impact:** the fix looked done in `package.json` but wasn't in what was installed.
 - **Evidence:** the dependency investigation and closure report. The installed versions and the audit were checked, and old lockfile findings were told apart from what was actually installed.
-- **Home:** [the Supply chain row of the security baseline](../PLAYBOOK.md#5-security-baseline-check-before-launch).
+- **Home:** [the Supply chain row of the security baseline](../PLAYBOOK.md#security-baseline-check-before-launch).
 
 ## 7. Private error logging
 
@@ -73,7 +73,7 @@
 - **What happened:** application submissions aren't unique startups, and distinct email addresses aren't verified people. The public labels had to match what was actually counted.
 - **Impact:** without the fix, public numbers would have claimed more than they measured.
 - **Evidence:** the metrics definitions and their tests, including case-insensitive email counting. These define how things are counted; they aren't audited totals. No live counts are included.
-- **Home:** [PLAYBOOK rule 9](../PLAYBOOK.md#1-the-rules).
+- **Home:** [PLAYBOOK rule 9](../PLAYBOOK.md#the-rules).
 
 ## 9. Replit's tools aren't installed skills
 

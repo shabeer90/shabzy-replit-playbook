@@ -9,12 +9,12 @@ The easiest way is to paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into th
 | Kind of change | Goes in | Not in |
 |---|---|---|
 | What happened on a project (raw) | `learnings/<project>.md`, in the format of `learnings/_template.md` | PLAYBOOK.md |
-| A rule the next project should follow | `PLAYBOOK.md` section 1, as a new number at the end | anywhere else; other files link to the rule |
-| A checklist item or baseline | the matching PLAYBOOK section (Day 0, security, CI, SEO and GEO, first week) | the rules |
+| A rule the next project should follow | `PLAYBOOK.md` "The rules", as a new number at the end | anywhere else; other files link to the rule |
+| A checklist item or baseline | the matching PLAYBOOK section (Day 0, security, CI, first week), or the module it belongs to (`modules/public-site.md` for SEO, GEO and growth; `modules/database.md` for data, admin and sign-in) | the rules |
 | A role, the work flow, the roadmap and PRD process, the token budget, the autonomy ladder | `template/ORG.md` | PLAYBOOK.md (which only links to it) |
 | What an agent checks | that agent's file in `template/.claude/agents/` | other agents' files |
 | A skill | `SKILLS.md` | the agent files, which name the skill but don't describe it |
-| Platform behaviour (Replit, GitHub, Claude Code) | PLAYBOOK section 11, or the relevant baseline | rules |
+| Platform behaviour (Replit, GitHub, Claude Code) | `modules/replit-platform.md`, or the relevant baseline | rules |
 | An enforced check | the hook, CI or script in `template/`, plus one line in the rule it enforces | prose alone |
 
 If a change seems to belong in two places, it belongs in one, and the other links to it.

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Public pages load little JavaScript and never pull in private code (PLAYBOOK section 7).
+"""Public pages load little JavaScript and never pull in private code (PLAYBOOK CI baseline).
 
 Run after the build. Reads config/bundle.json, then walks the static imports of each public entry
 in Vite's manifest. Fails if a reached chunk comes from a private source, or the entry's JavaScript

@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.9.0 (27 Nov 2026)
+
+- **PLAYBOOK split into a core and modules.** The rules stay in one numbered list in `PLAYBOOK.md`, with the sections every project needs. What only some projects need moved, unchanged, to `modules/`:
+  - `modules/public-site.md`: the SEO and GEO baseline, and growth (were sections 8 and 13);
+  - `modules/database.md`: the database baseline, and admin and sign-in (were section 6 and the Admin row of section 5);
+  - `modules/replit-platform.md`: the Replit platform notes (was section 11).
+- **Sections are named, not numbered,** so links don't break when one moves. Rule numbers are still permanent.
+- **Rule 1 rewritten in place:** Replit publishes only from `main`, whoever writes the code. It said "Replit only runs and publishes", which 2.8.0 made untrue.
+- Links in learnings, the prompts, CONTRIBUTING and ORG.md point at the new homes. A lite project reads the core plus `modules/public-site.md`.
+- **Upgrade from 2.8.x (optional):** update any links in your project that point at PLAYBOOK section numbers.
+
 ## 2.8.0 (27 Nov 2026)
 
 - **`template/replit.md` for Replit Agent as the builder.** It said Replit only runs and publishes. It now has Replit Agent branch from `main`, run the CI checks before pushing, open a PR marked "Reviews not run yet", leave `.reviews/` to Claude Code, and push review fixes to the same branch. PLAYBOOK section 2 and Day 0 and the starter prompt match.
