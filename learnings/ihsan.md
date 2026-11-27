@@ -91,8 +91,8 @@ Home: [Specialist handoffs](../template/ORG.md#specialist-handoffs).
 
 ## 12. Separate implementation and release verdicts
 
-*On Ihsan:* real synthetic integration, mocked failures and local production-built frontend checks established different things. The report separated working recovery from a console-privacy limitation and withheld signed-in live-release verification.
+*On Ihsan:* real synthetic integration, mocked failures and local production-built frontend checks established different things. The report kept functionality, privacy and release verdicts separate and withheld signed-in live-release verification.
 
-Evidence reviewed: integrated review and QA reports. A local built staff journey did not establish a built investor journey or that the live release contained the reviewed assets. This extends the reporting of lessons 1, 2 and 7, not their check ownership.
+Evidence reviewed: integrated review and QA reports. A local built staff journey did not establish a built investor journey or that the live release contained the reviewed assets. This extends the reporting of lessons 1 and 2; the held-back lesson 7 remains held back.
 
 Home: [QA report](../template/.claude/agents/qa-tester.md#report).

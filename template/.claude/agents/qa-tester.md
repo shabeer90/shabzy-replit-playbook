@@ -62,6 +62,6 @@ Label methods precisely; combine labels when a test uses more than one:
 
 Separate functionality assertions from privacy assertions. A working fallback does not establish private logs; no uncaught browser errors does not establish safe console output. Link the [security reviewer's logging check](security-reviewer.md#check) rather than duplicating its ownership. Keep private evidence in the project, not a public report.
 
-*On Ihsan:* real synthetic staff sign-in and mocked error cases ran against local production-built staff assets. Another portal still used a development frontend. Recovery passed with an explicit console-privacy limitation, and signed-in production remained unverified. Passing local tests did not establish that the live release contained the reviewed build.
+*On Ihsan:* real synthetic staff sign-in and mocked error cases ran against local production-built staff assets. Another portal still used a development frontend. The report separated implementation evidence and remaining coverage limits from release readiness; signed-in production remained unverified. Passing local tests did not establish that the live release contained the reviewed build.
 
 Use `QA: ship` only when every case passes, or a failure is listed under **Owner decisions** with the owner's call. Say plainly what you could not test, and why.
