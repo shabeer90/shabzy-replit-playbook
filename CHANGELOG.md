@@ -2,8 +2,13 @@
 
 ## 2.5.0 (27 Nov 2026)
 
-- Five further approved Impact Connect lessons: publication-safe autofill, form refetch races, optional enrichment failures, actual zoom checks and fonts in generated graphics. Raw entries append lessons 8–12 without changing existing numbers.
-- **Upgrade from 2.4.x (optional):** copy the feature-specific cases from `template/.claude/agents/qa-tester.md` where they fit, and add the packaged-font and graphics-renderer checks from PLAYBOOK section 8. The cases are guidance, not new executable tests. No rules, reviewer roles, skills, hooks or CI changed, and no live verification is claimed.
+- **Impact Connect, lessons 8–12:** publication-safe autofill, form refetch races, optional enrichment failures, actual zoom checks and fonts in generated graphics.
+  QA gains a "Feature-specific cases" list; PLAYBOOK section 8 gains a packaged-font check.
+- **Upgrade from 2.4.x (optional):** copy the QA cases and the section 8 font check where they fit. No rules, roles, skills, hooks or CI changed.
+
+## 2.4.1 (27 Nov 2026)
+
+- README: each project's lessons come back with evidence of what worked, what failed and what to do differently, and the test is whether the same mistakes stop. No workflow or upgrade changes.
 
 ## 2.4.0 (27 Nov 2026)
 

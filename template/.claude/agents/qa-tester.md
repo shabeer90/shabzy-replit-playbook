@@ -30,13 +30,9 @@ From the ask and the diff, list:
 Add these cases where they apply:
 
 - **Autofill and publication:** test new drafts and existing published records separately. Autofill must not change publication status unless the user explicitly asks for that transition.
-  *On Impact Connect:* draft autosave could send `isPublic: false` while editing a published startup. The fix restricted it to new drafts.
 - **Refetch during editing:** delay or repeat the record query after manual edits and autofill. Confirm the form keeps those unsaved changes instead of resetting them from the response.
-  *On Impact Connect:* a form reset on refetch could erase autofilled values. Initialization was limited to once per edited record.
 - **Optional enrichment:** simulate an unavailable provider or an empty result, then complete a valid manual submission. Keep the product's required business fields required.
-  *On Impact Connect:* unreliable LinkedIn scraping left founder fields empty. Those particular fields were made optional; that alone did not prove the whole failure journey worked.
 - **Zoom:** check both permission to zoom and usability at actual browser zoom, including labels, controls and reflow. A viewport-tag assertion is not a zoom journey. If the tools cannot exercise browser zoom, report that limit.
-  *On Impact Connect:* an accessibility script's success message said "zoom", but its check only inspected the viewport tag.
 
 ## Run it
 
