@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.3 (27 Nov 2026)
+
+- README: the template list now covers every folder, the intro mentions Ihsan, and "each rule" is now "most rules".
+
 ## 2.2.2 (27 Nov 2026)
 
 - Cogniscore lesson 3 marked fixed, with the audit that shows it. Lesson 10 held back, because the service it describes is still deployed.
