@@ -25,6 +25,7 @@ I keep a shared playbook for all my projects at https://github.com/shabeer90/sha
    - skills or agents that helped.
 
 3. Apply [the contribution bar](CONTRIBUTING.md#the-bar-for-a-rule), then check each lesson against the playbook:
+   - **A repeat of an earlier lesson** (any project): add it with **Repeat of**, and propose a check that would have caught it.
    - **Already covered:** skip it. If this project adds a useful example, add one "*On <project>:*" line under that rule instead.
    - **Covered but wrong for this project:** propose rewriting the rule in place, with one line saying what changed.
    - **Not covered:** propose where it goes, per CONTRIBUTING.md.

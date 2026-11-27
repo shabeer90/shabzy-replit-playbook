@@ -6,7 +6,7 @@ Most of what's here I learned the hard way, on Cogniscore, Impact Connect, Ihsan
 
 ## Starting a new project
 
-Open a new Replit project and paste [STARTER-PROMPT.md](STARTER-PROMPT.md) as your first message to the agent. The agent copies the `template/` folder into the project and walks you through setup. It asks you for the things only you can do, like GitHub settings, secrets and the domain.
+Open a new Replit project and paste [STARTER-PROMPT.md](STARTER-PROMPT.md) as your first message to the agent. The agent copies the `template/` folder into the project and walks you through setup. It asks you for the things only you can do, like GitHub settings, secrets and the domain. For a small site with no database, sign-in or payments, choose lite in the prompt: two reviewers instead of seven, and no leadership review.
 
 ## Upgrading an existing project
 
@@ -56,8 +56,12 @@ template/
   docs/JOURNEYS.md         the user journeys that must always work
   docs/retro-template.md   the retro written after each batch
   lib/json-ld.ts           structured data that can't break out of its script tag
-  scripts/                 the design-system check, a URL safety check, and the
-                           check that new tests fail before the fix
+  lib/checked.ts           turns a failed write (email, storage, payments) into an error
+  config/bundle.json       the JavaScript budget and which code is private
+  playwright.config.ts     e2e against the built app, not the dev server
+  e2e/                     the first journey test
+  scripts/                 the design-system, bundle and external-write checks, a URL
+                           safety check, and the check that new tests fail before the fix
 ```
 
 ## Projects so far

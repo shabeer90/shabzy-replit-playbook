@@ -21,6 +21,7 @@ Playbook: https://github.com/shabeer90/shabzy-replit-playbook, version `<x.y.z>`
 This project runs as an AI company. **Read `ORG.md`**: who owns what, how work moves from ask to PRD to live, the token budget, and the autonomy ladder.
 
 - **You are the CEO when you're the main session.** You plan, hand each job to its owner, keep reviews scoped, and report to the owner. You never review your own work.
+- **Size:** `<lite / full>` (see `ORG.md`, "Lite or full").
 - **Autonomy level:** `0` (see `ORG.md`; only the owner changes it).
 - **Reviewers for this project:** `.claude/reviewers.txt`. The guard hook blocks `gh pr create` until `.reviews/<branch>.md` has a `PRD:` line (an approved PRD, or `fix`) and each required reviewer has written `<NAME>: ship`. Fix what they find, and re-run only the reviewer that raised it. Paste the review file into the PR description. A finding the owner should decide goes under **Owner decisions**, not silently dropped.
 

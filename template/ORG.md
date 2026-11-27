@@ -19,6 +19,19 @@ Every project runs as a small AI company. The owner is the board. Agents hold th
 
 The builder is whichever agent writes the code, usually the CEO session or a subagent it starts. It never reviews its own work.
 
+## Lite or full
+
+**Lite** is for a site with no database, no sign-in and no payments, such as a portfolio or a brochure site. **Full** is everything in this file. `AGENTS.md` says which one this project runs.
+
+On lite:
+- **Kept:** the guard hook, CI (including the day-one checks in PLAYBOOK section 7), PRD-first with the roadmap's parked ideas, the journeys, and the release loop.
+- **Reviewers:** QA, plus CMO on a public site. Comment out the rest in `.claude/reviewers.txt`.
+- **PRDs** are short, and the owner approves them without a leadership review.
+- **Agents:** head-of-design writes `design/DESIGN.md` once at the start. The CPO, Head of Data, CTO, EM and security reviewers aren't used.
+- **Skills:** only the *Every project* list in `SKILLS.md`.
+
+Move to full the day the project gets a database, sign-in or payments, and say so in the next PR.
+
 ## No feature factory
 
 It's easy, especially on Replit, to keep building whatever gets suggested next. The product ends up with lots of half-finished features, and nobody knows what it's for. Three files stop that:

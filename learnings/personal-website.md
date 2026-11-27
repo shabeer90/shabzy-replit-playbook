@@ -10,6 +10,7 @@
 
 - **When:** Sep 2026
 - **Kind:** Went wrong
+- **Repeat of:** impact-connect lesson 1
 - **What happened:** the Replit dev workflow used client-only rendering, while the published artifact contained prerendered HTML. In the built site, a lazy route's client Suspense fallback replaced that HTML during hydration. The skip link and Suspense boundaries were aligned between server and client.
 - **Impact:** hydration recovery replaced the rendered page and caused a recorded layout shift. Matching both trees removed the recovery error and shift.
 - **Evidence:** commit `1b5b42c`; `src/entry-server.tsx` and `src/main.tsx`. A browser trace against the built site showed the mismatch and layout shift; it does not establish that the reviewed change was deployed live.

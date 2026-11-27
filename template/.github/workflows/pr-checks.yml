@@ -34,6 +34,8 @@ jobs:
       - name: Tests
         run: python -m pytest -q
       - run: pnpm build
+      - name: Bundle (public pages stay small; private code stays out)
+        run: python scripts/check_bundle.py
       - name: New tests must fail on base (a test that passes before the fix proves nothing)
         if: github.event_name == 'pull_request'
         run: scripts/assert_new_tests_fail_on_base.sh "origin/${{ github.base_ref }}"
@@ -51,5 +53,5 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec playwright install --with-deps chromium
-      # e2e runs against a mock of the database API (e2e/support/), never live data. Retries once.
+      # e2e serves the built app (playwright.config.ts), against a mock of the database API, never live data. Retries once.
       - run: pnpm build && pnpm exec playwright test --retries=1

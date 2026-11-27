@@ -246,7 +246,11 @@ GLOSSARY.md             the project's words
 4. Build.
 5. New tests must fail on the base commit (rule 16).
 6. e2e (Playwright) against the built app, using the test modes and safeguards in [rule 18](#1-the-rules).
-7. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
+7. The day-one checks from `template/`, each written after the same mistake reached more than one project:
+   - **e2e on the built app:** `playwright.config.ts` serves the production output, and `scripts/test_release_guards.py` fails if it points at a dev server (rule 17);
+   - **bundle:** `scripts/check_bundle.py` fails when a public entry statically imports private code or goes over the JavaScript budget in `config/bundle.json` (Vite; other frameworks swap in their own check);
+   - **external writes:** `scripts/check_external_writes.py` fails when a known provider write isn't wrapped in `checked()` from `lib/checked.ts` (rule 20). Add the project's providers to its list.
+8. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
 
 For apps with split routes, check the built manifest's transitive static imports. Private routes must stay out of the public entry graph, and protected screens out of the login graph. Server-only page registries must stay out of the browser graph; an SSR conditional in the source doesn't prove the imports' side effects are gone. Set a JavaScript size budget for the project and fail the check when the built JavaScript exceeds it. Deferring code is not access control; private APIs still need authentication.
 

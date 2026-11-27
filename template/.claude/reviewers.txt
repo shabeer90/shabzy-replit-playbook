@@ -2,6 +2,7 @@
 # Format: NAME [path patterns...]. With patterns, the reviewer is required only when the PR changes a
 # matching file, so a copy fix doesn't wake the data reviewer. `*` matches across folders.
 # Set this once at project start (STARTER-PROMPT step 5); comment out roles the project doesn't have.
+# A lite project (ORG.md, "Lite or full") keeps only QA, plus CMO on a public site.
 EM
 QA        app/* src/* components/* lib/* pages/* e2e/*
 CTO       *.ts *.tsx *.js *.jsx *.mjs *.py *.sql *.sh *.yml *.json
