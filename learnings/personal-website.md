@@ -41,3 +41,21 @@
 - **Impact:** The 20 originals totalled about 17 MB. Both responsive variant sets totalled about 1.2 MB; each page can load a source suited to its rendered width.
 - **Evidence:** Commit `b89f046`; `src/pages/BlogPost.tsx` and the 40 generated files in `public/blog-images/`. The build check verified the sources for all 20 articles; live transfer sizes were not measured.
 - **Home:** [PLAYBOOK section 8](../PLAYBOOK.md#8-seo-and-geo-baseline-public-sites-launch-gate), image-delivery checklist.
+
+## 5. Keep prerendered and client trees aligned
+
+- **When:** Sep 2026
+- **Kind:** Went wrong
+- **What happened:** A lazy route's client Suspense fallback replaced prerendered page content during hydration. The skip link and Suspense boundaries were aligned between the server and client.
+- **Impact:** Hydration recovery replaced the rendered page and caused a recorded layout shift. Matching both trees removed the recovery error and shift.
+- **Evidence:** Commit `1b5b42c`; `src/entry-server.tsx` and `src/main.tsx`. A browser trace against the built site showed the mismatch and layout shift; it does not establish that the reviewed change was deployed live.
+- **Home:** [PLAYBOOK rule 17](../PLAYBOOK.md#1-the-rules), production-output verification.
+
+## 6. Unknown static routes need a real 404
+
+- **When:** Jun 2026
+- **Kind:** Went wrong
+- **What happened:** A blanket SPA rewrite served the home-page HTML with status 200 for unknown paths. It was replaced with rewrites for known routes and a 404 catch-all.
+- **Impact:** Unknown blog and case-study URLs could appear to exist, creating soft 404s for visitors and crawlers.
+- **Evidence:** Commit `3fd5ecd`; `public/_redirects`. The configuration shows the catch-all change; no live HTTP status check is recorded.
+- **Home:** [PLAYBOOK rule 17](../PLAYBOOK.md#1-the-rules), route and status-code verification.

@@ -2,9 +2,9 @@
 
 ## 3.0.0 (27 Nov 2026)
 
-- Adds four Personal Website lessons covering focus contrast, case-study titles, latest-post lists and responsive cover images.
+- Adds six Personal Website lessons covering focus contrast, case-study titles, latest-post lists, responsive cover images, hydration parity and static 404 routes.
 - Extends the SEO and design baselines with checks grounded in those lessons; adds the project to the README.
-- **Upgrade from 2.4.x:** check existing public pages for descriptive case-study titles, current homepage previews, responsive article covers and focus contrast on light and dark surfaces.
+- **Upgrade from 2.4.x:** check existing public pages for descriptive titles, current homepage previews, responsive article covers, focus contrast on light and dark surfaces, matching prerendered/client trees and real 404 responses for unknown routes.
 
 ## 2.4.0 (27 Nov 2026)
 
