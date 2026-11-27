@@ -25,6 +25,15 @@ From the ask and the diff, list:
 - **what else could break**: pages that share the changed component or route (grep the callers);
 - for public pages: **SEO basics** (title, description, canonical, one H1, valid JSON-LD) and no console errors.
 
+### Feature-specific cases
+
+Add these cases where they apply:
+
+- **Autofill and publication:** test new drafts and existing published records separately. Autofill must not change publication status unless the user explicitly asks for that transition.
+- **Refetch during editing:** delay or repeat the record query after manual edits and autofill. Confirm the form keeps those unsaved changes instead of resetting them from the response.
+- **Optional enrichment:** simulate an unavailable provider or an empty result, then complete a valid manual submission. Keep the product's required business fields required.
+- **Zoom:** check both permission to zoom and usability at actual browser zoom, including labels, controls and reflow. A viewport-tag assertion is not a zoom journey. If the tools cannot exercise browser zoom, report that limit.
+
 ## Run it
 
 - Run each case, and screenshot failures into `.reviews/`.
