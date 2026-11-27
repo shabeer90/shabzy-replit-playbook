@@ -2,7 +2,9 @@
 
 This is how I start and run my projects. I build them on Replit with Claude Code and Replit Agent. Each project is run like a small company where the agents do the work and I make the decisions.
 
-Most of what's here I learned the hard way, first on Cogniscore, then on Ihsan and Impact Connect. This repo exists so the next project doesn't repeat those mistakes. When a project teaches me something new, it goes back in here.
+Most of what's here I learned the hard way, first on Cogniscore, then on Ihsan and Impact Connect.
+
+The goal is to keep improving how we build with Replit. Each project contributes evidence about what worked, what failed, and what to change next time. We use those lessons to prevent repeated mistakes and check whether our process is improving.
 
 ## Starting a new project
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.1 (27 Nov 2026)
+
+- README: clarified that the playbook improves how we build with Replit, using evidence from each project and checking whether the process improves. No workflow or upgrade requirements changed.
+
 ## 2.4.0 (27 Nov 2026)
 
 - **SKILLS.md:**
