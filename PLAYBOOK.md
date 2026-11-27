@@ -92,6 +92,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     Was "read page content on the dev server" until Ihsan showed the production bundle can break where the dev server works.
     *On Ihsan:* different dependency versions split a shared hook from its provider in the production bundle, despite passing development checks. Replaying the served bundle with synthetic responses reproduced the blank page. Built-frontend regression checks verified the local fix, not a signed-in live release.
     *On Impact Connect:* a direct-execution guard in an imported logo validator ran its CLI exit path after bundling and stopped the server. Moving the CLI into a separate entry point removed that startup path; source-module checks alone missed it.
+    *On Personal Website:* Replit's dev workflow hid a hydration fallback that replaced prerendered content. The static artifact also had a blanket production rewrite alongside route-specific redirects; it was removed so the 404 catch-all could apply. The built-site trace showed the hydration issue, but live route status was not checked.
 
 18. **e2e tests never touch production or live data.** Keep mocked database-API tests (`e2e/support/mock-<db>.mjs`) for fast, credential-free checks. Add controlled non-production integration tests when real passwords, sessions, roles or database behaviour matter.
     - Use a confirmed non-production service and database, with owned synthetic accounts and records only. Never write real customer records, even in development.
@@ -288,6 +289,8 @@ Crawler instructions are not access controls. Protected routes still need authen
 2. In the Replit Shell, run `git pull origin main` (and `pnpm install` if the lockfile changed).
 3. Publish or redeploy in Replit. You must do this after **any** site code or `next.config` change; ISR pages don't pick up config changes alone.
 4. Check live with a script, not by eye: fetch the changed pages and compare them with the database or the expected output. On Cogniscore this was `check_live_site.py`.
+    - For static artifacts, check `.replit-artifact/artifact.toml` and `public/_redirects` together; test both a known route and an unknown path over HTTP.
+    - If the Replit dev workflow renders client-only pages but the published artifact is prerendered, test hydration in a browser against the built artifact too.
 5. Write down what shipped in `docs/` (a retro per batch: what worked, what went wrong, and the decisions taken).
 
 Things to remove before launch:
