@@ -171,12 +171,12 @@ The agent files are in [`template/.claude/agents/`](template/.claude/agents/), a
 
 What the guard hook blocks is listed in [`template/.claude/hooks/README.md`](template/.claude/hooks/README.md).
 
-Hooks bind Claude Code only. If Replit Agent builds something, have Claude Code run the reviews on that branch before you merge.
+Hooks bind Claude Code only. When Replit Agent builds, `template/replit.md` has it work on a branch, run the CI checks and open a PR without reviewer verdicts; branch protection and CI enforce the rest. Have Claude Code run the reviews on that branch before you merge.
 
 ## 3. Day 0: before the first prompt to an agent
 
 - [ ] **Create the GitHub repo first.** Protect `main`: PRs required, CI required.
-- [ ] **Import the repo into Replit.** Decide now who writes code: Replit Agent, Claude Code, or both. If both, they both work through branches and PRs.
+- [ ] **Import the repo into Replit.** Whoever writes code (Replit Agent, Claude Code, or both) works through branches and PRs.
 - [ ] **Store secrets only in Replit's Secrets tool** and in GitHub Actions secrets **(check current docs for how Replit splits workspace and deployment secrets)**. Write down which key lives where, without the values.
 - [ ] **Turn on GitHub secret scanning and push protection** for the repo.
 - [ ] **Commit a `.gitignore`.** It covers `.env*` (including `.env.production`), `.venv`, `node_modules`, `.next*`, `.reviews/`, logs and local tool folders.

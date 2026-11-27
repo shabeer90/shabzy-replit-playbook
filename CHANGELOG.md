@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.8.0 (27 Nov 2026)
+
+- **`template/replit.md` for Replit Agent as the builder.** It said Replit only runs and publishes. It now has Replit Agent branch from `main`, run the CI checks before pushing, open a PR marked "Reviews not run yet", leave `.reviews/` to Claude Code, and push review fixes to the same branch. PLAYBOOK section 2 and Day 0 and the starter prompt match.
+- **Upgrade from 2.7.x (optional):** replace your project's `replit.md` "how you change code" part with the template's, keeping your own project notes.
+
 ## 2.7.0 (27 Nov 2026)
 
 - **Day-one checks in `template/`,** for the three mistakes that reached more than one project. Each fails CI until it's set up:
