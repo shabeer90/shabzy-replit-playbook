@@ -20,32 +20,27 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
    *On Cogniscore:* Replit publishes from its own workspace copy, not from GitHub. The live site lagged `main` several times until someone ran `git pull origin main` in the Replit Shell and republished. A merged PR is not a deployed PR.
 
 2. **No secret ever goes in a tracked file.** That includes `.replit`, `[userenv]` and scripts.
-   *On Cogniscore:* two GitHub tokens, a Resend key and an Anthropic key were committed to `.replit`. Deleting them later didn't help, because git history keeps them. Every key that touches a repo must be revoked and reissued, not just deleted.
+   *On an earlier project:* provider keys were committed to a Replit config file. Deleting them later didn't help, because git history keeps them. Every key that touches a repo must be revoked and reissued, not just deleted.
    Only values that are public by design belong in `.replit`, such as a Supabase URL or publishable key.
 
 3. **Decide database access rules on day one, per table and per column.**
    Write the RLS policy for each table when you create it, and give the anon role only the columns the page shows.
-   *On Cogniscore:* the anon policies written in the repo were wider than the pages needed.
 
 4. **Public routes never use the service-role key for anything a visitor can trigger without a limit.**
-   *On Cogniscore:* public form endpoints wrote with the service role and no limits.
 
 5. **Treat third-party text as hostile all the way to the page.** That means scraped pages, model output and brand data.
    - Validate URLs: https only, with no quotes or `<>`.
    - Sanitise HTML.
    - Escape `<` in every JSON-LD `<script>`.
 
-   *On Cogniscore:* a brand's `og:image` could close a JSON-LD script tag and run script on the site.
-
 6. **Admin needs real auth from the start.** That means signed session tokens with an expiry, rate-limited login, constant-time secret comparison, an Origin check on writes, and every admin page and route checking for itself.
-   *On Cogniscore:* admin started as a single shared password, which is too weak for a public site.
 
 7. **Type errors must fail CI, even if the build doesn't check them.**
     Run `tsc --noEmit` as a required CI step.
     *On Cogniscore:* Next.js's own type check stalled deploys for minutes on a fresh environment with no incremental cache. The fix was `typescript.ignoreBuildErrors` and `eslint.ignoreDuringBuilds` in `next.config`, with `tsc` in CI as the real gate. Don't remove those flags thinking they're sloppy, and don't drop the CI step thinking the build covers it.
 
 8. **Tests carry the history.** When something breaks, write a test whose docstring says what happened, the date, and why the rule exists. The next person, or agent, can't then "simplify" the fix away.
-   *On Cogniscore:* `scripts/test_*.py` (image hosts, self-hosted fonts, the DIRTEA COA fallback) worked well.
+   *On Cogniscore:* `scripts/test_*.py` (image hosts, self-hosted fonts, a brand scraper's COA fallback) worked well.
 
 9. **Evidence first, then the write.** Any published fact comes from a saved source file in the repo. Write a dry run first and compare it with the live result.
    *On Cogniscore:* the batch releases that ran from `evidence/brands/` were repeatable to the decimal. Hand-seeded data was the biggest source of wrong scores.
