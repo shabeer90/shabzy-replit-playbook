@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.3.0 (27 Nov 2026)
+
+- Seven approved Impact Connect lessons: CLI isolation in bundled servers, confirmed upload backups, decoded production image checks, missing-asset responses, raster social previews, initial public HTML and built route-graph checks. Raw evidence and limits are in `learnings/impact-connect.md`; examples extend rules 17 and 22, and checklists extend sections 7, 8 and 11.
+- **Upgrade from 2.2.x (optional):** adopt the new route-graph, public-content, image-response, social-preview and upload-durability checks where they apply. No rule numbers, reviewers, skills, hooks or CI changed, so each project wires up the checks that fit it.
+
 ## 2.2.3 (27 Nov 2026)
 
 - README: the template list now covers every folder, the intro mentions Ihsan, and "each rule" is now "most rules".
