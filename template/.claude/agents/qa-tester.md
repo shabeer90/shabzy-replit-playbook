@@ -22,6 +22,7 @@ From the ask and the diff, list:
 - **edge cases**: empty, very long, special characters (`<script>`, quotes, emoji), zero, negative, duplicates, slow network, an expired session;
 - **every state**: loading, empty, error, success;
 - **phone width (375px) and desktop**, plus keyboard-only use, with focus visible;
+- for forms: **filled-field readability**, including text, background, caret and validation messages. Where applicable, check native saved-details autofill and supported browser themes. A script filling a field is not proof that native autofill works; record which states were actually tested;
 - **what else could break**: pages that share the changed component or route (grep the callers);
 - for public pages: **SEO basics** (title, description, canonical, one H1, valid JSON-LD) and no console errors.
 

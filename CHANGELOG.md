@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.0 (27 Nov 2026)
+
+- Seven approved Adam Accounting lessons: mobile and desktop performance regressions, eager SSR imports in the browser bundle, production file delivery, artifact registration recovery, email SDK results, sourced sitemap dates and filled-field readability. Evidence and limits are in `learnings/adam-accounting.md`.
+- Examples extend rules 9 and 30; existing baselines in sections 7, 8 and 11 are extended in place. QA's form checklist covers filled fields, native autofill and browser themes without claiming that scripted fills test them all.
+- **Upgrade from 2.4.x (optional):** adopt the performance and delivery checks where they fit, and copy the QA checklist addition. No rules were renumbered, and no new reviewer, skill, hook or required CI gate was added.
+
 ## 2.4.0 (27 Nov 2026)
 
 - **SKILLS.md:**
