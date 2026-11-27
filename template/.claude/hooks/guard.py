@@ -5,7 +5,8 @@ Blocks:
   - writing a secret-looking value into any file except an ignored .env file;
   - `git commit` when the staged diff holds a secret-looking value, and `--no-verify`;
   - `git push` to main/master, and force pushes;
-  - any command containing a line from .claude/hooks/blocked-commands.txt (seeders, resets, live writes).
+  - any command containing a line from .claude/hooks/blocked-commands.txt (seeders, resets, live writes);
+  - `gh pr create` until .reviews/<branch>.md has `EM: ship`, `QA: ship` and `CTO: ship`.
 
 Why: on Cogniscore, provider keys were committed to `.replit` and stayed in git history.
 """
@@ -60,6 +61,14 @@ def check_bash(command):
         current = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True).stdout.strip()
         if targets & {"main", "master"} or (len(targets) <= 1 and current in ("main", "master")):
             block("push to main. Push a branch and open a pull request.")
+    if re.search(r"\bgh\s+pr\s+create\b", command):
+        branch = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True).stdout.strip()
+        review = os.path.join(os.path.dirname(os.path.dirname(HERE)), ".reviews", branch.replace("/", "-") + ".md")
+        text = open(review, encoding="utf-8").read() if os.path.exists(review) else ""
+        missing = [r for r in ("EM", "QA", "CTO") if not re.search(rf"^{r}: ship\s*$", text, re.M)]
+        if missing:
+            block(f"no sign-off yet from {', '.join(missing)} in {os.path.relpath(review)}. Run the "
+                  "em-reviewer, qa-tester and cto-reviewer agents, fix what they find, then open the PR.")
     if re.search(r"\bgit\b.*\bcommit\b", command):
         if "--no-verify" in command:
             block("--no-verify skips the checks.")

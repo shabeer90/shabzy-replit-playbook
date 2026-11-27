@@ -16,7 +16,11 @@ Playbook: https://github.com/shabeer90/shabzy-replit-playbook. When this project
 ## Roles
 
 - **head-of-design** (`.claude/agents/head-of-design.md`) owns `design/tokens/` and `components/ui/`. Pages and features use only those components and tokens. When a feature needs a component that doesn't exist, head-of-design adds it to `components/ui/` first. `scripts/check_design_system.py` enforces this in CI.
-- **cto-reviewer** (`.claude/agents/cto-reviewer.md`) reviews every change before the PR is handed to the owner: correctness, security, the data rules below, and whether the change is the smallest that works.
+- **Three reviews before every PR**, each by an agent that didn't write the code. Each writes its section and verdict in `.reviews/<branch>.md`. The guard hook blocks `gh pr create` until all three say `ship`.
+  - **em-reviewer** (`.claude/agents/em-reviewer.md`): did we build what was asked, completely, with nothing extra, and is the handover clear?
+  - **qa-tester** (`.claude/agents/qa-tester.md`): runs the feature like a user (edge cases, phone width, keyboard, errors) and adds an e2e test.
+  - **cto-reviewer** (`.claude/agents/cto-reviewer.md`): correctness, security, the data rules below, and whether the change is the smallest that works.
+- Fix what the reviews find, then re-run the reviewer that raised it. Paste the review file into the PR description. A finding the owner should decide goes under **Owner decisions**, not silently dropped.
 
 ## Never
 

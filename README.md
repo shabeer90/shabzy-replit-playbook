@@ -19,8 +19,8 @@ A starter kit for a new project built on Replit with coding agents: Replit Agent
 AGENTS.md            ← one set of rules for every agent (Claude Code, Replit Agent, others)
   ├─ CLAUDE.md       ← Claude Code reads this; it imports AGENTS.md
   └─ replit.md       ← Replit Agent reads this; it points to AGENTS.md
-.claude/agents/      ← head-of-design (owns the design system), cto-reviewer (reviews every change)
-.claude/hooks/       ← guard.py: blocks secrets in files, pushes to main, and the project's dangerous scripts
+.claude/agents/      ← head-of-design (owns the design system); em-reviewer, qa-tester, cto-reviewer (review every feature)
+.claude/hooks/       ← guard.py: blocks secrets, pushes to main, dangerous scripts, and PRs without EM + QA + CTO sign-off
 .github/workflows/   ← pr-checks.yml: types, tests, design-system check, build, e2e
 scripts/check_design_system.py ← pages may only use design tokens and shared components
 ```

@@ -66,7 +66,12 @@ Platform behaviour I saw on this project is stated as fact. Anything else about 
     - `scripts/check_design_system.py` fails CI on raw colours and arbitrary Tailwind values outside the design system.
     *On Cogniscore:* the colours lived in the Tailwind config, with no owner and no check. The rule is new from here.
 
-14. **Every change gets a CTO review before the owner sees it.** The `cto-reviewer` agent covers correctness, security, data rules, size, the design system, tests and SEO, and ends with ship, fix first or rethink.
+14. **Every feature gets three reviews before the owner sees it: EM, QA and CTO.**
+    - Each review is done by an agent that didn't write the code.
+    - **em-reviewer:** did we build what was asked, completely, with nothing extra, and is the handover clear?
+    - **qa-tester:** runs the feature like a user (edge cases, phone width, keyboard, errors) and adds an e2e test.
+    - **cto-reviewer:** correctness, security, data rules, size, the design system and SEO.
+    - Each writes a verdict to `.reviews/<branch>.md`. The guard hook blocks `gh pr create` until all three say `ship`, so the reviews happen automatically, not on request.
     *On Cogniscore:* the review and audit passes caught real bugs, but only when someone asked for one. The rule is new from here.
 
 15. **Rules that matter are enforced, not just written.**
@@ -168,21 +173,26 @@ Things to remove before launch:
 |---|---|---|
 | Rules for every agent | `AGENTS.md` (`CLAUDE.md` imports it; `replit.md` points to it) | One set of rules, whichever agent is working |
 | head-of-design | `.claude/agents/head-of-design.md` | Owns tokens and `components/ui/`; adds missing components; reviews UI |
-| cto-reviewer | `.claude/agents/cto-reviewer.md` | Reviews every change before the PR is handed over |
+| em-reviewer | `.claude/agents/em-reviewer.md` | Checks the feature against the ask: complete, nothing extra, clear handover |
+| qa-tester | `.claude/agents/qa-tester.md` | Exercises the feature in a browser (webapp-testing skill), writes the e2e test |
+| cto-reviewer | `.claude/agents/cto-reviewer.md` | Correctness, security, data rules, size, design system, SEO |
+| Review gate | `guard.py` + `.reviews/<branch>.md` | Blocks `gh pr create` until EM, QA and CTO all say `ship` |
 | ponytail skill | see [SKILLS.md](SKILLS.md) | The smallest complete change, on all coding |
 | Other skills | [SKILLS.md](SKILLS.md) | Installed with the Skills CLI and recorded in `skills-lock.json` |
-| guard hook | `.claude/hooks/guard.py` | Blocks secrets, pushes to main, force pushes, `--no-verify`, blocked scripts |
+| guard hook | `.claude/hooks/guard.py` | Blocks secrets, pushes to main, force pushes, `--no-verify`, blocked scripts, and PRs without the three sign-offs |
 | Auto-fix | Claude Code desktop, per PR | Watches CI and review comments on every PR; never auto-merges |
 
 **How a feature flows:**
-1. The owner asks.
+1. The owner asks. For anything bigger than a small fix, the agent writes the ask down as a spec in `docs/specs/` (the `to-spec` skill), so the EM has something to check against.
 2. The agent checks `components/ui/`. If something is missing, head-of-design adds it.
-3. The agent builds with ponytail.
-4. Tests are added.
-5. cto-reviewer reviews, and the agent fixes what it confirms.
-6. The agent opens a PR and turns on Auto-fix.
+3. The agent builds test-first where it can (the `tdd` skill), with ponytail.
+4. **EM, QA and CTO review in parallel** and write to `.reviews/<branch>.md`.
+5. The agent fixes what the reviews confirm and re-runs any reviewer that said "fix first".
+6. Once all three say `ship`, the hook lets the agent open the PR. The review file goes in the PR description, and Auto-fix is turned on.
 7. The owner merges, pulls in Replit and publishes.
 8. The agent runs the live check.
+
+**Hooks bind Claude Code only.** If Replit Agent builds a feature, ask Claude Code to run the three reviews on that branch before you merge.
 
 ## 10. Starter files
 
@@ -203,7 +213,7 @@ Everything is in [`template/`](template/):
 - [ ] `schema.sql` committed with RLS on every table. Live `pg_policies` checked against it.
 - [ ] Admin auth done properly (section 4), or no admin at all yet.
 - [ ] The design system exists (tokens, base components) and its CI check passes.
-- [ ] The hooks block a test push to main and a test secret (`template/.claude/hooks/README.md`).
+- [ ] The hooks block a test push to main, a test secret, and a PR with no reviews (`template/.claude/hooks/README.md`).
 - [ ] Canonical host, sitemap, robots, Search Console.
 - [ ] A live-check script exists for the main pages.
 - [ ] The release loop (section 8) written into `docs/`, with who presses Publish.

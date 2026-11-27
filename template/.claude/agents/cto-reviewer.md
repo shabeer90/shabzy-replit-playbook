@@ -26,4 +26,6 @@ Get the diff: `git diff origin/main...HEAD` (plus `git diff HEAD` for uncommitte
 
 ## Report
 
-For each issue: file:line, what's wrong, a concrete input that breaks it, and the smallest fix. Mark each **Verified** (you ran or traced it) or **Inferred**. End with one line: **ship**, **fix first** (list the items) or **rethink**. Don't pad: if it's clean, say so in one line.
+For each issue: file:line, what's wrong, a concrete input that breaks it, and the smallest fix. Mark each **Verified** (you ran or traced it) or **Inferred**. Don't pad: if it's clean, say so in one line.
+
+Write your section in `.reviews/<branch>.md` (replace `/` with `-` in the branch name), ending with exactly one line: `CTO: ship`, `CTO: fix first` or `CTO: rethink`.

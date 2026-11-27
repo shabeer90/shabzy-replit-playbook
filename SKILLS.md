@@ -17,7 +17,25 @@ Every installed skill must be in `skills-lock.json`. On Cogniscore, 7 of 15 were
 | web-design-guidelines | vercel-labs/agent-skills | Reviewing UI against interface guidelines and accessibility |
 | ui-ux-pro-max | nextlevelbuilder/ui-ux-pro-max-skill | Palettes, type pairings, UX rules; used by head-of-design |
 | skill-creator | anthropics/skills | Writing project skills (for example the project's own Reddit or release skill) |
-| codebase-design | local copy; source not recorded | Module and interface design; used by cto-reviewer |
+| codebase-design | mattpocock/skills | Module and interface design; used by cto-reviewer |
+
+## Review and QA (every project)
+
+These back the EM and QA agents. All were checked to exist in their repos on 27 Nov 2026. Read each SKILL.md before installing.
+
+| Skill | Source | Used by | Use it for |
+|---|---|---|---|
+| webapp-testing | anthropics/skills | qa-tester | Drives the local app with Playwright: checks features, screenshots, browser logs |
+| code-review | mattpocock/skills | em-reviewer | Reviews a diff against the spec and the repo's standards, in parallel sub-agents |
+| to-spec | mattpocock/skills | the builder, before starting | Turns the conversation into a written spec the EM checks against |
+| tdd | mattpocock/skills | the builder | Red-green-refactor, so features arrive with tests |
+| diagnosing-bugs | mattpocock/skills | anyone | A diagnosis loop for hard bugs, before guessing at a fix |
+
+Also looked at, not chosen:
+- **EveryInc compound-engineering `ce-code-review` / `ce-test-browser`:** a heavier multi-reviewer setup, and a plugin rather than a single skill.
+- **Community "engineering-manager" skills on skills.sh:** these are about people management, not feature review.
+
+Our own `em-reviewer` agent does the EM job instead.
 
 ## When the project needs it
 
@@ -29,7 +47,7 @@ Every installed skill must be in `skills-lock.json`. On Cogniscore, 7 of 15 were
 | seo-geo | resciencelab/opc-skills | Public sites: schema markup, AI-search visibility |
 | audit-website | squirrelscan/skills | A full site crawl before launch and monthly after |
 | security-audit | cloudflare/security-audit-skill | Before launch and after big changes. Run on a read-only copy, outside the repo, with no network. Expensive: choose the depth first. |
-| improve-codebase-architecture | local copy; source not recorded | When the code has grown and needs restructuring |
+| improve-codebase-architecture | mattpocock/skills | When the code has grown and needs restructuring |
 
 ## Built into Claude Code (no install)
 
