@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.9.1 (27 Nov 2026)
+
+- **Cogniscore, lessons 21 to 24,** as improvements to existing guidance; no new rules:
+  - rule 18: mock records must match what each spec searches for, with the Cogniscore case where Replit Agent pushed live-data specs straight to `main`;
+  - `modules/database.md`: apply external schema migrations on their own, and report which stage failed;
+  - the QA agent's first-render check now includes typing before hydration;
+  - lesson 24 is held back until its fix is live.
+
 ## 2.9.0 (27 Nov 2026)
 
 - **PLAYBOOK split into a core and modules.** The rules stay in one numbered list in `PLAYBOOK.md`, with the sections every project needs. What only some projects need moved, unchanged, to `modules/`:

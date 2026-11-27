@@ -103,10 +103,12 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 18. **e2e tests never touch production or live data.** Keep mocked database-API tests (`e2e/support/mock-<db>.mjs`) for fast, credential-free checks. Add controlled non-production integration tests when real passwords, sessions, roles or database behaviour matter.
     - Use a confirmed non-production service and database, with owned synthetic accounts and records only. Never write real customer records, even in development.
     - Roll back transactions or reliably clean up exact owned fixtures, including sessions and test-owned rate-limit entries, after success or failure. Never reset shared limits.
+    - Mock records match what each browser test searches for or filters on. A spec that only passes against live rows is a live-data test.
     - Keep authentication, authorisation and rate limits unchanged. Test transport isolation belongs in the test harness, never in production auth code.
     - CI retries a failing e2e test once. Investigate the cause. A passing retry doesn't clear the failure.
 
     *On Cogniscore:* a click landing before hydration failed about one CI run in three, and never once in 60 local runs.
+    *On Cogniscore:* Replit Agent pushed new search specs straight to `main`, written against the live catalogue, so CI never ran them. The mock lacked the two brands they searched for, and 13 to 14 specs then failed on every later PR until the mock was fixed.
     *On Ihsan:* synthetic accounts exercised real password validation, sessions and role revocation against the development API and database. Mocked browser responses remained useful for deterministic runtime failures.
     Was mock-only until Ihsan showed that real password, session, role and database checks needed controlled non-production integration tests.
 

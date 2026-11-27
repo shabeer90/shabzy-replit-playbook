@@ -8,6 +8,7 @@ For projects with a database, sign-in, admin or payments. Rules 3, 4, 6 and 10 i
 - **Anon:** SELECT only, on the columns the page needs (column-level `GRANT`). No INSERT policies unless the feature needs one.
 - **Service role:** only server-side, only in jobs and admin routes.
 - Check the live state now and then: `select * from pg_policies;` and the column grants. The repo SQL and the live DB drift apart.
+- A schema change on an external database is applied on its own, not by pulling code. When a save fails after the work succeeded, report which stage failed, and check the reviewed migration against the database it's meant for.
 - Every table that records an event (clicks, requests) needs a retention rule and an index on the time column.
 
 ## Admin and sign-in
