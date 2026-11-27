@@ -250,6 +250,8 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 - `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing.
 - JSON-LD per page type (Organization, WebSite, Product/Review, BreadcrumbList, FAQ), through the escaping helper.
 - Self-hosted fonts, and `next/image` limited to a host allowlist in `config/`.
+  Check that the required font files ship in the production output. For generated graphics, load those files in the renderer and wait for fonts before capture.
+  *On Impact Connect:* the poster renderer needed production font paths, embedded WOFF2 files and `document.fonts.ready`. The source fix alone did not prove the fonts shipped or rendered correctly in a live release.
 - A test that every page template has a title, description, canonical, H1 and JSON-LD.
 - Search Console and Bing Webmaster verified on day one. Export links and queries weekly.
 - Internal links: every sitemap page linked from at least a few others.
