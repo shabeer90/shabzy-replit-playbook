@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.4.1 (27 Nov 2026)
+
+- README: each project's lessons come back with evidence of what worked, what failed and what to do differently, and the test is whether the same mistakes stop. No workflow or upgrade changes.
+
 ## 2.4.0 (27 Nov 2026)
 
 - **SKILLS.md:**
