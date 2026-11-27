@@ -93,6 +93,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     Was "read page content on the dev server" until Ihsan showed the production bundle can break where the dev server works.
     *On Ihsan:* different dependency versions split a shared hook from its provider in the production bundle, despite passing development checks. Replaying the served bundle with synthetic responses reproduced the blank page. Built-frontend regression checks verified the local fix, not a signed-in live release.
     *On Impact Connect:* a direct-execution guard in an imported logo validator ran its CLI exit path after bundling and stopped the server. Moving the CLI into a separate entry point removed that startup path; source-module checks alone missed it.
+    *On Personal Website:* Replit's dev workflow hid a hydration fallback that replaced prerendered content. The static artifact also had a blanket production rewrite alongside route-specific redirects; it was removed so the 404 catch-all could apply. The built-site trace showed the hydration issue, but live route status was not checked.
 
 18. **e2e tests never touch production or live data.** Keep mocked database-API tests (`e2e/support/mock-<db>.mjs`) for fast, credential-free checks. Add controlled non-production integration tests when real passwords, sessions, roles or database behaviour matter.
     - Use a confirmed non-production service and database, with owned synthetic accounts and records only. Never write real customer records, even in development.
@@ -247,9 +248,9 @@ For apps with split routes, check the built manifest's transitive static imports
 
 *On Adam Accounting:* moving eager SSR page imports into a separate server-only module reduced initial browser JavaScript from about 428KB to 198KB. The shared module's SSR conditional had not kept import side effects out of the browser bundle.
 
-**Optional for public sites: performance regression checks.** Set project-specific score and metric budgets against the production build, using the same pinned test engine and profiles when comparing changes. Repeat both mobile and desktop runs, including layout-shift measurements, and run functional checks alongside them. A mobile loading change must not delay desktop styles or leave the early and fully styled page out of sync. Keep local results separate from published-site measurements. A green score does not justify removing useful behaviour or weakening a failing budget.
+**Optional for public sites: performance budgets.** Run Lighthouse against the production build, on mobile and desktop, several times each, with a pinned Lighthouse version. Fail on the project's own score, layout-shift and JavaScript budgets. A mobile speed fix must be checked on desktop too. Local results are not live results (rule 17), and a failing budget is fixed, not loosened.
 
-Adam Accounting's [lesson 1](learnings/adam-accounting.md#1-a-mobile-speed-fix-changed-the-desktop-layout) records the regression and its project-specific checks. This is an optional baseline, not a new shared CI gate.
+*On Adam Accounting:* critical CSS meant for the mobile homepage also applied on desktop and caused layout shifts ([lesson 1](learnings/adam-accounting.md#1-a-mobile-speed-fix-changed-the-desktop-layout)).
 
 Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get the least permission they need and only the secrets they use.
 
@@ -259,8 +260,10 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 - `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing. Source sitemap modification dates from actual content records; omit optional dates when none exist, rather than substituting the build time (rule 9).
 - JSON-LD per page type (Organization, WebSite, Product/Review, BreadcrumbList, FAQ), through the escaping helper.
 - Self-hosted fonts, and `next/image` limited to a host allowlist in `config/`.
+  Check that the required font files ship in the production output. For generated graphics, load those files in the renderer and wait for fonts before capture.
+  *On Impact Connect:* the poster renderer needed production font paths, embedded WOFF2 files and `document.fonts.ready`. The source fix alone did not prove the fonts shipped or rendered correctly in a live release.
 - A test that every page template has a title, description, canonical, H1 and JSON-LD.
-- General delivery check: verify negotiated compression for compressible responses. Cache fingerprinted assets long-term and revalidate HTML and unversioned files. Check the production server, then the published edge separately (rule 17); a passing page-markup check does not establish response headers. Use the existing host's controls where they suffice; this does not require a custom server. See [Adam Accounting lesson 3](learnings/adam-accounting.md#3-correct-html-did-not-establish-correct-file-delivery).
+- Response headers, checked separately from the HTML: compression on text responses, long caching for fingerprinted assets, revalidation for HTML. Check the production server and the published site separately (rule 17). Use the host's own settings where they're enough ([Adam Accounting lesson 3](learnings/adam-accounting.md#3-correct-html-did-not-establish-correct-file-delivery)).
 - Search Console and Bing Webmaster verified on day one. Export links and queries weekly.
 - Internal links: every sitemap page linked from at least a few others.
 - Missing image paths return a real 404, with `Cache-Control: no-store`, not the SPA's HTML.
@@ -296,6 +299,8 @@ Crawler instructions are not access controls. Protected routes still need authen
 2. In the Replit Shell, run `git pull origin main` (and `pnpm install` if the lockfile changed).
 3. Publish or redeploy in Replit. You must do this after **any** site code or `next.config` change; ISR pages don't pick up config changes alone.
 4. Check live with a script, not by eye: fetch the changed pages and compare them with the database or the expected output. On Cogniscore this was `check_live_site.py`.
+    - For static artifacts, check `.replit-artifact/artifact.toml` and `public/_redirects` together; test both a known route and an unknown path over HTTP.
+    - If the Replit dev workflow renders client-only pages but the published artifact is prerendered, test hydration in a browser against the built artifact too.
 5. Write down what shipped in `docs/` (a retro per batch: what worked, what went wrong, and the decisions taken).
 
 Things to remove before launch:
@@ -324,7 +329,7 @@ These are project observations from Cogniscore, Ihsan, Impact Connect and Adam A
 - **pnpm workspace:** if `.replit` says `stack = "PNPM_WORKSPACE"`, make sure `pnpm-workspace.yaml` and `tsconfig.base.json` exist. Without them, workspace packages silently get no dependencies.
 - **`postMerge` script:** keep it non-interactive with a frozen lockfile (`pnpm install --frozen-lockfile --prefer-offline`). Fix a conflicted lockfile on its own, from the merged manifests, not by discarding one side.
 - **A root-level app can't write `.replit-artifact/artifact.toml` directly.** Register it with `createArtifact`, then swap the config with `verifyAndReplaceArtifactToml`, keeping `[[integratedSkills]]` verbatim.
-  If publishing cannot find an app whose artifact files still exist, compare the registered artifact list with the files before changing run commands. [Adam Accounting lesson 4](learnings/adam-accounting.md#4-artifact-files-remained-after-their-registration-was-lost) records lost registration after an external installer and recovery by resubmitting existing manifests through the validated tool. The causal link was not reproduced, and the recovery may depend on the environment **(check current docs)**. Review installers before running them and inspect their configuration changes.
+  If publishing can't find an app whose artifact files are still there, compare the registered artifacts with the files before touching run commands. On Adam Accounting, registration was lost after an external CLI installer ran; resubmitting the existing manifests through the artifact tool fixed it ([lesson 4](learnings/adam-accounting.md#4-artifact-files-remained-after-their-registration-was-lost)). The installer's role wasn't reproduced **(check current docs)**. Read an installer before running it, and check what config it changed.
 - **Replit's built-in database is not your database.** If the project uses Supabase or another external DB, schema changes go there, through its SQL editor or a management connection, never into a Replit DB as a substitute.
 - **Delete Replit scaffolds you don't use:** mockup sandboxes, `api-server` stubs, Canvas.
 

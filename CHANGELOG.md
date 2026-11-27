@@ -2,11 +2,17 @@
 
 ## 2.5.0 (27 Nov 2026)
 
-- Eleven approved Adam Accounting lessons: mobile and desktop performance regressions, eager SSR imports in the browser bundle, production file delivery, artifact registration recovery, email SDK results, sourced sitemap dates, filled-field readability, SEO warning triage, separate search and editorial titles, first-paint styling and valid ARIA semantics. Evidence and limits are in `learnings/adam-accounting.md`.
-- Examples extend rules 9 and 30; existing baselines in sections 7, 8 and 11 are extended in place. QA's form checklist covers filled fields, native autofill and browser themes without claiming that scripted fills test them all.
-- CMO's existing checks distinguish actionable SEO findings from justified non-fixes and keep search titles separate from editorial headlines. QA checks initial rendering as well as the settled page; design checks that ARIA attributes fit the element's role.
-- CONTRIBUTING makes the goal explicit: improve the next Replit build, strengthen existing guidance first, and include small fixes only when they teach a reusable building or testing lesson. The contribution prompt links to that standard.
-- **Upgrade from 2.4.x (optional):** adopt the performance and delivery checks where they fit, and copy the relevant QA, CMO and design checklist additions. No rules were renumbered, and no new reviewer, skill, hook or required CI gate was added.
+- **Impact Connect, lessons 8–12:** publication-safe autofill, form refetch races, optional enrichment failures, actual zoom checks and fonts in generated graphics.
+  QA gains a "Feature-specific cases" list; PLAYBOOK section 8 gains a packaged-font check.
+- **Personal Website, lessons 1–2:** Replit's dev workflow hid a hydration failure that only the built artifact showed, and a blanket artifact rewrite overrode the site's 404 rule. Rule 17 gains the example; the section 10 release loop gains both checks.
+- **Adam Accounting, lessons 1–11:** a mobile speed fix that broke desktop, SSR imports left in the browser bundle, compression and cache headers, lost artifact registration, unchecked email results, sitemap dates, filled-field readability, SEO warning triage, search titles vs headlines, unstyled first paint and ARIA roles.
+  Examples extend rules 9 and 30 and sections 7, 8 and 11. QA checks the first render and filled form fields; the CMO records justified non-fixes and keeps search titles apart from headlines; design checks ARIA fits the element's role.
+- **CONTRIBUTING:** a lesson must say what the next build does differently, and what its evidence leaves unverified.
+- **Upgrade from 2.4.x (optional):** copy the QA, CMO and design checklist additions where they fit, plus the section 8 font and delivery checks. For static Replit artifacts, test a known and an unknown route over HTTP, and check hydration against the built artifact. No rules, roles, skills, hooks or CI changed.
+
+## 2.4.1 (27 Nov 2026)
+
+- README: each project's lessons come back with evidence of what worked, what failed and what to do differently, and the test is whether the same mistakes stop. No workflow or upgrade changes.
 
 ## 2.4.0 (27 Nov 2026)
 
