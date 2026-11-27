@@ -21,7 +21,7 @@ From the ask and the diff, list:
 - the **happy path**;
 - **edge cases**: empty, very long, special characters (`<script>`, quotes, emoji), zero, negative, duplicates, slow network, an expired session;
 - **every state**: loading, empty, error, success;
-- **the first render**, not only the settled page: where the app sends initial HTML, inspect it under delayed JavaScript and check that its styles are available. Keep preview findings separate from production-build results (playbook rule 17);
+- **the first render**, not only the settled page: where the app sends initial HTML, inspect it under delayed JavaScript and check that its styles are available. Type into and click server-rendered controls before hydration too: a box can show text that the app never receives. Keep preview findings separate from production-build results (playbook rule 17);
 - **phone width (375px) and desktop**, plus keyboard-only use, with focus visible;
 - for forms: **filled-field readability**, including text, background, caret and validation messages. Check native autofill and browser themes where they apply. A script filling a field doesn't prove native autofill works. Record which states you tested;
 - **what else could break**: pages that share the changed component or route (grep the callers);

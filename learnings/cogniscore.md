@@ -181,3 +181,36 @@
 - **Impact:** agents stopped relearning the port map and Replit quirks.
 - **Evidence:** the memory files and their index.
 - **Home:** [PLAYBOOK, working with the owner](../PLAYBOOK.md#working-with-the-owner); `template/.agents/memory/MEMORY.md`.
+
+## 21. Analysis succeeded but the database rejected the result
+
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **What happened:** the app accepted a supported extraction value, but a CHECK constraint in Supabase rejected it on save. Extraction and scoring had worked, so the save error first looked like an analysis failure.
+- **Impact:** valid evidence couldn't be saved until a separate schema migration was applied.
+- **Evidence:** `e2e/admin-text-evidence.spec.ts`, `e2e/admin-source-worker.spec.ts` and `scripts/test-evidence-rejection.sh` separate the save failure from extraction. They don't prove every live database has the same schema.
+- **Home:** [the database baseline](../modules/database.md#database-supabase).
+
+## 22. Specs written against live data, pushed without a PR
+
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **What happened:** on 25 Nov, Replit Agent pushed eight commits of search work and specs straight to `main`, so CI never ran them. The specs searched for VYVE and Real Mushrooms, which were in the live catalogue but not in CI's mock.
+- **Impact:** 13 to 14 browser tests failed on every PR after that, including ones that touched nothing in the browser, until the mock got the two brands.
+- **Evidence:** Cogniscore PR #63: the four affected spec files went from 13 failed and 12 passed to 25 passed. The commit authors show Replit Agent. Whether `main` was protected at the time wasn't checked.
+- **Home:** [PLAYBOOK rules 1 and 18](../PLAYBOOK.md#the-rules). The playbook didn't stop it because the guard hook binds Claude Code only. The check is now branch protection requiring a PR (Day 0), and `template/replit.md` (2.8.0) tells Replit Agent to work through PRs.
+
+## 23. Search box showed text typed before hydration but ignored it
+
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **Repeat of:** Cogniscore lesson 8.
+- **What happened:** the server-rendered search box showed text typed before React hydrated, but the app never picked it up or asked for suggestions. A browser test that held back the bootstrap script reproduced it every time.
+- **Impact:** a visitor on a slow start could lose their search with no error.
+- **Evidence:** `e2e/search-suggestions.spec.ts` failed 3 of 3 runs on the base and passed 3 of 3 with the fix (Cogniscore PR #64). This checks the browser journey, not production traffic.
+- **Home:** the first-render check in [the QA agent](../template/.claude/agents/qa-tester.md). Lesson 8 was a click; this was typing, which the QA list didn't name.
+
+## 24. A third-party value reaching public pages
+
+- **Kind:** Held back
+- **Home:** [PLAYBOOK rule 5](../PLAYBOOK.md#the-rules).
