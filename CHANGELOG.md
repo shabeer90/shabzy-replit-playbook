@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.0 (unreleased)
+
+- Eight approved Ihsan lessons: production-bundle checks (rule 17), controlled non-production integration tests (rule 18), preview proxy QA, cached private-screen access, private crawler controls, resolved dependency verification, private error logging and accurate metric labels. Raw evidence summaries are in `learnings/ihsan.md`.
+- **Upgrade from 1.1.x:** use the amended rules 17 and 18 and CI baseline when configuring QA. Adopt the Admin, Supply chain and private-portal SEO baseline changes where applicable. Update the QA and security reviewer files from `template/.claude/agents/`. Reviewer ownership, numbered rules, hooks and CI behaviour are unchanged.
+
 ## 1.1.1 (27 Nov 2026)
 
 - README rewritten in plain English.
