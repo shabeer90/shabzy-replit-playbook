@@ -5,7 +5,7 @@ For any project with pages people find through search or share. Rules 11 and 22 
 ## SEO and GEO baseline (launch gate)
 
 - One canonical host, with the other redirecting via 308. The `metadataBase`/canonical tag on every page.
-- `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing. Source sitemap modification dates from actual content records; omit optional dates when none exist, rather than substituting the build time (rule 9).
+- `sitemap.xml` and `robots.txt` generated from the database or content source. IndexNow on publish if you want Bing. Source sitemap modification dates from actual content records; omit optional dates when none exist, rather than substituting the build time (rule 9).
 - JSON-LD per page type (Organization, WebSite, Product/Review, BreadcrumbList, FAQ), through the escaping helper.
 - Self-hosted fonts, and `next/image` limited to a host allowlist in `config/`.
   Check that the required font files ship in the production output. For generated graphics, load those files in the renderer and wait for fonts before capture.

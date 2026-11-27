@@ -36,6 +36,8 @@ jobs:
       - run: pnpm build
       - name: Bundle (public pages stay small; private code stays out)
         run: python scripts/check_bundle.py
+      - run: pnpm exec playwright install --with-deps chromium   # the gate below runs specs; without a browser every spec "fails" on base
+        if: github.event_name == 'pull_request'
       - name: New tests must fail on base (a test that passes before the fix proves nothing)
         if: github.event_name == 'pull_request'
         run: scripts/assert_new_tests_fail_on_base.sh "origin/${{ github.base_ref }}"

@@ -32,11 +32,11 @@ mapfile -t PYFILES < <(git diff --name-only --diff-filter=AM "$BASE"...HEAD -- '
 #
 # What counts as a comment depends on the language, and checking was cheaper than guessing:
 #   .ts: //, /*, */ and a leading * (a JSDoc continuation). A leading * is also a multiplication
-#          carried onto the next line, but prettier puts an operator at the end of a line, and no
-#          line in e2e/ begins with one.
+#        carried onto the next line, but prettier puts an operator at the end of a line, and no
+#        line in e2e/ begins with one.
 #   .py: # only. NOT a leading *, because in Python that is an unpacking and real code:
-#          a call split over lines can start a line with `*args`. Docstrings are not
-#          prose either: a line inside one can look like anything.
+#        a call split over lines can start a line with `*args`. Docstrings are not
+#        prose either: a line inside one can look like anything.
 # Anything else is never prose, so a path this script grows later is examined until someone says
 # otherwise here.
 #
