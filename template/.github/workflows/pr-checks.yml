@@ -1,0 +1,50 @@
+# Required check on main. Actions are pinned to a commit SHA: replace each <sha> with the current
+# release's full SHA when copying (check the action's releases page), and keep the version comment.
+name: pr-checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<sha> # v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@<sha> # v4
+      - uses: actions/setup-node@<sha> # v4
+        with:
+          node-version: <version>
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/setup-python@<sha> # v5
+        with:
+          python-version: '<version>'
+      - run: pip install -r requirements.txt pytest
+      - name: Secrets in the tree
+        run: "! git grep -nE 'ghp_[A-Za-z0-9]{36}|github_pat_|sk-ant-|sk_live_|sb_secret_|BEGIN [A-Z ]*PRIVATE KEY' -- . ':!*.md' ':!.claude/hooks/guard.py' ':!.github/workflows/pr-checks.yml'"
+      - name: Types (the build may skip them)
+        run: pnpm exec tsc --noEmit
+      - name: Design system
+        run: python scripts/check_design_system.py
+      - name: Tests
+        run: python -m pytest -q
+      - run: pnpm build
+  e2e:
+    needs: checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<sha> # v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@<sha> # v4
+      - uses: actions/setup-node@<sha> # v4
+        with:
+          node-version: <version>
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm build && pnpm exec playwright test
