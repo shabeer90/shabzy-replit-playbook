@@ -64,4 +64,4 @@ template/
 
 - **Cogniscore** ([cogniscore.co.uk](https://cogniscore.co.uk)), May to November 2026: [learnings/cogniscore.md](learnings/cogniscore.md).
 - **Ihsan**, November 2026: [learnings/ihsan.md](learnings/ihsan.md).
-- **Impact Connect**, August to November 2026: [learnings/impact-connect.md](learnings/impact-connect.md).
+- **Impact Connect**, February to November 2026: [learnings/impact-connect.md](learnings/impact-connect.md).

@@ -3,7 +3,7 @@
 - **What it is:** a public directory of Muslim-founded startups.
 - **Stack:** Express, Vite, React, TypeScript, PostgreSQL and object storage.
 - **Where it runs:** Replit, with an external PostgreSQL database.
-- **Dates:** August to November 2026.
+- **Dates:** February to November 2026.
 - **Evidence:** project commits, server code and regression tests; private reports are summarised, never copied or linked. No fresh production audit was run.
 
 ## 1. Keep CLI exits out of imported server modules
@@ -68,3 +68,48 @@
 - **Impact:** route splitting gained a regression check against accidental eager imports and bundle growth.
 - **Evidence:** commit `4c7eaa1`; `tests/routeBundles.check.mjs` and `tests/routeLoading.smoke.mjs`. The manifest check enforces a 1.25 MiB budget; the browser smoke checks route loading and unauthenticated redirects. These are local built-output checks, not measurements of live page speed or verification of signed-in dashboards.
 - **Home:** [PLAYBOOK section 7](../PLAYBOOK.md#7-ci-baseline-pr-checksyml).
+
+## 8. Autofill must preserve a published record's status
+
+- **When:** Feb 2026
+- **Kind:** Went wrong
+- **What happened:** autofill reused draft autosave for both new and existing startups. The update payload set `isPublic: false`, so editing a published record could silently unpublish it. Autosave was restricted to new drafts; existing records require an explicit save.
+- **Impact:** a convenience action could change whether a startup was public without a publication decision.
+- **Evidence:** commit `9aff5f7`; `client/src/components/admin/StartupFormDialog.tsx`. The diff removes the existing-record target from draft autosave and separates its completion path. This is source-fix evidence, not proof of a production unpublishing incident or a passing end-to-end regression test.
+- **Home:** [QA feature-specific cases](../template/.claude/agents/qa-tester.md#feature-specific-cases).
+
+## 9. Refetch must not reset unsaved form changes
+
+- **When:** Mar 2026
+- **Kind:** Went wrong
+- **What happened:** a query refetch could reset the startup edit form after autofill had populated it. The fix initialized the form once per edited record rather than resetting it whenever the query returned.
+- **Impact:** background data refresh could erase work the user had not saved.
+- **Evidence:** commit `59c9735`; the initialization guard in `client/src/components/admin/StartupFormDialog.tsx`. The diff supports the refetch fix. No dedicated asynchronous form regression test was found in this review, and manual-edit preservation was not exercised here.
+- **Home:** [QA feature-specific cases](../template/.claude/agents/qa-tester.md#feature-specific-cases).
+
+## 10. Optional enrichment must not block a valid submission
+
+- **When:** Feb 2026
+- **Kind:** Went wrong
+- **What happened:** LinkedIn scraping often failed from bot protection, but the startup form required founder name and title. Client validation was relaxed for those fields; the server's founder columns were already optional.
+- **Impact:** optional scraped information had become a barrier to saving a startup.
+- **Evidence:** commit `9aff5f7` changes validation in `client/src/components/admin/StartupFormDialog.tsx` and records the scraping constraint in `replit.md`; `shared/schema.ts` defines the optional founder columns. This supports the field decision, not a claim that every provider-failure journey works. Required business fields must remain required.
+- **Home:** [QA feature-specific cases](../template/.claude/agents/qa-tester.md#feature-specific-cases).
+
+## 11. Allowing zoom is not testing zoom
+
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **What happened:** accessibility work removed restrictive viewport settings. Its browser script checked the viewport tag and printed a success message that included "zoom", but did not exercise browser zoom or check the resulting reflow.
+- **Impact:** the test report could imply more accessibility coverage than the assertion provided.
+- **Evidence:** commit `e329206`; `tests/e2e/public-accessibility.mjs` and `client/index.html`. The script also has real keyboard, label, focus and contrast checks; those are not missing. Actual zoom usability was not tested during this contribution.
+- **Home:** [QA feature-specific cases](../template/.claude/agents/qa-tester.md#feature-specific-cases).
+
+## 12. Fonts must reach the graphics renderer
+
+- **When:** Aug 2026
+- **Kind:** Worked
+- **What happened:** deployed pages and server-generated posters needed different font handling. The poster fix resolved the production font directory, embedded WOFF2 bytes in the generated HTML and waited for `document.fonts.ready` before capture.
+- **Impact:** generated graphics no longer depended on the page's font-loading setup.
+- **Evidence:** commit `e2a5b01`; `server/services/posterGenerator.ts`. It selects `dist/public/fonts` when that directory exists, otherwise the source font directory. This review did not build the artifact, verify that each font file shipped, or check live rendering. It does not establish that every project font is self-hosted.
+- **Home:** [PLAYBOOK section 8](../PLAYBOOK.md#8-seo-and-geo-baseline-public-sites-launch-gate), under the existing self-hosted-font item.
