@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2 (27 Nov 2026)
+
+- Project details removed from security lessons that aren't fixed yet in the project they came from: rule 2 is made general, the project lines on rules 3 to 6 and their learnings rows are removed, and two template comments are made general. They come back once fixed. A brand name is removed from rule 8.
+
 ## 1.1.1 (27 Nov 2026)
 
 - README rewritten in plain English.
