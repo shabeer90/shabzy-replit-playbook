@@ -43,7 +43,7 @@ It's easy, especially on Replit, to keep building whatever gets suggested next. 
    - **QA** runs every journey end to end, not only the new feature.
    - **EM** checks the build against the PRD and confirms the journeys passed.
 8. **Fix and re-run.** The builder fixes confirmed findings, and only the reviewer that raised each one re-runs.
-9. **Open the PR.** The hook allows `gh pr create` once the PRD is approved and every required reviewer says `ship`. The review file goes in the PR, and Auto-fix is turned on.
+9. **Open the PR.** The hook allows `gh pr create` once the PRD is approved and every required reviewer says `ship`. The review file is pasted into the PR description (`.reviews/` is git-ignored), and Auto-fix is turned on.
 10. **Ship.** The owner merges, pulls in Replit and publishes. The CEO runs the live check and the journeys against the live site, then moves the PRD to **Shipped**.
 11. **Learn.** After each batch, the CEO writes a retro, and anything reusable goes to the playbook.
 
@@ -77,7 +77,7 @@ Reviews are where the tokens go, so they're scoped:
 - **One-line sign-off when out of scope.** A reviewer whose area isn't touched in substance says so and stops.
 - **Reviewers read the diff and the functions it touches,** not the whole repo.
 - **Model per role,** set in each agent's `model:` frontmatter (check current Claude Code docs for the allowed values):
-  - the strongest model for CTO, security, data and CPO, where a miss is expensive;
+  - `inherit` (the session's model) for CTO, security, data and CPO, where a miss is expensive, so run the main session on the strongest model;
   - a cheaper one for EM, QA, design and CMO.
 - **No double work:** each check has one owner (the table above). If two agents' instructions overlap, fix the instructions; don't run both.
 - **Expensive skills by decision only:** the full `security-audit`, a full site crawl (`audit-website`), a full `impeccable` critique of every page. These run at launch and at milestones, with the owner choosing the depth.
@@ -99,4 +99,4 @@ Reviews are where the tokens go, so they're scoped:
 | 2: Trusted shipper | Merge PRs that touch only docs, copy or tests, once every reviewer says ship | Several batches with no incident traced to a review miss |
 | 3: Operator | Run approved, scripted live jobs on a schedule (reports, checks), never live data writes | The owner's explicit decision, per job |
 
-Never delegated, at any level: secrets, live data writes outside an approved script, merging code changes to `main`, spending money, posting publicly as the owner.
+Never delegated, at any level: secrets, live data writes, merging code changes to `main`, spending money, posting publicly as the owner.

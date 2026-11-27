@@ -6,7 +6,7 @@ Playbook: https://github.com/shabeer90/shabzy-replit-playbook, version `<x.y.z>`
 
 ## How work happens
 
-- **GitHub is the source of truth.** Every change goes on a branch through a pull request. Never push to `main`; never auto-merge. Replit pulls `main` and publishes. A merged PR is not live until the owner pulls in the Replit Shell and republishes.
+- **GitHub is the source of truth.** Every change goes on a branch through a pull request. Never push to `main`. Never merge a PR unless the autonomy level in `ORG.md` allows it for that kind of change. Replit pulls `main` and publishes. A merged PR is not live until the owner pulls in the Replit Shell and republishes.
 - **The owner decides** scope, anything that goes live, and every judgement call. Agents research, dry-run and propose.
 - **No PRD, no feature.** Only work under **Now** in `docs/ROADMAP.md`, with an approved PRD in `docs/prd/`, gets built. Every other idea, including your own suggestions, goes under **Parked ideas** with its source and the date. Small fixes skip the PRD and say `PRD: fix`.
 - **The user's journey always works.** `docs/JOURNEYS.md` lists the end-to-end paths that must never break. QA runs all of them on every PR that touches the app.

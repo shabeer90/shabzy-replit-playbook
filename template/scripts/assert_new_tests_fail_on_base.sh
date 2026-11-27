@@ -28,15 +28,14 @@ mapfile -t PYFILES < <(git diff --name-only --diff-filter=AM "$BASE"...HEAD -- '
 # never broken. Both refusals are true and useless, and what they cost is this: a comment that has
 # gone stale — a fix landed, the comment still tells the next reader the bug is open — is cheaper
 # to leave wrong than to correct. A gate that makes the documentation around the tests rot is
-# doing harm, which is the same argument that made *.md prose above, applied inside a test file.
+# doing harm.
 #
 # What counts as a comment depends on the language, and guessing cost nothing to check:
 #   .ts  — //, /*, */ and a leading * (a JSDoc continuation). A leading * is also a multiplication
 #          carried onto the next line, but prettier puts an operator at the end of a line, and no
 #          line in e2e/ begins with one.
 #   .py  — # only. NOT a leading *, because in Python that is an unpacking and real code:
-#          scripts/rescore_corrected_products.py:221 is `*PLATFORM_SCORE_FIELDS, "transparency...`,
-#          and a call split over lines in a test file would read the same way. Docstrings are not
+#          a call split over lines can start a line with `*args`. Docstrings are not
 #          prose either: a line inside one can look like anything.
 # Anything else is never prose, so a path this script grows later is examined until someone says
 # otherwise here.
@@ -159,7 +158,7 @@ unrunnable=()
 flaky=()
 
 # How many times to ask before believing a test on BASE is reliable. Once is not an answer.
-# e2e/homepage-performance.spec.ts failed on main in run 44058392186 and passed on a re-run of
+# A spec once failed on main in one CI run and passed on a re-run of
 # that same commit, with no code in between; this gate ran base's copy once, saw the second
 # kind of run, and refused the fix because "they were not broken". A test that passes four
 # times in five WAS broken on base — intermittently, which is the hardest kind to fix and the

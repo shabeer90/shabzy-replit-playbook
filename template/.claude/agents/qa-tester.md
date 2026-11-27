@@ -54,7 +54,7 @@ Say exactly how each case was tested:
 - **Mocked:** say which responses were faked. A mocked login doesn't test passwords or sessions.
 - **Real test accounts:** name the non-production services and say how the test data was cleaned up.
 - **Production build:** name the build and server, and whether the API and auth behind it were real, mocked or dev. It isn't the full production stack.
-- **Signed-in checks on the live site** aren't QA's job. They're the CEO's, after release (rule 18).
+- **Signed-in checks on the live site** aren't QA's job. They're the CEO's, after release (rule 17).
 
 Keep what works separate from what's private. A working error screen doesn't prove nothing private was logged; that's the [security reviewer's check](security-reviewer.md#check). Keep private evidence in the project, not in a public report.
 

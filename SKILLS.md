@@ -6,13 +6,13 @@ Install community skills with the [Skills CLI](https://skills.sh), which records
 npx skills add <github-owner/repo> --skill <name>
 ```
 
-Every CLI-installed skill must be in `skills-lock.json`. On Cogniscore, 7 of 15 were missing, so nobody could tell where they came from or whether they had changed. Replit's own guidance and Claude Code's built-in commands aren't installed this way, so they don't belong in the lockfile.
+Every CLI-installed skill must be in `skills-lock.json`. In one project, 7 of 15 were missing, so nobody could tell where they came from or whether they had changed. Replit's own guidance and Claude Code's built-in commands aren't installed this way, so they don't belong in the lockfile.
 
 ## Replit's built-in guidance and tools
 
 Replit gives its Agent its own instructions and tools. They aren't skills from the Skills CLI, and a similar name doesn't make them the same thing. Before relying on one, check what the current session can actually do. A tool that worked last week, or a file that mentions it, doesn't prove it's available now. If a tool is missing, say what you used instead and what that left unchecked (see [review records](template/ORG.md#review-records)). Don't install a community skill just to fill the gap.
 
-What Ihsan's Replit environment offered (yours may differ, **check current docs**):
+What one Replit environment offered (yours may differ, **check current docs**):
 
 | Replit guidance | Used for | Owner | Check before using |
 |---|---|---|---|
@@ -65,7 +65,7 @@ All were checked to exist in their repos on 27 Nov 2026. Read each SKILL.md befo
 | Skill | Source | Used by | Job |
 |---|---|---|---|
 | webapp-testing | anthropics/skills | qa-tester | Drives the local app with Playwright: checks features, screenshots, browser logs |
-| code-review | mattpocock/skills | em-reviewer | Reviews a diff against the PRD and the repo's standards, in parallel sub-agents |
+| code-review (mattpocock) | mattpocock/skills | em-reviewer only | Reviews a diff against the PRD and the repo's standards, in parallel sub-agents |
 | to-spec | mattpocock/skills | cpo | Turns a conversation into a written spec; the cpo puts it in the PRD template |
 | grilling | mattpocock/skills | cpo | Questions the owner one at a time until the ask is clear |
 | tdd | mattpocock/skills | the builder | Red-green-refactor, so features arrive with tests |
@@ -96,13 +96,13 @@ All were checked to exist in their repos on 27 Nov 2026. Read each SKILL.md befo
 
 ## Built into Claude Code (no install)
 
-- `/code-review`: review the current diff for bugs. cto-reviewer uses it.
+- `/code-review`: a bug pass on the current diff. cto-reviewer uses it; it's a different thing from mattpocock's `code-review` skill, which the EM uses.
 - `/security-review`: a security pass on the branch. security-reviewer uses it.
 - `/simplify`: cleanup without hunting bugs.
 
 ## Project skills
 
-Write one with skill-creator when the project repeats a workflow with house rules. On Cogniscore these were Reddit replies drafted for manual posting, and releasing a brand's evidence.
+Write one with skill-creator when the project repeats a workflow with house rules. For example: Reddit replies drafted for manual posting, or a project's own release steps.
 
 ## Looked at, not chosen
 

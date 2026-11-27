@@ -37,8 +37,9 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
    *On Ihsan:* an open staff tab could keep confidential records visible after access changed. Live revalidation now hides them when verification fails, including offline failures (section 5).
 
 7. **Type errors must fail CI, even if the build doesn't check them.**
-    Run `tsc --noEmit` as a required CI step.
-    *On Cogniscore:* Next.js's own type check stalled deploys for minutes on a fresh environment with no incremental cache. The fix was `typescript.ignoreBuildErrors` and `eslint.ignoreDuringBuilds` in `next.config`, with `tsc` in CI as the real gate. Don't remove those flags thinking they're sloppy, and don't drop the CI step thinking the build covers it.
+   Run `tsc --noEmit` as a required CI step.
+   *On Cogniscore:* Next.js's own type check stalled deploys for minutes on a fresh environment with no incremental cache. The fix was `typescript.ignoreBuildErrors` and `eslint.ignoreDuringBuilds` in `next.config`, with `tsc` in CI as the real gate. Don't remove those flags thinking they're sloppy, and don't drop the CI step thinking the build covers it.
+   Was "the build must fail on type errors" until Cogniscore showed the build's own check stalled deploys.
 
 8. **Tests carry the history.** When something breaks, write a test whose docstring says what happened, the date, and why the rule exists. The next person, or agent, can't then "simplify" the fix away.
    *On Cogniscore:* `scripts/test_*.py` (image hosts, self-hosted fonts, a brand scraper's COA fallback) worked well.
@@ -94,11 +95,11 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     - Use a confirmed non-production service and database, with owned synthetic accounts and records only. Never write real customer records, even in development.
     - Roll back transactions or reliably clean up exact owned fixtures, including sessions and test-owned rate-limit entries, after success or failure. Never reset shared limits.
     - Keep authentication, authorisation and rate limits unchanged. Test transport isolation belongs in the test harness, never in production auth code.
-    - CI retries a failing e2e test once. Investigate the cause; a passing retry does not clear the failure.
+    - CI retries a failing e2e test once. Investigate the cause. A passing retry doesn't clear the failure.
 
-    Was mock-only until Ihsan showed that real password, session, role and database checks needed controlled non-production integration tests.
     *On Cogniscore:* a click landing before hydration failed about one CI run in three, and never once in 60 local runs.
     *On Ihsan:* synthetic accounts exercised real password validation, sessions and role revocation against the development API and database. Mocked browser responses remained useful for deterministic runtime failures.
+    Was mock-only until Ihsan showed that real password, session, role and database checks needed controlled non-production integration tests.
 
 19. **An agent that edits code is bounded by a gate, not by its good behaviour.** Give it a policy file of the paths and line patterns it may change, and a CI check that reads the diff and refuses anything outside the policy.
     *On Cogniscore:* the weekly SEO agent opens PRs only inside `seo/agent/policy.json`. `check_claim.py` checks the diff itself, not the agent's description of it.
@@ -114,20 +115,16 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 21. **Measure before cutting cost.** Add timings first, then cut the step that's actually slow. Sampling to save time can fake a regression in a report that compares runs.
     *On Cogniscore:* the weekly SEO report took 16 minutes, and the obvious trim would have saved 22% and invented a drop in indexed pages.
 
-22. **The live site is checked by a script.** `check_live_site.py` read the sitemap and the database and compared each page with what it should show. It ran after every release. Production health is a separate job (`live-observables.yml`) that checks a list of assertions on a schedule.
+22. **The live site is checked by a script, not by eye.** After every release, a script compares each sitemap page with what the database says it should show. A separate scheduled job checks production health. List the command under *Live check* in `AGENTS.md`.
+    *On Cogniscore:* `check_live_site.py` and `live-observables.yml`.
 
 23. **Every project runs as an AI company.** The owner is the board. The main session is the CEO. The CPO, CTO and CMO and their teams are agents with one owner per job (`template/ORG.md`). No two agents do the same check.
 
-24. **Reviews cost tokens, so they're scoped.**
-    - Reviewers wake only for their paths.
-    - They sign off in one line when the change doesn't really touch their area.
-    - Each runs on a model that fits the stakes.
-    - Expensive skills (full audits, full crawls) run only when the owner decides.
-    - The retro records what each batch cost.
+24. **Reviews cost tokens, so they're scoped.** Reviewers wake only for their paths, and the retro records what each batch cost. The full budget is in `template/ORG.md`.
 
 25. **A finding seen twice becomes a check.** A test, a hook rule or a CI step, so no reviewer has to spot it a third time. This is how the work gets cheaper and more autonomous from one project to the next.
 
-26. **Autonomy is earned, one level at a time, and only the owner moves it** (the ladder in `template/ORG.md`). Secrets, live data writes, merging code and spending money are never delegated.
+26. **Autonomy is earned, one level at a time, and only the owner moves it.** The ladder, and what's never delegated, are in `template/ORG.md`.
 
 27. **Words read like a person wrote them.** Every user-facing word, and every report to the owner, is plain and specific, with no AI tells. The CMO reviewer checks with the `humanizer` skill.
     *On Cogniscore:* drafts were rewritten for plain English again and again, by hand. The rule is new from here.
@@ -137,7 +134,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 29. **No PRD, no feature: the project is not a feature factory.**
     - `docs/ROADMAP.md` is the only list of what gets built, with at most three items under **Now**. Every other idea, including Replit Agent's suggestions, is parked with its source and date.
     - Anything bigger than a small fix needs a PRD that the leadership agents have reviewed and the owner has approved.
-    - The guard hook won't open a PR without a link to one.
+    - The guard hook won't open a PR without a link to an approved PRD, or `PRD: fix` for a small fix.
 
     *On the owner's Replit projects:* Replit kept suggesting features, and building them was tempting. Products drifted, and what was actually planned got forgotten.
 
@@ -157,19 +154,7 @@ Each project is run as an AI company. [`template/ORG.md`](template/ORG.md) is th
 - the token budget;
 - the autonomy ladder.
 
-The agent files are in [`template/.claude/agents/`](template/.claude/agents/).
-
-| Role | Agent | Runs |
-|---|---|---|
-| CEO | the main session | Always |
-| CPO | `cpo` | Writes the PRD for any work bigger than a small fix; keeps `docs/ROADMAP.md`; parks unplanned ideas |
-| Head of Design | `head-of-design` | Before new UI; reviews UI changes (DESIGN) |
-| CTO | `cto-reviewer` | Reviews code changes (CTO) |
-| Engineering manager | `em-reviewer` | Reviews every PR against its PRD and the journeys (EM) |
-| QA | `qa-tester` | Runs every user journey end to end, plus the new feature, in a browser (QA) |
-| Security | `security-reviewer` | Reviews code and config changes (SECURITY) |
-| Head of Data | `head-of-data` | Projects with a database: designs schema changes, reviews data changes (DATA) |
-| CMO | `cmo-reviewer` | Reviews user-facing words, plus SEO and GEO on public sites (CMO) |
+The agent files are in [`template/.claude/agents/`](template/.claude/agents/), and ORG.md's roles table says which agent owns what.
 
 The guard hook (`template/.claude/hooks/guard.py`) also blocks:
 - secrets in files;
@@ -181,12 +166,11 @@ Hooks bind Claude Code only. If Replit Agent builds something, have Claude Code 
 
 ## 3. Day 0: before the first prompt to an agent
 
-
 - [ ] **Create the GitHub repo first.** Protect `main`: PRs required, CI required.
 - [ ] **Import the repo into Replit.** Decide now who writes code: Replit Agent, Claude Code, or both. If both, they both work through branches and PRs.
 - [ ] **Store secrets only in Replit's Secrets tool** and in GitHub Actions secrets **(check current docs for how Replit splits workspace and deployment secrets)**. Write down which key lives where, without the values.
 - [ ] **Turn on GitHub secret scanning and push protection** for the repo.
-- [ ] **Commit a `.gitignore`.** It covers `.env*` (including `.env.production`), `.venv`, `node_modules`, `.next*`, logs and local tool folders.
+- [ ] **Commit a `.gitignore`.** It covers `.env*` (including `.env.production`), `.venv`, `node_modules`, `.next*`, `.reviews/`, logs and local tool folders.
 - [ ] **Commit `CLAUDE.md` / `AGENTS.md`** with the project rules (template in `template/`).
 - [ ] **Choose the stack and pin it.**
   - Node and Python versions go in `.replit` modules and in CI.
@@ -195,9 +179,7 @@ Hooks bind Claude Code only. If Replit Agent builds something, have Claude Code 
 - [ ] **Separate test and live environments.** Use a second Supabase project, or at least a separate schema, so agents and tests never write live data.
 - [ ] **Buy the domain and decide www or apex now.** Pick one canonical host and redirect the other.
 
-
 ## 4. Repo skeleton
-
 
 ```
 app/ or src/            site code
@@ -218,9 +200,7 @@ docs/JOURNEYS.md        the user journeys that must always work
 .replit                 runtime config only: no secrets
 ```
 
-
 ## 5. Security baseline (check before launch)
-
 
 | Area | Minimum |
 |---|---|
@@ -238,30 +218,25 @@ docs/JOURNEYS.md        the user journeys that must always work
 
 ## 6. Database (Supabase)
 
-
 - Write `schema.sql` before the first table exists. Enable RLS on **every** table and write a policy for each role.
 - **Anon:** SELECT only, on the columns the page needs (column-level `GRANT`). No INSERT policies unless the feature needs one.
 - **Service role:** only server-side, only in jobs and admin routes.
 - Check the live state now and then: `select * from pg_policies;` and the column grants. The repo SQL and the live DB drift apart.
 - Every table that records an event (clicks, requests) needs a retention rule and an index on the time column.
 
-
 ## 7. CI baseline (`pr-checks.yml`)
-
 
 1. Install from the lockfile.
 2. Type check (`tsc --noEmit`).
-3. Unit tests (`pytest scripts agents`, `node --test`).
+3. Unit tests (`pytest`; add `node --test` if the project has Node unit tests).
 4. Build.
 5. New tests must fail on the base commit (rule 16).
 6. e2e (Playwright) against the built app, using the test modes and safeguards in [rule 18](#1-the-rules).
-7. Turn on Auto-fix or a CI monitor on every PR, and never auto-merge.
+7. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
 
 Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get the least permission they need and only the secrets they use.
 
-
 ## 8. SEO and GEO baseline (public sites, launch gate)
-
 
 - One canonical host, with the other redirecting via 308. The `metadataBase`/canonical tag on every page.
 - `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing.
@@ -294,7 +269,6 @@ Crawler instructions are not access controls. Protected routes still need authen
 
 ## 10. Release loop on Replit
 
-
 1. Merge the PR on GitHub.
 2. In the Replit Shell, run `git pull origin main` (and `pnpm install` if the lockfile changed).
 3. Publish or redeploy in Replit. You must do this after **any** site code or `next.config` change; ISR pages don't pick up config changes alone.
@@ -305,9 +279,7 @@ Things to remove before launch:
 - Replit leftovers you don't use: canvas or mockup sandboxes, an extra `api-server` that only has `/healthz`, stale `.replit-artifact` files.
 - Anything deployed and unused is attack surface and cost.
 
-
 ## 11. Replit platform notes
-
 
 These are project observations from Cogniscore and Ihsan, not platform guarantees. Replit changes, so **(check current docs)** before relying on them.
 
@@ -329,9 +301,7 @@ These are project observations from Cogniscore and Ihsan, not platform guarantee
 - **Replit's built-in database is not your database.** If the project uses Supabase or another external DB, schema changes go there, through its SQL editor or a management connection, never into a Replit DB as a substitute.
 - **Delete Replit scaffolds you don't use:** mockup sandboxes, `api-server` stubs, Canvas.
 
-
 ## 12. Working with the owner
-
 
 How the agents should work with you, on any project:
 
@@ -344,9 +314,7 @@ How the agents should work with you, on any project:
 - **Words:** keep a `GLOSSARY.md` of domain terms so every agent and page uses the same words.
 - **Retros** after each batch, from `docs/retro-template.md`. Anything another project should know goes to this playbook.
 
-
 ## 13. Growth (public products)
-
 
 Optional; use what fits.
 
@@ -362,7 +330,6 @@ Optional; use what fits.
 
   *On Cogniscore:* `social/30-day-plan.md`.
 - **Search Console and Bing Webmaster** from day one, with weekly exports of queries and links.
-
 
 ## 14. Starter files
 
@@ -383,7 +350,6 @@ Everything is in [`template/`](template/):
 - **Memory and words:** `docs/retro-template.md`, `.agents/memory/MEMORY.md`, `GLOSSARY.md`.
 
 ## 15. First-week checklist
-
 
 - [ ] The CI gate is green and required on `main`.
 - [ ] Secrets inventory written (names and locations, no values). Secret scanning is on.

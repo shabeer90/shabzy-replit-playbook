@@ -1,6 +1,6 @@
 # Hooks
 
-`guard.py` runs before every Bash, Write and Edit call that Claude Code makes in this repo (wired up in `.claude/settings.json`). It blocks:
+`guard.py` runs before every Bash, Write, Edit and MultiEdit call that Claude Code makes in this repo (wired up in `.claude/settings.json`). It blocks:
 
 - secrets written into tracked files;
 - commits that contain secrets, and `--no-verify`;
