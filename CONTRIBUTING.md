@@ -50,7 +50,10 @@ One format means any agent can read every project's lessons the same way, and sp
 
 ## The bar for a rule
 
-- **It happened.** A real incident, cost or win. General advice is fine in the checklists, but mark it as general.
+Improve an existing rule or check before adding a new one. A small site fix earns a place only if it teaches something the next build should do differently.
+
+- **It happened.** A real incident, cost or win. Say what the evidence proves and what it leaves unverified. General advice is fine in the checklists, but mark it as general.
+- **It changes the next build.** Say what another project should do differently to avoid repeated mistakes, rework, unnecessary cost or broken user journeys. A list of fixes alone is not a lesson.
 - **It says what to do.** "Decide RLS per column on day one", not "be careful with RLS".
 - **It's checked by something where possible:** a hook, a CI step or a test. A rule that's only in prose gets forgotten (rule 25).
 

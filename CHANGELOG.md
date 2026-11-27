@@ -5,7 +5,10 @@
 - **Impact Connect, lessons 8–12:** publication-safe autofill, form refetch races, optional enrichment failures, actual zoom checks and fonts in generated graphics.
   QA gains a "Feature-specific cases" list; PLAYBOOK section 8 gains a packaged-font check.
 - **Personal Website, lessons 1–2:** Replit's dev workflow hid a hydration failure that only the built artifact showed, and a blanket artifact rewrite overrode the site's 404 rule. Rule 17 gains the example; the section 10 release loop gains both checks.
-- **Upgrade from 2.4.x (optional):** copy the QA cases and the section 8 font check where they fit. For static Replit artifacts, test a known and an unknown route over HTTP, and check hydration against the built artifact. No rules, roles, skills, hooks or CI changed.
+- **Adam Accounting, lessons 1–11:** a mobile speed fix that broke desktop, SSR imports left in the browser bundle, compression and cache headers, lost artifact registration, unchecked email results, sitemap dates, filled-field readability, SEO warning triage, search titles vs headlines, unstyled first paint and ARIA roles.
+  Examples extend rules 9 and 30 and sections 7, 8 and 11. QA checks the first render and filled form fields; the CMO records justified non-fixes and keeps search titles apart from headlines; design checks ARIA fits the element's role.
+- **CONTRIBUTING:** a lesson must say what the next build does differently, and what its evidence leaves unverified.
+- **Upgrade from 2.4.x (optional):** copy the QA, CMO and design checklist additions where they fit, plus the section 8 font and delivery checks. For static Replit artifacts, test a known and an unknown route over HTTP, and check hydration against the built artifact. No rules, roles, skills, hooks or CI changed.
 
 ## 2.4.1 (27 Nov 2026)
 

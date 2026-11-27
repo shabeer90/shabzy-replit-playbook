@@ -47,6 +47,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 9. **Evidence first, then the write.** Any published fact comes from a saved source file in the repo. Write a dry run first and compare it with the live result.
    *On Cogniscore:* the batch releases that ran from `evidence/brands/` were repeatable to the decimal. Hand-seeded data was the biggest source of wrong scores.
    *On Ihsan:* metric definitions separated application submissions from unique startups, and distinct primary email addresses from verified people. Those labels are not interchangeable.
+   *On Adam Accounting:* sitemap modification dates were omitted where no editorial record supported them; a build date was not treated as a content edit.
 
 10. **Dangerous scripts are never run by hand or by CI by accident.** These are seeders, resets and anything that writes live data. Put a test or a guard in place that blocks them.
     *On Cogniscore:* scoring was kept out of CI (`test_no_ci_scoring.py`). The seed and reset scripts were off-limits.
@@ -150,6 +151,8 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 
     A feature that works on its own but breaks the journey is a failed feature.
 
+    *On Adam Accounting:* the contact route awaited an email SDK call but ignored its returned error. It now checks the result and rejects unsaved enquiries when the provider fails; provider acceptance still does not prove inbox delivery.
+
 ## 2. How the company works
 
 Each project is run as an AI company. [`template/ORG.md`](template/ORG.md) is the single source for:
@@ -239,21 +242,28 @@ docs/JOURNEYS.md        the user journeys that must always work
 6. e2e (Playwright) against the built app, using the test modes and safeguards in [rule 18](#1-the-rules).
 7. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
 
-For apps with split routes, check the built manifest's transitive static imports. Private routes must stay out of the public entry graph, and protected screens out of the login graph. Set a JavaScript size budget for the project and fail the check when the built JavaScript exceeds it. Deferring code is not access control; private APIs still need authentication.
+For apps with split routes, check the built manifest's transitive static imports. Private routes must stay out of the public entry graph, and protected screens out of the login graph. Server-only page registries must stay out of the browser graph; a source-level SSR conditional does not establish that side effects were removed. Set a JavaScript size budget for the project and fail the check when the built JavaScript exceeds it. Deferring code is not access control; private APIs still need authentication.
 
 *On Impact Connect:* `tests/routeBundles.check.mjs` checks the emitted Vite graph and a 1.25 MiB JavaScript budget. It guards route boundaries and bundle size, not live page speed.
+
+*On Adam Accounting:* moving eager SSR page imports into a separate server-only module reduced initial browser JavaScript from about 428KB to 198KB. The shared module's SSR conditional had not kept import side effects out of the browser bundle.
+
+**Optional for public sites: performance budgets.** Run Lighthouse against the production build, on mobile and desktop, several times each, with a pinned Lighthouse version. Fail on the project's own score, layout-shift and JavaScript budgets. A mobile speed fix must be checked on desktop too. Local results are not live results (rule 17), and a failing budget is fixed, not loosened.
+
+*On Adam Accounting:* critical CSS meant for the mobile homepage also applied on desktop and caused layout shifts ([lesson 1](learnings/adam-accounting.md#1-a-mobile-speed-fix-changed-the-desktop-layout)).
 
 Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get the least permission they need and only the secrets they use.
 
 ## 8. SEO and GEO baseline (public sites, launch gate)
 
 - One canonical host, with the other redirecting via 308. The `metadataBase`/canonical tag on every page.
-- `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing.
+- `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing. Source sitemap modification dates from actual content records; omit optional dates when none exist, rather than substituting the build time (rule 9).
 - JSON-LD per page type (Organization, WebSite, Product/Review, BreadcrumbList, FAQ), through the escaping helper.
 - Self-hosted fonts, and `next/image` limited to a host allowlist in `config/`.
   Check that the required font files ship in the production output. For generated graphics, load those files in the renderer and wait for fonts before capture.
   *On Impact Connect:* the poster renderer needed production font paths, embedded WOFF2 files and `document.fonts.ready`. The source fix alone did not prove the fonts shipped or rendered correctly in a live release.
 - A test that every page template has a title, description, canonical, H1 and JSON-LD.
+- Response headers, checked separately from the HTML: compression on text responses, long caching for fingerprinted assets, revalidation for HTML. Check the production server and the published site separately (rule 17). Use the host's own settings where they're enough ([Adam Accounting lesson 3](learnings/adam-accounting.md#3-correct-html-did-not-establish-correct-file-delivery)).
 - Search Console and Bing Webmaster verified on day one. Export links and queries weekly.
 - Internal links: every sitemap page linked from at least a few others.
 - Missing image paths return a real 404, with `Cache-Control: no-store`, not the SPA's HTML.
@@ -299,7 +309,7 @@ Things to remove before launch:
 
 ## 11. Replit platform notes
 
-These are project observations from Cogniscore, Ihsan and Impact Connect, not platform guarantees. Replit changes, so **(check current docs)** before relying on them.
+These are project observations from Cogniscore, Ihsan, Impact Connect and Adam Accounting, not platform guarantees. Replit changes, so **(check current docs)** before relying on them.
 
 - **Publishing uses the workspace copy:** pull `main` in the Shell before you publish.
 - **Uploaded assets need durable storage:** do not treat the published filesystem as the permanent copy. Await the storage write and check its result before reporting that an upload is durable. If it fails, report failure or clearly mark the upload as not backed up; retries alone are not success.
@@ -319,6 +329,7 @@ These are project observations from Cogniscore, Ihsan and Impact Connect, not pl
 - **pnpm workspace:** if `.replit` says `stack = "PNPM_WORKSPACE"`, make sure `pnpm-workspace.yaml` and `tsconfig.base.json` exist. Without them, workspace packages silently get no dependencies.
 - **`postMerge` script:** keep it non-interactive with a frozen lockfile (`pnpm install --frozen-lockfile --prefer-offline`). Fix a conflicted lockfile on its own, from the merged manifests, not by discarding one side.
 - **A root-level app can't write `.replit-artifact/artifact.toml` directly.** Register it with `createArtifact`, then swap the config with `verifyAndReplaceArtifactToml`, keeping `[[integratedSkills]]` verbatim.
+  If publishing can't find an app whose artifact files are still there, compare the registered artifacts with the files before touching run commands. On Adam Accounting, registration was lost after an external CLI installer ran; resubmitting the existing manifests through the artifact tool fixed it ([lesson 4](learnings/adam-accounting.md#4-artifact-files-remained-after-their-registration-was-lost)). The installer's role wasn't reproduced **(check current docs)**. Read an installer before running it, and check what config it changed.
 - **Replit's built-in database is not your database.** If the project uses Supabase or another external DB, schema changes go there, through its SQL editor or a management connection, never into a Replit DB as a substitute.
 - **Delete Replit scaffolds you don't use:** mockup sandboxes, `api-server` stubs, Canvas.
 

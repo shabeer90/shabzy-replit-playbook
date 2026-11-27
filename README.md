@@ -2,7 +2,7 @@
 
 This is how I start and run my projects. I build them on Replit with Claude Code and Replit Agent. Each project is run like a small company where the agents do the work and I make the decisions.
 
-Most of what's here I learned the hard way, first on Cogniscore, then on Ihsan and Impact Connect. This repo exists so the next project doesn't repeat those mistakes. When a project teaches me something new, it goes back in here, with the evidence for what worked, what failed and what to do differently next time. The test is whether the same mistakes stop coming back.
+Most of what's here I learned the hard way, first on Cogniscore, then on Ihsan, Impact Connect, Adam Accounting and my personal website. This repo exists so the next project doesn't repeat those mistakes. When a project teaches me something new, it goes back in here, with the evidence for what worked, what failed and what to do differently next time. The test is whether the same mistakes stop coming back.
 
 ## Starting a new project
 
@@ -66,3 +66,4 @@ template/
 - **Ihsan**, November 2026: [learnings/ihsan.md](learnings/ihsan.md).
 - **Impact Connect**, February to November 2026: [learnings/impact-connect.md](learnings/impact-connect.md).
 - **Personal Website**, June to November 2026: [learnings/personal-website.md](learnings/personal-website.md).
+- **Adam Accounting**, May to November 2026: [learnings/adam-accounting.md](learnings/adam-accounting.md).

@@ -46,7 +46,7 @@ Agency-grade instead:
 1. **Search first.** Grep `components/ui/` and `design/tokens/` for something that already does the job, or does it with one more prop. Extending beats adding.
 2. **If it's missing, add it once, properly:**
    - It uses tokens only. No raw hex, px values outside the scale, or Tailwind arbitrary values (`bg-[#...]`, `p-[13px]`).
-   - It's accessible: semantic element, keyboard reachable, visible focus, labelled, contrast at least 4.5:1 for text.
+   - It's accessible: semantic element, keyboard reachable, visible focus, labelled, contrast at least 4.5:1 for text. Prefer native semantics; ARIA attributes must be permitted for the element's role. A label on a generic container is not proof of accessibility.
    - It works in every state: hover, focus, disabled, loading, empty, error, and at phone width.
    - Props are typed, with the fewest that cover the real uses.
    - Add one line to `components/ui/README.md`: name, what it's for, an example.
