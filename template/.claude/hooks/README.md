@@ -2,7 +2,7 @@
 
 `guard.py` runs before every Bash, Write, Edit and MultiEdit call that Claude Code makes in this repo (wired up in `.claude/settings.json`). It blocks:
 
-- secrets written into tracked files;
+- secrets written into any file except a `.env*` file (other than `.env.example`);
 - commits that contain secrets, and `--no-verify`;
 - pushes to `main` and force pushes;
 - anything listed in `blocked-commands.txt`;

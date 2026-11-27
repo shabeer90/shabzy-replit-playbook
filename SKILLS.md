@@ -6,7 +6,7 @@ Install community skills with the [Skills CLI](https://skills.sh), which records
 npx skills add <github-owner/repo> --skill <name>
 ```
 
-Every CLI-installed skill must be in `skills-lock.json`. In one project, 7 of 15 were missing, so nobody could tell where they came from or whether they had changed. Replit's own guidance and Claude Code's built-in commands aren't installed this way, so they don't belong in the lockfile.
+Every CLI-installed skill must be in `skills-lock.json`. Otherwise nobody can tell where a skill came from or whether it has changed. Replit's own guidance and Claude Code's built-in commands aren't installed this way, so they don't belong in the lockfile.
 
 ## Replit's built-in guidance and tools
 

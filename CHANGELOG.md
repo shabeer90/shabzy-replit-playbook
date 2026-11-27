@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.6.0 (27 Nov 2026)
+
+- **Rule 20 widened, not a new rule:** success must mean the work was done, for any call that writes somewhere else (storage, email, payments, webhooks), not only scheduled jobs. Cogniscore, Impact Connect and Adam Accounting each hit a version of this.
+- **STARTER-PROMPT:** checks Day 0 first, fills every placeholder including CI, matches reviewer paths to the repo, clears unused Replit scaffolds, proves the built app with one journey test, decides where uploads live, and ends with a definition of done. It says the hooks and review agents bind Claude Code only.
+- **Proofread:** fixed rule references (CONTRIBUTING, QA), reviewer scope wording (QA, CLAUDE.md, README), who runs the PRD review (CPO, PRD template), and removed guidance kept in two places (guard list, AI tells, live check, Replit scaffolds, Search Console, tokens, section 14). The repo skeleton lists every template folder. Learnings may give a month range in **When**.
+- **Upgrade from 2.5.x (optional):** check every external write in your project returns and reports failure (rule 20).
+
 ## 2.5.0 (27 Nov 2026)
 
 - **Impact Connect, lessons 8–12:** publication-safe autofill, form refetch races, optional enrichment failures, actual zoom checks and fonts in generated graphics.

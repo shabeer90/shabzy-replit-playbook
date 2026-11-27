@@ -36,12 +36,13 @@ Use the `seo-audit` skill for diagnosis and `seo-geo` for structured data and AI
 
 If the project isn't a public website, skip the SEO and GEO checks. If the change has no user-facing words and touches no public page, routing, metadata or sitemap, say so in one line and sign off.
 
-For each audit warning, check the served page and explain the impact before proposing a change. Record justified non-fixes as well as fixes. Domain length, consistent navigation labels and decorative imagery do not automatically need changing. Do not remove useful content or change business identity just to improve a checker score; distinguish decorative images from content images when assessing alt text.
+For each audit warning, check the served page and explain the impact before proposing a change. Record justified non-fixes as well as fixes. Domain length, consistent navigation labels and decorative images don't automatically need changing. Don't remove useful content or change the business's identity to raise a checker score. Judge alt text by whether an image is decorative or carries content.
 
 ### SEO
 
 - **Each page:**
-  - a unique, concise search title and meta description. About 60 characters is a starting guide, not a universal limit; rendered width also varies. Keep search metadata separate from full editorial headlines, and apply it consistently to bundled and CMS content;
+  - a unique, concise search title and meta description (about 60 characters is a guide, not a limit);
+  - search titles kept separate from article headlines, for bundled and CMS content alike;
   - a self-referencing canonical on the one canonical host;
   - exactly one H1;
   - a logical heading order.

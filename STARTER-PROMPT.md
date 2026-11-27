@@ -6,28 +6,26 @@ Paste this as the first message to the agent in a new project. Replace the bits 
 
 We're starting a new project: **<one line: what it is and who it's for>**. It's <a public website / a web app / an internal portal>, and it <has / doesn't have> a database.
 
-Set it up from my playbook at https://github.com/shabeer90/shabzy-replit-playbook before writing any feature code. You're the CEO of this project's AI company, as described in the playbook's `template/ORG.md`.
+Set it up from my playbook at https://github.com/shabeer90/shabzy-replit-playbook before writing any feature code. You're the CEO of this project's AI company, as described in the playbook's `template/ORG.md`. The hooks, review agents and skills only bind Claude Code (PLAYBOOK section 2). If you're Replit Agent, tell me before you start.
 
-1. Read `PLAYBOOK.md`, `SKILLS.md` and `template/ORG.md` in that repo.
-2. Copy everything in `template/` into this repo. Fill in every `<placeholder>` in `AGENTS.md`, including the voice. Ask me for anything you can't work out.
-3. Install `find-skills` first. Then install the skills in `SKILLS.md` under *Every project* and *Product, review and QA*, plus the sections that fit this kind of project. Vet each one as `SKILLS.md` says, and record it in `skills-lock.json`.
-4. Set `.claude/reviewers.txt` for this project:
+1. Check that PLAYBOOK section 3 (Day 0) is done: the repo on GitHub with `main` protected, imported into Replit, secret scanning on, and a non-production database if there's a database. List what's missing and wait until I've done it.
+2. Read `PLAYBOOK.md`, `SKILLS.md` and `template/ORG.md` in that repo.
+3. Copy everything in `template/` into this repo. Fill in every `<placeholder>` in every copied file, including the voice in `AGENTS.md` and the pinned versions in `pr-checks.yml`. Adapt CI to this stack. Ask me for anything you can't work out.
+4. Install `find-skills` first. Then install the skills in `SKILLS.md` under *Every project* and *Product, review and QA*, plus the sections that fit this kind of project. Vet each one as `SKILLS.md` says, and record it in `skills-lock.json`.
+5. Set `.claude/reviewers.txt` for this project, with paths that match this repo's real folders:
    - EM, QA, CTO, SECURITY, DESIGN and CMO are on by default;
    - turn DATA on if there's a database;
    - CMO checks SEO and GEO only on a public website.
 
    Tell me what you chose and why.
-5. Make the hooks in `.claude/hooks/` executable, and check they block what they should (test commands in `.claude/hooks/README.md`).
-6. Have **head-of-design** write `design/DESIGN.md` with the `impeccable` skill, and show it to me before anything else is designed. Then create the tokens and base components in `components/ui/`.
-7. If there's a database, have **head-of-data** write `scripts/schema.sql` with access rules for every table before any feature uses it.
-8. With me, write the first **PRDs** (the `cpo` agent, from `docs/prd/_template.md`) for the first three things under **Now** in `docs/ROADMAP.md`, and list the core user journeys in `docs/JOURNEYS.md`. Get the leadership agents to review each PRD before I approve it. Anything else we think of goes under **Parked ideas**.
-9. Work through the Day 0 checklist in `PLAYBOOK.md` section 3. Tell me which items only I can do, such as GitHub settings, secrets, the domain and Search Console.
-10. Open one pull request with the setup (with `PRD: fix` in the review file, since setup isn't a feature). Every reviewer that `.claude/reviewers.txt` requires signs off in `.reviews/<branch>.md` first; the hook won't open the PR otherwise.
+6. Make the hooks in `.claude/hooks/` executable, and check they block what they should (test commands in `.claude/hooks/README.md`).
+7. List every Replit workflow, port, artifact and scaffold (mockup sandbox, `api-server` stub, Canvas). Delete what we won't use once I've agreed, and write the port map to `.agents/memory/`.
+8. Make the app build and serve its production output, and point Playwright at that, not the dev server (PLAYBOOK rule 17, and section 11 for Playwright on Replit). Write one journey test that loads the home page from the built output.
+9. Have **head-of-design** write `design/DESIGN.md` with the `impeccable` skill, and show it to me before anything else is designed. Then create the tokens and base components in `components/ui/`.
+10. If there's a database, have **head-of-data** write `scripts/schema.sql` with access rules for every table before any feature uses it. Decide where uploaded files live (not the published filesystem; PLAYBOOK section 11).
+11. With me, write the first **PRDs** (the `cpo` agent, from `docs/prd/_template.md`) for the first three things under **Now** in `docs/ROADMAP.md`, and list the core user journeys in `docs/JOURNEYS.md`. Get the leadership agents to review each PRD before I approve it. Anything else we think of goes under **Parked ideas**.
+12. Open one pull request with the setup (with `PRD: fix` in the review file, since setup isn't a feature). Every reviewer that `.claude/reviewers.txt` requires signs off in `.reviews/<branch>.md` first; the hook won't open the PR otherwise.
 
-From then on, every piece of work follows `ORG.md`:
-- **Plan:** nothing gets built unless it's under **Now** with an approved PRD. New ideas, including Replit's suggestions, get parked.
-- **Build:** design and data first, then test-first.
-- **Review:** the scoped reviews, with QA running every user journey end to end.
-- **Ship:** the PR, then a retro after each batch.
+Setup is done when the hook tests give the expected exit codes, CI is green on the setup PR, and the journey test passes against the built app. Then go through PLAYBOOK section 15 and mark each item done, mine, or not yet.
 
-Keep token use down by following the budget in `ORG.md`. Write to me in plain English, and put anything worth reusing into the playbook.
+From then on, follow `ORG.md`: nothing gets built without an approved PRD under **Now**, and new ideas, including Replit's suggestions, get parked. Report the agents run and rough token use in each retro. Write to me in plain English, and put anything worth reusing into the playbook.

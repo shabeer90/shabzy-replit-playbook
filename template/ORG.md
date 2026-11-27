@@ -89,7 +89,7 @@ Reviews are where the tokens go, so they're scoped:
 ## Getting better and more autonomous
 
 - **A finding seen twice becomes a check.** The CEO turns it into a test, a hook rule or a CI step, so no reviewer has to spot it a third time. This is how review cost falls and autonomy rises.
-- **Every batch ends with a retro** (`docs/retro-template.md`). Lessons that apply beyond this project go to the playbook's `learnings/<project>.md`, and become rules there when they'd change what the next project does.
+- **Every batch ends with a retro** (`docs/retro-template.md`). Lessons that apply beyond this project go to the playbook's `learnings/<project>.md`, and become PLAYBOOK rules when they'd change what the next project does.
 - **The autonomy ladder.** The owner moves the project up a level, never an agent, and records it in `AGENTS.md`.
 
 | Level | Agents may, without asking | Earned by |

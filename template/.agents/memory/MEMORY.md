@@ -1,6 +1,6 @@
 # Agent memory
 
-Facts an agent must not have to relearn on this project. Keep one topic per file in this folder, and one line per file here: `- [Title](file.md) — the hook`.
+Facts an agent must not have to relearn on this project. Keep one topic per file in this folder, and one line per file here: `- [Title](file.md): the hook`.
 
 Each file says the fact, then **Why:** (what happened) and **How to apply:** (what to do next time).
 

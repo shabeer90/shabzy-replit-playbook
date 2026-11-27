@@ -64,7 +64,7 @@
 
 - **When:** Nov 2026
 - **Kind:** Worked
-- **What happened:** Admin, founder-portal and secondary public routes were split into lazy chunks. A manifest check walks transitive static imports to catch private screens pulled into public or login entry graphs, and applies a project-specific JavaScript size budget.
+- **What happened:** admin, founder-portal and secondary public routes were split into lazy chunks. A manifest check walks transitive static imports to catch private screens pulled into public or login entry graphs, and applies a project-specific JavaScript size budget.
 - **Impact:** route splitting gained a regression check against accidental eager imports and bundle growth.
 - **Evidence:** commit `4c7eaa1`; `tests/routeBundles.check.mjs` and `tests/routeLoading.smoke.mjs`. The manifest check enforces a 1.25 MiB budget; the browser smoke checks route loading and unauthenticated redirects. These are local built-output checks, not measurements of live page speed or verification of signed-in dashboards.
 - **Home:** [PLAYBOOK section 7](../PLAYBOOK.md#7-ci-baseline-pr-checksyml).

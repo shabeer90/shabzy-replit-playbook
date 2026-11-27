@@ -17,7 +17,7 @@ One section per lesson. Copy the block below.
 
 ## 1. <Short title: what the lesson is about>
 
-- **When:** <month year>
+- **When:** <month year>, or <month> to <month year>
 - **Kind:** Went wrong | Worked | Held back
 - **What happened:** <one to three sentences, specific>
 - **Impact:** <what it cost, or what it made possible>

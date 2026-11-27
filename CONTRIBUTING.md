@@ -50,12 +50,12 @@ One format means any agent can read every project's lessons the same way, and sp
 
 ## The bar for a rule
 
-Improve an existing rule or check before adding a new one. A small site fix earns a place only if it teaches something the next build should do differently.
+Improve existing guidance rather than keep adding rules. A small website fix belongs here only when it teaches a reusable building or testing lesson.
 
 - **It happened.** A real incident, cost or win. Say what the evidence proves and what it leaves unverified. General advice is fine in the checklists, but mark it as general.
 - **It changes the next build.** Say what another project should do differently to avoid repeated mistakes, rework, unnecessary cost or broken user journeys. A list of fixes alone is not a lesson.
 - **It says what to do.** "Decide RLS per column on day one", not "be careful with RLS".
-- **It's checked by something where possible:** a hook, a CI step or a test. A rule that's only in prose gets forgotten (rule 25).
+- **It's checked by something where possible:** a hook, a CI step or a test. A rule that's only in prose gets forgotten (rule 15).
 
 Platform behaviour you haven't confirmed is marked **(check current docs)**.
 
@@ -65,4 +65,4 @@ Platform behaviour you haven't confirmed is marked **(check current docs)**.
 - **Minor (x.y):** additions that don't change what an existing project must do.
 - **Major (x.0):** a change that existing projects must adopt, such as a new required reviewer or a new thing the hook blocks. Say how to upgrade.
 
-Each project records the version it started from in its `AGENTS.md`, so it knows what to pick up later.
+Each project records the playbook version it's on in its `AGENTS.md`, so it knows what to pick up later.
