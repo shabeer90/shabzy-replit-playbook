@@ -34,6 +34,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
    - Escape `<` in every JSON-LD `<script>`.
 
 6. **Admin needs real auth from the start.** That means signed session tokens with an expiry, rate-limited login, constant-time secret comparison, an Origin check on writes, and every admin page and route checking for itself.
+   *On Ihsan:* an open staff tab could keep confidential records visible after access changed. Live revalidation now hides them when verification fails, including offline failures (section 5).
 
 7. **Type errors must fail CI, even if the build doesn't check them.**
     Run `tsc --noEmit` as a required CI step.
@@ -44,6 +45,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 
 9. **Evidence first, then the write.** Any published fact comes from a saved source file in the repo. Write a dry run first and compare it with the live result.
    *On Cogniscore:* the batch releases that ran from `evidence/brands/` were repeatable to the decimal. Hand-seeded data was the biggest source of wrong scores.
+   *On Ihsan:* metric definitions separated application submissions from unique startups, and distinct primary email addresses from verified people. Those labels are not interchangeable.
 
 10. **Dangerous scripts are never run by hand or by CI by accident.** These are seeders, resets and anything that writes live data. Put a test or a guard in place that blocks them.
     *On Cogniscore:* scoring was kept out of CI (`test_no_ci_scoring.py`). The seed and reset scripts were off-limits.
@@ -80,13 +82,23 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 17. **Verify on what production serves.** Before a fix, name the observable that must change, then show it changing.
     | Bug is about | Decisive test | Not enough |
     |---|---|---|
-    | Prerendering, status codes, route config | `next build && next start`, then `curl -sI` the path | the build's route table |
-    | Page content, links, schema | the dev server with a mock database, reading the served HTML | reading the component |
-    | Sitemap, redirects | `next start`, then fetch the real path | unit tests on the generator |
+    | Prerendering, status codes, route config | build and serve production output (`next build && next start` for Next.js), then check the path over HTTP | the build's route table |
+    | Page content, links, schema | the served production output with synthetic data; read HTML and exercise client-rendered content in a browser | reading the component |
+    | Client runtime, shared hooks, providers | a browser journey against the production bundle and server, exercising hooks beneath the real provider | a passing dev-server journey or build |
+    | Sitemap, redirects | the production server, then fetch the real path | unit tests on the generator |
     | Real data, Google's view, CDN | the live site, after a deploy | anything local |
 
-18. **e2e tests never touch live data.** Run them against a mock of the database API (`e2e/support/mock-<db>.mjs`), so CI needs no credentials. CI retries a failing e2e test once. A test that needs the retry is a hydration race to fix, not to ignore.
+    *On Ihsan:* different dependency versions split a shared hook from its provider in the production bundle, despite passing development checks. Replaying the served bundle with synthetic responses reproduced the blank page. Built-frontend regression checks verified the local fix, not a signed-in live release.
+
+18. **e2e tests never touch production or live data.** Keep mocked database-API tests (`e2e/support/mock-<db>.mjs`) for fast, credential-free checks. Add controlled non-production integration tests when real passwords, sessions, roles or database behaviour matter.
+    - Use a confirmed non-production service and database, with owned synthetic accounts and records only. Never write real customer records, even in development.
+    - Roll back transactions or reliably clean up exact owned fixtures, including sessions and test-owned rate-limit entries, after success or failure. Never reset shared limits.
+    - Keep authentication, authorisation and rate limits unchanged. Test transport isolation belongs in the test harness, never in production auth code.
+    - CI retries a failing e2e test once. Investigate the cause; a passing retry does not clear the failure.
+
+    Was mock-only until Ihsan showed that real password, session, role and database checks needed controlled non-production integration tests.
     *On Cogniscore:* a click landing before hydration failed about one CI run in three, and never once in 60 local runs.
+    *On Ihsan:* synthetic accounts exercised real password validation, sessions and role revocation against the development API and database. Mocked browser responses remained useful for deterministic runtime failures.
 
 19. **An agent that edits code is bounded by a gate, not by its good behaviour.** Give it a policy file of the paths and line patterns it may change, and a CI check that reads the diff and refuses anything outside the policy.
     *On Cogniscore:* the weekly SEO agent opens PRs only inside `seo/agent/policy.json`. `check_claim.py` checks the diff itself, not the agent's description of it.
@@ -213,15 +225,16 @@ docs/JOURNEYS.md        the user journeys that must always work
 | Area | Minimum |
 |---|---|
 | Secrets | Only in Replit Secrets and GitHub secrets. A secret-scan in CI. A server-only key never gets a `NEXT_PUBLIC_` prefix. |
-| Admin | A signed session token with an expiry. Rate-limited login. Middleware, plus a check in every route and layout. `SameSite=Strict`, `Secure`, `HttpOnly`. |
+| Admin | A signed session token with an expiry. Rate-limited login. Middleware, plus a check in every route and layout. `SameSite=Strict`, `Secure`, `HttpOnly`. Re-check access when the user returns to the tab, reconnects, and every few minutes while it's open. While that check runs, or if it fails or can't reach the server, hide confidential screens, cancel private requests and clear private caches. Keep unsaved drafts only if the check confirms the same account. |
 | Writes from the public | Size caps, a rate limit (not keyed only on the first `X-Forwarded-For` entry), the anon key or a narrow RPC. Never the service role unchecked. |
 | Rendering | No `dangerouslySetInnerHTML` without sanitising. JSON-LD through one helper that escapes `<`. Outbound links allowlisted to http(s). |
 | Fetching URLs from data | An SSRF guard: block private IPs, re-check every redirect, pin DNS. |
 | Headers | HSTS and a CSP on public pages. Don't trust `X-Forwarded-Host`; pin the site URL. |
 | CI | Actions pinned to a SHA. Never `pull_request_target`. `workflow_dispatch` inputs passed via `env:`, never `${{ }}` inside `run:`. `persist-credentials: false`. Tokens with write access kept in protected environments. |
-| Supply chain | A lockfile with integrity hashes. Nothing installed unpinned at runtime (`npx x@latest`). Review what Replit's `postMerge` script runs. |
+| Supply chain | A lockfile with integrity hashes. Nothing installed unpinned at runtime (`npx x@latest`). Review what Replit's `postMerge` script runs. After a dependency fix, check what actually got installed and re-run the audit. A more specific pnpm override can beat a broad one, so editing `package.json` doesn't prove the fix. |
 | LLM | Model output is data. Validate it against the source before publishing, and add a human approval step for anything public. |
 
+*On Ihsan:* a range-specific pnpm override kept an affected dependency installed after a broad override was changed. The resolved graph and audit, not the edit, established remediation.
 
 ## 6. Database (Supabase)
 
@@ -241,7 +254,7 @@ docs/JOURNEYS.md        the user journeys that must always work
 3. Unit tests (`pytest scripts agents`, `node --test`).
 4. Build.
 5. New tests must fail on the base commit (rule 16).
-6. e2e (Playwright) against the built app, with a mock database (rule 18).
+6. e2e (Playwright) against the built app, using the test modes and safeguards in [rule 18](#1-the-rules).
 7. Turn on Auto-fix or a CI monitor on every PR, and never auto-merge.
 
 Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get the least permission they need and only the secrets they use.
@@ -259,6 +272,12 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 - Internal links: every sitemap page linked from at least a few others.
 
 - For AI assistants (GEO), each page answers its main question plainly near the top, with specific, attributed facts. AI crawlers are allowed in `robots.txt` unless the owner decides otherwise.
+
+**Private portals are an exception to the public indexing baseline.** Put `noindex` in initial HTML before JavaScript and in app-owned response directives (`X-Robots-Tag`), including app-controlled redirects and errors. Set crawler rules at hostname-root `/robots.txt`, not just inside a portal subpath. Scope them to private routes on a shared host, so the public pages stay crawlable; blanket disallow belongs only on wholly private hosts. Keep private URLs out of public sitemaps.
+
+Crawler instructions are not access controls. Protected routes still need authentication. Disallowing a crawl can stop the crawler reading `noindex`; a blocked URL may still appear in search. Neither directive guarantees immediate removal.
+
+*On Ihsan:* the private staff portal needed its own initial HTML and response directives, with root robots rules scoped so its public pages stayed crawlable.
 
 ## 9. Writing and design quality
 
@@ -290,14 +309,18 @@ Things to remove before launch:
 ## 11. Replit platform notes
 
 
-These come from Cogniscore's own agent memory (`.agents/memory/`). Replit changes, so **(check current docs)** before relying on any of them.
+These are project observations from Cogniscore and Ihsan, not platform guarantees. Replit changes, so **(check current docs)** before relying on them.
 
 - **Publishing uses the workspace copy:** pull `main` in the Shell before you publish.
 - **Playwright on Replit (NixOS):** Playwright's downloaded Chromium can't find its system libraries.
   - Install the Nix `chromium` package.
   - Set `executablePath` from `which chromium` in `playwright.config`.
   - Add `--no-sandbox --disable-setuid-sandbox --disable-dev-shm-usage`.
-  - Use `http://localhost:<port>` as `baseURL`, never the `REPLIT_DEV_DOMAIN` URL: it needs mTLS, which headless Chromium can't do.
+  - Prefer `http://localhost:<port>` for isolated app checks. Cogniscore recorded a preview access problem attributed to mTLS; that is not a blanket restriction on headless preview access. Ihsan ran browser checks through its preview proxy. Current preview authentication and any mTLS requirement depend on the environment **(check current docs)**.
+- **Preview proxy and synthetic QA:** check what reaches the app before assuming a browser-supplied client IP isolates a login bucket. Keep reserved synthetic-account transport inside the non-production test harness, targeting the real local API with unchanged password, session and rate-limit checks (rule 18). Never route real-user credentials this way, weaken production authentication, or raise, disable or globally reset limits to pass QA.
+  *On Ihsan:* preview IP handling made repeated synthetic logins share a rate-limit bucket. A test-only local transport isolated those logins without changing application security.
+- **Preview crawler headers:** check app-owned HTTP responses directly at the local service and production server, then check the proxied response separately. A proxy's `noindex` is not evidence that the app sends it, and is not a reason to remove platform headers. Current proxy header behaviour is environment-specific **(check current docs)**.
+  *On Ihsan:* the preview proxy added broad `noindex` headers, including on public pages. Direct app checks separated the app's policy from the proxy's additions.
 - **Separate dev and production build output** (`distDir` by phase in `next.config`). A production build into the dev server's `.next` broke the preview with missing chunks.
 - **One launcher per port.** Use the managed workflow for the Run button, and don't add a second "Start application". Competing launchers caused port conflicts, and left the app marked stopped while it was actually serving. Write the port map down in `.agents/memory/`.
 - **pnpm workspace:** if `.replit` says `stack = "PNPM_WORKSPACE"`, make sure `pnpm-workspace.yaml` and `tsconfig.base.json` exist. Without them, workspace packages silently get no dependencies.
