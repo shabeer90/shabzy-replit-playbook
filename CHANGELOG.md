@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.0.0 (27 Nov 2026)
+
+- Adds four Personal Website lessons covering focus contrast, case-study titles, latest-post lists and responsive cover images.
+- Extends the SEO and design baselines with checks grounded in those lessons; adds the project to the README.
+- **Upgrade from 2.4.x:** check existing public pages for descriptive case-study titles, current homepage previews, responsive article covers and focus contrast on light and dark surfaces.
+
 ## 2.4.0 (27 Nov 2026)
 
 - **SKILLS.md:**

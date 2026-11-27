@@ -250,13 +250,18 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 - `sitemap.xml` and `robots.txt` generated from the database. IndexNow on publish if you want Bing.
 - JSON-LD per page type (Organization, WebSite, Product/Review, BreadcrumbList, FAQ), through the escaping helper.
 - Self-hosted fonts, and `next/image` limited to a host allowlist in `config/`.
-- A test that every page template has a title, description, canonical, H1 and JSON-LD.
+- A test that every page template has a title, description, canonical, H1 and JSON-LD, and that titles name the page's subject.
+  *On Personal Website:* a title that exists can still say too little; the case studies replaced “name — company” with wording about the work.
 - Search Console and Bing Webmaster verified on day one. Export links and queries weekly.
 - Internal links: every sitemap page linked from at least a few others.
+  - Keep the home page's article preview current by sorting from publication dates instead of maintaining the entries by hand.
+    *On Personal Website:* the hard-coded four-row list left out newer posts until it was generated from the article dates.
 - Missing image paths return a real 404, with `Cache-Control: no-store`, not the SPA's HTML.
   *On Impact Connect:* missing uploads could fall through to the application response. Explicit missing-asset handling now returns 404 without caching; this does not establish what every affected browser had cached.
 - Social preview tags use absolute HTTPS image URLs and a raster format supported by the target sharing services. Fetch and decode the image, check its intended dimensions, and compare Open Graph, Twitter and JSON-LD references.
   *On Impact Connect:* generated blog previews needed a PNG derivative and absolute metadata URLs. The production-bundle smoke test decodes a 1200×630 PNG and checks that the references agree.
+- For article covers, serve compressed sources sized for the rendered viewport, keep a fallback, and verify every referenced variant.
+  *On Personal Website:* 20 covers gained 640px and 900px WebP sources; both sets totalled about 1.2 MB, compared with 17 MB for the originals.
 - For AI assistants (GEO), each page answers its main question plainly near the top, with specific, attributed facts. AI crawlers are allowed in `robots.txt` unless the owner decides otherwise.
 - Public article text, public profile content and displayed statistics are available in initial HTML without JavaScript. Use the same public data and access rules for ordinary visitors and crawlers, including unfamiliar user agents. Test the served content, not just metadata or an excerpt.
   *On Impact Connect:* full article and public founder content replaced incomplete crawler output, with statistics from the API's shared cache. HTTP checks cover ordinary visitors and named and unknown crawlers; they do not prove indexing or rankings.
@@ -278,6 +283,8 @@ Crawler instructions are not access controls. Protected routes still need authen
 - `design/DESIGN.md` first: audience, one feeling, three named reference sites, type, colour, grid, motion, what the brand never does. The owner approves it.
 - Real content and data in every design, never filler.
 - Restraint on screens people work in; a point of view on pages that persuade.
+- Check keyboard focus indicators on every background they appear against. Keep a visible segment at 3:1 contrast; use two colors when one accent cannot work on both light and dark surfaces.
+  *On Personal Website:* the cyan-only outline measured 1.08:1 on a light panel; a dark halo now preserves visibility on light panels while cyan remains clear on dark pages.
 - `impeccable` for craft and critique, `ui-ux-pro-max` for palette and type data, `web-design-guidelines` for accessibility.
 
 ## 10. Release loop on Replit
