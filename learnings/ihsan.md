@@ -1,98 +1,112 @@
 # Ihsan
 
-Lessons approved for sharing from a multi-portal application, November 2026.
-Evidence below describes project reports and tests reviewed for this contribution.
-Those private materials are not copied here or linked as public evidence.
-Local verification is not a claim that the live release was verified.
+- **What it is:** a multi-portal application with a private staff portal and public founder pages.
+- **Stack:** React and TypeScript portals, an API with a database, built on Replit.
+- **Where it runs:** Replit.
+- **Dates:** November 2026.
+- **Evidence:** the project's reports and tests, summarised here. The private material isn't copied or linked. Checks run locally don't prove the live release.
 
-## 1. Production-built frontend checks
+## 1. Check the production build, not just the dev server
 
-*On Ihsan:* different installed versions of a context-bearing dependency split a shared hook from its provider. Development checks passed, but replaying the served production bundle with synthetic API responses reproduced a blank page. Built-frontend browser checks verified the local repair.
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **What happened:** two installed versions of the same dependency split a shared hook from its provider in the production bundle. Development checks passed, but replaying the served production bundle with synthetic API responses showed a blank page.
+- **Impact:** a page that worked in development was blank in the production build.
+- **Evidence:** the startup recovery report and the production-build browser checks that verified the local fix. Signed-in production wasn't verified.
+- **Home:** [PLAYBOOK rule 17](../PLAYBOOK.md#1-the-rules); the QA agent refers to it.
 
-Evidence reviewed: startup recovery report and production-frontend browser configuration. The report distinguishes local built-runtime verification from signed-in production verification.
+## 2. Real integration tests with synthetic accounts
 
-Home: [PLAYBOOK rule 17](../PLAYBOOK.md#1-the-rules); the QA instructions refer to it.
+- **When:** Nov 2026
+- **Kind:** Worked
+- **What happened:** synthetic test accounts exercised real password checks, sessions, role revocation and database behaviour against non-production services. Mocked responses still covered the failures that need to be repeatable.
+- **Impact:** login and access bugs that mocks can't show were testable without touching real data.
+- **Evidence:** the access re-check report, the synthetic-login helper and the metrics tests. Fixtures were rolled back or cleaned up exactly, and security checks and rate limits stayed on. One helper first cleaned up rate-limit entries too broadly and was narrowed to the test's own entries; that first version isn't a pattern to copy.
+- **Home:** [PLAYBOOK rule 18](../PLAYBOOK.md#1-the-rules); the CI baseline and QA agent refer to it.
 
-## 2. Real non-production integration tests
+## 3. Replit's preview proxy changes what the app sees
 
-*On Ihsan:* owned synthetic accounts exercised real password validation, sessions, role revocation and database behaviour against non-production services. Mocked browser fixtures covered deterministic failures alongside those integration tests.
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **What happened:** the preview proxy made repeated synthetic logins share one rate-limit bucket, and it added `noindex` headers to every page, public pages included. A test-only route for synthetic accounts fixed the logins without weakening password, session or rate-limit checks.
+- **Impact:** QA logins hit rate limits, and the proxy's headers hid what the app itself sent.
+- **Evidence:** the synthetic-login helper, crawler-control tests and the crawler report. App responses were checked directly, separately from the proxied ones. Platform behaviour may differ elsewhere (check current docs).
+- **Home:** [PLAYBOOK section 11](../PLAYBOOK.md#11-replit-platform-notes).
 
-Evidence reviewed: access-revalidation verification report, synthetic-login test helper and transactional metrics tests. Fixtures used exact cleanup or rollback; security checks and rate limits stayed enabled. A review reported overbroad development limiter cleanup, then narrowed the retained helper to exact test-owned entries. That deviation is not an approved cleanup pattern.
+## 4. Private screens left open after access changed
 
-Home: [PLAYBOOK rule 18](../PLAYBOOK.md#1-the-rules); the CI baseline and QA instructions refer to it.
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **What happened:** an open staff tab could keep showing confidential content after the user's access changed. Access is now re-checked, and private screens are hidden when the check fails or can't reach the server. Unsaved work survives only if the same account is confirmed.
+- **Impact:** confidential records could stay visible to someone who'd lost access. This is fixed.
+- **Evidence:** the access-fix verification and closure reports, with synthetic role changes and network-failure tests run locally. It favours privacy over offline use and doesn't promise instant revocation.
+- **Home:** [the Admin row of the security baseline](../PLAYBOOK.md#5-security-baseline-check-before-launch), with an example under rule 6.
 
-## 3. Preview proxy QA quirks
+## 5. Keeping a private portal out of search
 
-*On Ihsan:* preview IP handling made synthetic logins share rate-limit buckets. A reserved synthetic-account transport in the test harness used the real local development API without bypassing password, session or rate-limit checks. The proxy also added broad `noindex` headers, including on public pages.
+- **When:** Nov 2026
+- **Kind:** Worked
+- **What happened:** the staff portal got `noindex` in its first HTML and in its own response headers, and robots rules at the root of the host, scoped so the public founder pages stayed crawlable.
+- **Impact:** the portal is kept out of search without hiding the public pages.
+- **Evidence:** crawler-control tests and the login and crawler report, checked on local production builds. Live routing and headers were signed off separately. Robots rules aren't access control, and a disallow can stop a crawler from ever reading `noindex`.
+- **Home:** [the SEO and GEO baseline](../PLAYBOOK.md#8-seo-and-geo-baseline-public-sites-launch-gate).
 
-Evidence reviewed: synthetic-login helper, crawler-control tests and crawler verification report. Direct app responses were checked separately from proxied responses. These are observed environment behaviours, not platform guarantees; current preview access requirements remain **(check current docs)**.
+## 6. Editing the manifest didn't fix the dependency
 
-Home: [PLAYBOOK section 11](../PLAYBOOK.md#11-replit-platform-notes).
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **What happened:** a more specific pnpm override kept a vulnerable dependency installed after a broad override was changed.
+- **Impact:** the fix looked done in `package.json` but wasn't in what was installed.
+- **Evidence:** the dependency investigation and closure report. The installed versions and the audit were checked, and old lockfile findings were told apart from what was actually installed.
+- **Home:** [the Supply chain row of the security baseline](../PLAYBOOK.md#5-security-baseline-check-before-launch).
 
-## 4. Cached private screen access
+## 7. Private error logging
 
-*On Ihsan:* an open staff tab could retain confidential content after access changed. Revalidation was changed to hide private screens on failed or unavailable verification, including network failure. Successful same-account checks preserved unsaved work.
+- **When:** Nov 2026
+- **Kind:** Held back
+- **Home:** the general check is in the [security reviewer](../template/.claude/agents/security-reviewer.md). Details follow once it's fixed in Ihsan.
 
-Evidence reviewed: access-fix verification and closure reports. Synthetic role and credential changes, plus deterministic network-failure tests, exercised the boundary locally. The choice favours privacy over offline access; it does not promise instant revocation.
+## 8. Metric labels must match what's counted
 
-Home: [Admin security baseline](../PLAYBOOK.md#5-security-baseline-check-before-launch), with a short example under rule 6.
+- **When:** Nov 2026
+- **Kind:** Went wrong
+- **What happened:** application submissions aren't unique startups, and distinct email addresses aren't verified people. The public labels had to match what was actually counted.
+- **Impact:** without the fix, public numbers would have claimed more than they measured.
+- **Evidence:** the metrics definitions and their tests, including case-insensitive email counting. These define how things are counted; they aren't audited totals. No live counts are included.
+- **Home:** [PLAYBOOK rule 9](../PLAYBOOK.md#1-the-rules).
 
-## 5. Private portal crawler controls
+## 9. Replit's tools aren't installed skills
 
-*On Ihsan:* the private staff portal needed initial HTML `noindex`, app-owned response directives and hostname-root robots rules scoped so public founder pages were not blocked.
+- **When:** Nov 2026
+- **Kind:** Worked
+- **What happened:** Replit gave its Agent built-in guidance for design, testing, deployment, workflows and read-only database checks. These aren't skills from the Skills CLI or Claude Code commands, and which tools worked changed from one task to the next.
+- **Impact:** the team checked what was available each time, instead of assuming.
+- **Evidence:** the platform instructions and the review reports. Specialised architecture and browser tools weren't available in a later review, and nobody claimed they ran.
+- **Home:** [Replit's built-in guidance and tools](../SKILLS.md#replits-built-in-guidance-and-tools).
 
-Evidence reviewed: crawler-control tests and login/crawler verification report. Local built servers and direct app responses were checked. Full live routing and header sign-off remained separate. Crawling preferences are not authentication, and disallow alone can prevent a crawler reading `noindex`.
+## 10. Review records say what was actually done
 
-Home: [SEO baseline](../PLAYBOOK.md#8-seo-and-geo-baseline-public-sites-launch-gate).
+- **When:** Nov 2026
+- **Kind:** Worked
+- **What happened:** when the specialised tools weren't available, independent general agents read the code and ran Playwright, and the record named those methods and their limits.
+- **Impact:** nobody mistook a reviewer's title for a review.
+- **Evidence:** the review and QA reports. An earlier design consultation was kept separate, without claiming the same tools.
+- **Home:** [Review records](../template/ORG.md#review-records).
 
-## 6. Resolved dependency verification
+## 11. Complete handoffs between agents
 
-*On Ihsan:* a more-specific pnpm override kept an affected dependency installed after a broad override changed. The edited manifest alone did not show remediation.
+- **When:** Nov 2026
+- **Kind:** Worked
+- **What happened:** a scoped handoff carried the approved journey, design input, interfaces, privacy limits and acceptance checks in one place. The plan marked which deployment decision replaced an earlier recommendation.
+- **Impact:** the agent doing the work didn't need to rediscover context or guess which decision stood.
+- **Evidence:** the scoped task and the product plan. Advising didn't give permission to publish or change real records.
+- **Home:** [Handing work to another agent](../template/ORG.md#handing-work-to-another-agent).
 
-Evidence reviewed: dependency-resolution investigation and closure report. Installed resolution and the active dependency audit were checked; archived lockfile findings were distinguished from installed runtime dependencies.
+## 12. Separate verdicts for "works", "private" and "live"
 
-Home: [Supply chain security baseline](../PLAYBOOK.md#5-security-baseline-check-before-launch).
-
-## 7. Private error logging checks
-
-Held back until fixed in Ihsan. The general check is in the [security reviewer](../template/.claude/agents/security-reviewer.md).
-
-## 8. Accurate public metric definitions
-
-*On Ihsan:* application submissions were not unique startups, and distinct current primary email addresses were not verified people. Public labels needed to match those definitions.
-
-Evidence reviewed: metrics contract and aggregate tests, including trimmed, case-insensitive primary-email counting. These establish counting definitions, not audited people totals. No live counts are included.
-
-Home: [PLAYBOOK rule 9](../PLAYBOOK.md#1-the-rules); no separate metric policy was added.
-
-## 9. Skill providers and current availability
-
-*On Ihsan:* Replit-provided instructions covered design, testing, deployment, workflows and read-only production investigation. Those instructions were not CLI-installed community skills or Claude Code built-ins; usable tools varied by task environment.
-
-Evidence reviewed: current platform instructions and integrated review reports. Specialized architecture/browser callbacks were unavailable in the later review; no claim is made that they ran. Official platform references are linked in the owning section.
-
-Home: [Replit's built-in guidance and tools](../SKILLS.md#replits-built-in-guidance-and-tools).
-
-## 10. Honest review records
-
-*On Ihsan:* independent general workers performed source and Playwright assessments when specialized callbacks were unavailable. The record named the methods and limits, rather than treating reviewer titles as proof.
-
-Evidence reviewed: integrated review and QA assessments. Earlier design consultation was a separate input; the later assessment did not claim identical tooling.
-
-Home: [Review records](../template/ORG.md#review-records).
-
-## 11. Complete specialist handoffs
-
-*On Ihsan:* the scoped shortlisting handoff combined the approved journey, design input, interfaces, privacy boundaries and acceptance checks. The canonical plan marked the current deployment decision as replacing an earlier recommendation.
-
-Evidence reviewed: scoped workflow task and product plan. Consultation did not authorize publishing or changes to real application records.
-
-Home: [Handing work to another agent](../template/ORG.md#handing-work-to-another-agent).
-
-## 12. Separate implementation and release verdicts
-
-*On Ihsan:* real synthetic integration, mocked failures and local production-built frontend checks established different things. The report kept functionality, privacy and release verdicts separate and withheld signed-in live-release verification.
-
-Evidence reviewed: integrated review and QA reports. A local built staff journey did not establish a built investor journey or that the live release contained the reviewed assets. This extends the reporting of lessons 1 and 2; the held-back lesson 7 remains held back.
-
-Home: [QA report](../template/.claude/agents/qa-tester.md#report).
+- **When:** Nov 2026
+- **Kind:** Worked
+- **What happened:** the QA report kept real integration tests, mocked failures and production-build checks apart, and gave separate verdicts for what works, what's private and what's live. Signed-in live-release checks weren't claimed.
+- **Impact:** a passing local build wasn't mistaken for a verified release.
+- **Evidence:** the review and QA reports. A local staff journey didn't prove the investor journey, or that the live release had the reviewed build. This extends lessons 1 and 2.
+- **Home:** [the QA report](../template/.claude/agents/qa-tester.md#report).

@@ -2,11 +2,13 @@
 
 Any project using this playbook can improve it. The aim is that each change makes the playbook better without creating a second, conflicting version of something already here.
 
+The easiest way is to paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into the project. Its agent follows these rules for you.
+
 ## One home for each kind of change
 
 | Kind of change | Goes in | Not in |
 |---|---|---|
-| What happened on a project (raw) | `learnings/<project>.md` | PLAYBOOK.md |
+| What happened on a project (raw) | `learnings/<project>.md`, in the format of `learnings/_template.md` | PLAYBOOK.md |
 | A rule the next project should follow | `PLAYBOOK.md` section 1, as a new number at the end | anywhere else; other files link to the rule |
 | A checklist item or baseline | the matching PLAYBOOK section (Day 0, security, CI, SEO and GEO, first week) | the rules |
 | A role, the work flow, the roadmap and PRD process, the token budget, the autonomy ladder | `template/ORG.md` | PLAYBOOK.md (which only links to it) |
@@ -29,6 +31,22 @@ If a change seems to belong in two places, it belongs in one, and the other link
 5. **Write it plainly.** Same style as the rest: short sentences, specific, no AI tells (the `humanizer` skill helps).
 6. **No secrets, client data or personal details.** This repo is public. Keep security lessons general until they're fixed in the project they came from.
 7. **Update `CHANGELOG.md`.** Add a line under the next version.
+
+## The learnings format
+
+Every `learnings/<project>.md` uses the same format, from [`learnings/_template.md`](learnings/_template.md):
+- **A short About block:** what the project is, the stack, where it runs, the dates, and one line on the evidence.
+- **One numbered section per lesson**, with the same six fields in the same order:
+  - **When**;
+  - **Kind**: Went wrong, Worked or Held back;
+  - **What happened**;
+  - **Impact**;
+  - **Evidence**;
+  - **Home**.
+- **Numbers are permanent.** New lessons go at the end.
+- **A security issue that isn't fixed yet is "Held back":** keep only the title, the Kind and the Home line, and fill it in once it's fixed.
+
+One format means any agent can read every project's lessons the same way, and spot when two projects learned the same thing.
 
 ## The bar for a rule
 

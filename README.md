@@ -12,13 +12,17 @@ Open a new Replit project and paste [STARTER-PROMPT.md](STARTER-PROMPT.md) as yo
 
 When the playbook changes, paste [UPGRADE-PROMPT.md](UPGRADE-PROMPT.md) into the project. The agent checks what's new since the project's version, shows you the gaps, and opens a PR with the ones you approve.
 
+## Adding what a project learned
+
+Paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into the project. The agent finds what's new, checks it against what's already here, shows you the list, and opens a PR with the lessons you approve.
+
 ## What's in here
 
 - **[PLAYBOOK.md](PLAYBOOK.md):** the rules. Each one says which project it came from and what went wrong, so you can decide whether it applies to yours. It also has the setup checklists.
 - **[template/ORG.md](template/ORG.md):** who does what. There's a CEO, CPO, CTO and CMO, each with their own agents, and I'm the board. It also covers how a piece of work goes from idea to live, and how to keep token use down.
 - **[SKILLS.md](SKILLS.md):** the skills the agents use, what each one is for, and how to check a new one before installing it.
 - **[template/](template/):** the files every project starts with: agent instructions, the review agents, a hook that blocks risky actions, CI, and starter files for design and product planning.
-- **[learnings/](learnings/):** notes from each project, written down as things happen.
+- **[learnings/](learnings/):** one file per project, all in the same format ([`_template.md`](learnings/_template.md)).
 - **[CONTRIBUTING.md](CONTRIBUTING.md):** where each kind of change goes, so the playbook doesn't end up saying the same thing twice in different words.
 - **[CHANGELOG.md](CHANGELOG.md):** what changed, and when.
 
@@ -48,4 +52,5 @@ template/
 
 ## Projects so far
 
-- **Cogniscore** ([cogniscore.co.uk](https://cogniscore.co.uk)), May to November 2026. Its notes are in [learnings/cogniscore.md](learnings/cogniscore.md).
+- **Cogniscore** ([cogniscore.co.uk](https://cogniscore.co.uk)), May to November 2026: [learnings/cogniscore.md](learnings/cogniscore.md).
+- **Ihsan**, November 2026: [learnings/ihsan.md](learnings/ihsan.md).
