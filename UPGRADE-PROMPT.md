@@ -6,7 +6,7 @@ Paste this into an existing project to bring it up to the latest playbook versio
 
 Upgrade this project to the latest version of my playbook: https://github.com/shabeer90/shabzy-replit-playbook
 
-1. Read the playbook's README.md, CHANGELOG.md, PLAYBOOK.md, template/ORG.md, SKILLS.md and CONTRIBUTING.md. Check AGENTS.md for which playbook version this project is on; if it doesn't say, assume none. Read every CHANGELOG entry newer than that version, including its upgrade notes.
+1. Read the playbook's README.md, CHANGELOG.md, PLAYBOOK.md, the modules in modules/ that fit this project, template/ORG.md, SKILLS.md and CONTRIBUTING.md. Check AGENTS.md for which playbook version this project is on; if it doesn't say, assume none. Read every CHANGELOG entry newer than that version, including its upgrade notes.
 
 2. Compare this project with the playbook's template/ folder, file by file. List for me:
    - files missing here (for example ORG.md, .claude/agents/*, .claude/reviewers.txt, .claude/hooks/guard.py, docs/prd/, docs/ROADMAP.md, docs/JOURNEYS.md, design/DESIGN.md);

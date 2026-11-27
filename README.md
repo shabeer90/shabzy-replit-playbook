@@ -19,6 +19,7 @@ Paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into the project. The agent f
 ## What's in here
 
 - **[PLAYBOOK.md](PLAYBOOK.md):** the rules. Most say which project they came from and what went wrong, so you can decide whether they apply to yours. The rest are how I've chosen to work. It also has the setup checklists.
+- **[modules/](modules/):** what only some projects need: public sites (SEO, GEO, growth), databases and sign-in, and Replit platform notes. A lite project reads the core plus the public-site module.
 - **[template/ORG.md](template/ORG.md):** who does what. There's a CEO, CPO, CTO and CMO, each with their own agents, and I'm the board. It also covers how a piece of work goes from idea to live, and how to keep token use down.
 - **[SKILLS.md](SKILLS.md):** the skills the agents use, what each one is for, and how to check a new one before installing it.
 - **[template/](template/):** the files every project starts with: agent instructions, the review agents, a hook that blocks risky actions, CI, and starter files for design and product planning.

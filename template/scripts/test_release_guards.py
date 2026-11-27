@@ -1,7 +1,7 @@
 """The day-one release guards: e2e on the built app, checked external writes, the bundle check.
 
 Each one exists because the same mistake reached more than one project (PLAYBOOK rules 17 and 20,
-section 7). The first two tests check this repo; the rest check the checkers on small fixtures.
+CI baseline). The first two tests check this repo; the rest check the checkers on small fixtures.
 """
 import json
 import pathlib

@@ -6,7 +6,7 @@ Paste this into a project to add what it has learned to the playbook. To set up 
 
 I keep a shared playbook for all my projects at https://github.com/shabeer90/shabzy-replit-playbook. Add this project's lessons to it, so the next project benefits.
 
-1. Read the playbook first: README.md, CONTRIBUTING.md, PLAYBOOK.md (especially the numbered rules), template/ORG.md, SKILLS.md, learnings/_template.md, and any existing learnings/<this-project>.md. CONTRIBUTING.md says where each kind of change goes. Follow it exactly.
+1. Read the playbook first: README.md, CONTRIBUTING.md, PLAYBOOK.md (especially the numbered rules), modules/, template/ORG.md, SKILLS.md, learnings/_template.md, and any existing learnings/<this-project>.md. CONTRIBUTING.md says where each kind of change goes. Follow it exactly.
 
 2. Go through this project and list what it learned. Look at:
    - git history and PR descriptions;
@@ -39,7 +39,7 @@ I keep a shared playbook for all my projects at https://github.com/shabeer90/sha
    - add or update rules, checklists, agent files or SKILLS.md only where CONTRIBUTING.md says to;
    - add a line to CHANGELOG.md under the next version (patch, minor or major, per CONTRIBUTING.md's Versions section).
 
-6. Write the way the playbook is written: plain English, short sentences, specific, nothing that sounds AI-written. A new rule says what to do. Its "*On <this project>:*" line goes in PLAYBOOK.md, never in agent files, ORG.md or SKILLS.md.
+6. Write the way the playbook is written: plain English, short sentences, specific, nothing that sounds AI-written. A new rule says what to do. Its "*On <this project>:*" line goes in PLAYBOOK.md or the module it belongs to, never in agent files, ORG.md or SKILLS.md.
 
 7. The playbook repo is public:
    - no secrets, keys, database IDs, customer data or personal details;
