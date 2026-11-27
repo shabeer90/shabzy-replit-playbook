@@ -1,0 +1,11 @@
+# Reviewers that must sign off (`<NAME>: ship` in .reviews/<branch>.md) before guard.py lets a PR open.
+# Format: NAME [path patterns...]. With patterns, the reviewer is required only when the PR changes a
+# matching file, so a copy fix doesn't wake the data reviewer. `*` matches across folders.
+# Set this once at project start (STARTER-PROMPT step 4); comment out roles the project doesn't have.
+EM
+QA        app/* src/* components/* lib/* pages/* e2e/*
+CTO       *.ts *.tsx *.js *.jsx *.mjs *.py *.sql *.sh *.yml *.json
+SECURITY  *.ts *.tsx *.js *.jsx *.mjs *.py *.sql *.sh *.yml .replit next.config.* middleware.*
+DESIGN    app/* src/* components/* pages/* design/* *.css
+CMO       app/* src/* components/* pages/* content/* emails/* social/* public/*.txt
+# DATA    *.sql supabase/* agents/* jobs/* lib/db/* scripts/*      <- projects with a database

@@ -5,10 +5,13 @@ Blocks:
   - writing a secret-looking value into any file except an ignored .env file;
   - `git commit` when the staged diff holds a secret-looking value, and `--no-verify`;
   - `git push` to main/master, and force pushes;
-  - any command containing a line from .claude/hooks/blocked-commands.txt (seeders, resets, live writes).
+  - any command containing a line from .claude/hooks/blocked-commands.txt (seeders, resets, live writes);
+  - `gh pr create` until .reviews/<branch>.md has `<NAME>: ship` for every reviewer in .claude/reviewers.txt
+    whose paths the branch touches, and a `PRD:` line linking an approved PRD (or `PRD: fix`).
 
 Why: on Cogniscore, provider keys were committed to `.replit` and stayed in git history.
 """
+import fnmatch
 import json
 import os
 import re
@@ -45,6 +48,32 @@ def check_file_write(tool_input):
               "GitHub secrets or an ignored .env.local, and reference it by name.")
 
 
+def changed_files():
+    """Files this branch changes against main, or None if that can't be worked out (then every reviewer is required)."""
+    for base in ("origin/main", "main"):
+        out = subprocess.run(["git", "diff", "--name-only", f"{base}...HEAD"], capture_output=True, text=True)
+        if out.returncode == 0:
+            return [f for f in out.stdout.splitlines() if f]
+    return None
+
+
+def required_reviewers():
+    """Reviewers from .claude/reviewers.txt. A line with path patterns applies only if a changed file matches one."""
+    listed = os.path.join(os.path.dirname(HERE), "reviewers.txt")
+    if not os.path.exists(listed):
+        return ["EM", "QA", "CTO", "SECURITY"]
+    files = changed_files()
+    names = []
+    for line in open(listed, encoding="utf-8"):
+        parts = line.split("#")[0].split()
+        if not parts:
+            continue
+        name, patterns = parts[0], parts[1:]
+        if not patterns or files is None or any(fnmatch.fnmatch(f, p) for f in files for p in patterns):
+            names.append(name)
+    return names
+
+
 def check_bash(command):
     blocked_file = os.path.join(HERE, "blocked-commands.txt")
     if os.path.exists(blocked_file):
@@ -60,6 +89,24 @@ def check_bash(command):
         current = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True).stdout.strip()
         if targets & {"main", "master"} or (len(targets) <= 1 and current in ("main", "master")):
             block("push to main. Push a branch and open a pull request.")
+    if re.search(r"\bgh\s+pr\s+create\b", command):
+        branch = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True).stdout.strip()
+        review = os.path.join(os.path.dirname(os.path.dirname(HERE)), ".reviews", branch.replace("/", "-") + ".md")
+        text = open(review, encoding="utf-8").read() if os.path.exists(review) else ""
+        prd = re.search(r"^PRD:\s*(\S+)", text, re.M)
+        root = os.path.dirname(os.path.dirname(HERE))
+        if not prd:
+            block(f"{os.path.relpath(review)} has no `PRD:` line. Link the approved PRD (`PRD: docs/prd/<file>.md`), "
+                  "or write `PRD: fix` for a small fix. No PRD, no feature.")
+        if prd.group(1) != "fix":
+            path = os.path.join(root, prd.group(1))
+            body = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
+            if not re.search(r"^Status:\s*approved\b", body, re.M):
+                block(f"{prd.group(1)} is missing or not `Status: approved`. The owner approves the PRD before the PR.")
+        missing = [r for r in required_reviewers() if not re.search(rf"^{r}: ship\s*$", text, re.M)]
+        if missing:
+            block(f"no sign-off yet from {', '.join(missing)} in {os.path.relpath(review)}. Run those reviewer "
+                  "agents (see AGENTS.md), fix what they find, then open the PR.")
     if re.search(r"\bgit\b.*\bcommit\b", command):
         if "--no-verify" in command:
             block("--no-verify skips the checks.")
