@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1 (27 Nov 2026)
+
+- README rewritten in plain English.
+
 ## 1.1.0 (27 Nov 2026)
 
 - **The AI company (`template/ORG.md`):**

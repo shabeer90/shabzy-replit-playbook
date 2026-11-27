@@ -1,40 +1,47 @@
 # shabzy-replit-playbook
 
-How we start and run every project: as a small AI company. Agents hold the jobs, the owner is the board, and each project leaves the next one a little better and more autonomous.
+This is how I start and run my projects. I build them on Replit with Claude Code and Replit Agent. Each project is run like a small company where the agents do the work and I make the decisions.
 
-Projects so far have been built on Replit with Claude Code and Replit Agent. Most of this applies to any stack.
+I learned most of what's here the hard way on my first project, Cogniscore. This repo exists so the next project doesn't repeat those mistakes. When a project teaches me something new, it goes back in here.
 
-**To start a new project:** paste [STARTER-PROMPT.md](STARTER-PROMPT.md) as the agent's first message. It copies `template/` into the repo and sets everything up.
+## Starting a new project
 
-| File | What it is | Change it when |
-|---|---|---|
-| [STARTER-PROMPT.md](STARTER-PROMPT.md) | The first message to an agent in a new project | The setup steps change |
-| [PLAYBOOK.md](PLAYBOOK.md) | The numbered rules, with the project each came from, plus checklists and baselines | A project teaches something the next one should do differently |
-| [template/ORG.md](template/ORG.md) | The AI company: roles, feature flow, token budget, autonomy ladder | A role, the flow or the budget changes |
-| [SKILLS.md](SKILLS.md) | One skill per job, who uses it, and how to find and vet new ones | A skill is added, replaced or dropped |
-| [template/](template/) | Files a project copies: agent rules, agents, hooks, CI, design and data starters | A rule gets enforced by a file |
-| [learnings/](learnings/) | One file per project: what happened, before it becomes a rule | After each retro |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Where each kind of change goes, so nothing overlaps | Rarely |
-| [CHANGELOG.md](CHANGELOG.md) | What changed in each version | Every merged change |
+Open a new Replit project and paste [STARTER-PROMPT.md](STARTER-PROMPT.md) as your first message to the agent. The agent copies the `template/` folder into the project and walks you through setup. It asks you for the things only you can do, like GitHub settings, secrets and the domain.
 
-## How the pieces fit
+## What's in here
+
+- **[PLAYBOOK.md](PLAYBOOK.md):** the rules. Each one says which project it came from and what went wrong, so you can decide whether it applies to yours. It also has the setup checklists.
+- **[template/ORG.md](template/ORG.md):** who does what. There's a CEO, CPO, CTO and CMO, each with their own agents, and I'm the board. It also covers how a piece of work goes from idea to live, and how to keep token use down.
+- **[SKILLS.md](SKILLS.md):** the skills the agents use, what each one is for, and how to check a new one before installing it.
+- **[template/](template/):** the files every project starts with: agent instructions, the review agents, a hook that blocks risky actions, CI, and starter files for design and product planning.
+- **[learnings/](learnings/):** notes from each project, written down as things happen.
+- **[CONTRIBUTING.md](CONTRIBUTING.md):** where each kind of change goes, so the playbook doesn't end up saying the same thing twice in different words.
+- **[CHANGELOG.md](CHANGELOG.md):** what changed, and when.
+
+## Two rules that matter most
+
+**Nothing gets built without a PRD.** Replit is quick to suggest new features, and it's tempting to build them all. My projects drifted that way. Now every idea goes on a parked list in `docs/ROADMAP.md`, and only work with an approved PRD gets built.
+
+**The user's journey has to work end to end.** A new feature that works on its own but breaks the path a user takes through the product isn't finished. The QA and engineering-manager agents check every journey on every change.
+
+## The template, file by file
 
 ```
 template/
-  AGENTS.md              one set of rules for every agent (Claude Code, Replit Agent, others)
-    CLAUDE.md            Claude Code reads this; it imports AGENTS.md
+  AGENTS.md              instructions every agent follows
+    CLAUDE.md            Claude Code reads this; it pulls in AGENTS.md
     replit.md            Replit Agent reads this; it points to AGENTS.md
-  ORG.md                 who owns what: CEO, CPO, CTO, CMO and their teams
-  .claude/agents/        cpo, head-of-design, head-of-data, and reviewers: em, qa, cto, security, cmo
-  .claude/reviewers.txt  which reviewers this project needs, and which paths wake each one
-  .claude/hooks/guard.py blocks secrets, pushes to main, dangerous scripts, and PRs without an approved PRD and reviewer sign-off
-  .github/workflows/     pr-checks.yml: types, tests, red-then-green gate, design check, build, e2e
-  design/                DESIGN.md (direction) and tokens; components/ui holds the shared components
-  docs/prd/              PRDs: no PRD, no feature
-  docs/ROADMAP.md        the only list of what gets built; every other idea is parked
-  docs/JOURNEYS.md       the user journeys that must always work end to end
+  ORG.md                 who owns what
+  .claude/agents/        the product, design and data leads, and the reviewers
+  .claude/reviewers.txt  which reviewers this project needs
+  .claude/hooks/guard.py stops secrets being committed, pushes to main, and PRs nobody has reviewed
+  .github/workflows/     the checks every pull request has to pass
+  design/                the design direction and design tokens
+  docs/prd/              one PRD per piece of work
+  docs/ROADMAP.md        what we're building now, and the parked ideas
+  docs/JOURNEYS.md       the user journeys that must always work
 ```
 
-## Sources
+## Projects so far
 
-- **Cogniscore** (cogniscore.co.uk, May to Nov 2026): the first project. See [learnings/cogniscore.md](learnings/cogniscore.md).
+- **Cogniscore** ([cogniscore.co.uk](https://cogniscore.co.uk)), May to November 2026. Its notes are in [learnings/cogniscore.md](learnings/cogniscore.md).
