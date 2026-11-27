@@ -1,0 +1,5 @@
+# One command fragment per line. Any Bash command containing one is blocked for agents.
+# The owner runs these by hand. Fill in for the project, for example:
+# scripts/seed_data.py
+# scripts/reset_
+# supabase db reset
