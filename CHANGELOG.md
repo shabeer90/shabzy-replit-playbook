@@ -5,6 +5,7 @@
 - Eleven approved Adam Accounting lessons: mobile and desktop performance regressions, eager SSR imports in the browser bundle, production file delivery, artifact registration recovery, email SDK results, sourced sitemap dates, filled-field readability, SEO warning triage, separate search and editorial titles, first-paint styling and valid ARIA semantics. Evidence and limits are in `learnings/adam-accounting.md`.
 - Examples extend rules 9 and 30; existing baselines in sections 7, 8 and 11 are extended in place. QA's form checklist covers filled fields, native autofill and browser themes without claiming that scripted fills test them all.
 - CMO's existing checks distinguish actionable SEO findings from justified non-fixes and keep search titles separate from editorial headlines. QA checks initial rendering as well as the settled page; design checks that ARIA attributes fit the element's role.
+- CONTRIBUTING makes the goal explicit: improve the next Replit build, strengthen existing guidance first, and include small fixes only when they teach a reusable building or testing lesson. The contribution prompt links to that standard.
 - **Upgrade from 2.4.x (optional):** adopt the performance and delivery checks where they fit, and copy the relevant QA, CMO and design checklist additions. No rules were renumbered, and no new reviewer, skill, hook or required CI gate was added.
 
 ## 2.4.0 (27 Nov 2026)
