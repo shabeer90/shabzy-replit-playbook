@@ -42,11 +42,11 @@ Our own `em-reviewer` agent does the EM job instead.
 | Skill | Source | When |
 |---|---|---|
 | next-best-practices | vercel-labs/next-skills | Next.js projects |
-| supabase-postgres-best-practices | supabase/agent-skills | Any Supabase or Postgres work: schema, RLS, migrations |
-| seo-audit | coreyhaines31/marketingskills | Public sites: diagnosing ranking and indexing |
-| seo-geo | resciencelab/opc-skills | Public sites: schema markup, AI-search visibility |
+| supabase-postgres-best-practices | supabase/agent-skills | Projects with Postgres or Supabase; used by head-of-data: schema, RLS, migrations |
+| seo-audit | coreyhaines31/marketingskills | Public sites; used by seo-geo-reviewer: ranking and indexing |
+| seo-geo | resciencelab/opc-skills | Public sites; used by seo-geo-reviewer: schema markup, AI-search visibility |
 | audit-website | squirrelscan/skills | A full site crawl before launch and monthly after |
-| security-audit | cloudflare/security-audit-skill | Before launch and after big changes. Run on a read-only copy, outside the repo, with no network. Expensive: choose the depth first. |
+| security-audit | cloudflare/security-audit-skill | Recommended by security-reviewer before launch and after big changes. Run on a read-only copy, outside the repo, with no network. Expensive: choose the depth first. |
 | improve-codebase-architecture | mattpocock/skills | When the code has grown and needs restructuring |
 
 ## Built into Claude Code (no install)

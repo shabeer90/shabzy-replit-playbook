@@ -6,7 +6,7 @@
 - commits that contain secrets, and `--no-verify`;
 - pushes to `main` and force pushes;
 - anything listed in `blocked-commands.txt`;
-- `gh pr create` until `.reviews/<branch>.md` has `EM: ship`, `QA: ship` and `CTO: ship`.
+- `gh pr create` until `.reviews/<branch>.md` has `<NAME>: ship` for every reviewer in `.claude/reviewers.txt`.
 
 Hooks bind Claude Code only. Replit Agent and humans are covered by GitHub push protection, secret scanning and branch protection, so turn those on too.
 

@@ -1,0 +1,8 @@
+# Reviewers that must sign off (`<NAME>: ship` in .reviews/<branch>.md) before guard.py lets a PR open.
+# Set this once at project start. Delete a line only if the project truly doesn't have that surface.
+EM
+QA
+CTO
+SECURITY
+# SEO        <- keep for any public website (search or AI-search traffic matters)
+# DATA       <- keep if the project has a database, data pipeline or stored user data
