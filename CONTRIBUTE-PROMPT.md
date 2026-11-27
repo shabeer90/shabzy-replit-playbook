@@ -36,7 +36,7 @@ I keep a shared playbook for all my projects at https://github.com/shabeer90/sha
 5. For the ones I approve:
    - add each one to learnings/<this-project>.md using the exact format in learnings/_template.md (create the file from the template if it doesn't exist), numbered after the last existing lesson;
    - add or update rules, checklists, agent files or SKILLS.md only where CONTRIBUTING.md says to;
-   - add a line to CHANGELOG.md under the next version.
+   - add a line to CHANGELOG.md under the next version (patch, minor or major, per CONTRIBUTING.md's Versions section).
 
 6. Write the way the playbook is written: plain English, short sentences, specific, nothing that sounds AI-written. A new rule says what to do. Its "*On <this project>:*" line goes in PLAYBOOK.md, never in agent files, ORG.md or SKILLS.md.
 

@@ -1,6 +1,6 @@
 # Playbook
 
-Read this before starting a project. Each rule is something that went wrong, or worked, on a real project. "*On <project>:*" says what happened, so you can judge whether a rule fits the next one. Rules without a project line are how we've chosen to work, not lessons yet.
+Read this before starting a project. Most rules are something that went wrong, or worked, on a real project. "*On <project>:*" says what happened, so you can judge whether a rule fits the next one. Rules without a project line are how we've chosen to work, not lessons yet.
 
 - **Start a project:** [STARTER-PROMPT.md](STARTER-PROMPT.md).
 - **Files:** in [`template/`](template/), including [ORG.md](template/ORG.md), which defines how the AI company is organised.
@@ -89,6 +89,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     | Sitemap, redirects | the production server, then fetch the real path | unit tests on the generator |
     | Real data, Google's view, CDN | the live site, after a deploy | anything local |
 
+    Was "read page content on the dev server" until Ihsan showed the production bundle can break where the dev server works.
     *On Ihsan:* different dependency versions split a shared hook from its provider in the production bundle, despite passing development checks. Replaying the served bundle with synthetic responses reproduced the blank page. Built-frontend regression checks verified the local fix, not a signed-in live release.
     *On Impact Connect:* a direct-execution guard in an imported logo validator ran its CLI exit path after bundling and stopped the server. Moving the CLI into a separate entry point removed that startup path; source-module checks alone missed it.
 
@@ -117,6 +118,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     *On Cogniscore:* the weekly SEO report took 16 minutes, and the obvious trim would have saved 22% and invented a drop in indexed pages.
 
 22. **The live site is checked by a script, not by eye.** After every release, a script compares each sitemap page with what the database says it should show. A separate scheduled job checks production health. List the command under *Live check* in `AGENTS.md`. Image checks fetch each published image URL and decode the bytes; a file existing, or an HTTP 200, isn't proof.
+    Was "compare pages with the database" until Impact Connect showed an image file can exist while its public URL serves the wrong thing.
     *On Cogniscore:* `check_live_site.py` and `live-observables.yml`.
     *On Impact Connect:* the logo validator checked that files existed, not what the published image URLs returned, so it couldn't confirm the live site had no broken logos.
 
@@ -216,7 +218,7 @@ docs/JOURNEYS.md        the user journeys that must always work
 | Supply chain | A lockfile with integrity hashes. Nothing installed unpinned at runtime (`npx x@latest`). Review what Replit's `postMerge` script runs. After a dependency fix, check what actually got installed and re-run the audit. A more specific pnpm override can beat a broad one, so editing `package.json` doesn't prove the fix. |
 | LLM | Model output is data. Validate it against the source before publishing, and add a human approval step for anything public. |
 
-*On Ihsan:* a range-specific pnpm override kept an affected dependency installed after a broad override was changed. The resolved graph and audit, not the edit, established remediation.
+*On Ihsan:* a range-specific pnpm override kept an affected dependency installed after a broad override was changed. What was actually installed, plus a clean audit, proved the fix. The edit didn't.
 
 ## 6. Database (Supabase)
 
@@ -255,7 +257,6 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
   *On Impact Connect:* missing uploads could fall through to the application response. Explicit missing-asset handling now returns 404 without caching; this does not establish what every affected browser had cached.
 - Social preview tags use absolute HTTPS image URLs and a raster format supported by the target sharing services. Fetch and decode the image, check its intended dimensions, and compare Open Graph, Twitter and JSON-LD references.
   *On Impact Connect:* generated blog previews needed a PNG derivative and absolute metadata URLs. The production-bundle smoke test decodes a 1200×630 PNG and checks that the references agree.
-
 - For AI assistants (GEO), each page answers its main question plainly near the top, with specific, attributed facts. AI crawlers are allowed in `robots.txt` unless the owner decides otherwise.
 - Public article text, public profile content and displayed statistics are available in initial HTML without JavaScript. Use the same public data and access rules for ordinary visitors and crawlers, including unfamiliar user agents. Test the served content, not just metadata or an excerpt.
   *On Impact Connect:* full article and public founder content replaced incomplete crawler output, with statistics from the API's shared cache. HTTP checks cover ordinary visitors and named and unknown crawlers; they do not prove indexing or rankings.

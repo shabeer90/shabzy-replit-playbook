@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.1 (27 Nov 2026)
+
+- Proofread after the Impact Connect lessons: README lists all three projects and every template file; changelog wording no longer points at unfixed issues; patch versions defined; consistency fixes across learnings, QA verdicts, ROADMAP and SKILLS.
+
 ## 2.3.0 (27 Nov 2026)
 
 - Seven approved Impact Connect lessons: CLI isolation in bundled servers, confirmed upload backups, decoded production image checks, missing-asset responses, raster social previews, initial public HTML and built route-graph checks. Raw evidence and limits are in `learnings/impact-connect.md`; examples extend rules 17 and 22, and checklists extend sections 7, 8 and 11.
@@ -11,12 +15,12 @@
 
 ## 2.2.2 (27 Nov 2026)
 
-- Cogniscore lesson 3 marked fixed, with the audit that shows it. Lesson 10 held back, because the service it describes is still deployed.
+- Cogniscore lesson 3 marked fixed, with the audit that shows it. Lesson 10 held back until it's fixed.
 
 ## 2.2.1 (27 Nov 2026)
 
 - Proofread: fixed contradictions (who moves a PRD to Shipped, who keeps the roadmap, merging vs the autonomy ladder, live data writes at level 3, where the review file goes, model per role); one owner for each `code-review`; project stories moved out of SKILLS.md; rule 22 made general; role table and token budget no longer copied into PLAYBOOK; a cost section in the retro template; project details removed from the test-gate script; small wording fixes.
-- `guard.py` now blocks `git push origin HEAD` while on `main`.
+- Bug fix: `guard.py` now also blocks `git push origin HEAD` while on `main`, which it was always meant to. Nothing changes for correct use.
 
 ## 2.2.0 (27 Nov 2026)
 
@@ -37,7 +41,7 @@
 
 ## 2.0.0 (27 Nov 2026)
 
-- Eight approved Ihsan lessons: production-bundle checks (rule 17), controlled non-production integration tests (rule 18), preview proxy QA, cached private-screen access, private crawler controls, resolved dependency verification, private error logging and accurate metric labels. Raw evidence summaries are in `learnings/ihsan.md`.
+- Eight approved Ihsan lessons: production-bundle checks (rule 17), controlled non-production integration tests (rule 18), preview proxy QA, cached private-screen access, private crawler controls, resolved dependency verification and accurate metric labels (a ninth is held back). Raw evidence summaries are in `learnings/ihsan.md`.
 - **Upgrade from 1.1.x:** use the amended rules 17 and 18 and CI baseline when configuring QA. Adopt the Admin, Supply chain and private-portal SEO baseline changes where applicable. Update the QA and security reviewer files from `template/.claude/agents/`. Reviewer ownership, numbered rules, hooks and CI behaviour are unchanged.
 
 ## 1.1.2 (27 Nov 2026)

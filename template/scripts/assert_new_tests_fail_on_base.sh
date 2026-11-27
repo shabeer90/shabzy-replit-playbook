@@ -100,9 +100,9 @@ while read -r file; do
   [ -n "$file" ] || continue
   case "$file" in
     e2e/*.spec.ts|scripts/test_*.py) ;;
-    # Prose is not behaviour, so a test may travel with the document it pins. Nothing in this
-    # repository renders or imports markdown — no MDX, no content loader, no runtime read of a
-    # .md — so a markdown file cannot change what the site does. Counting it as a source change
+    # Prose is not behaviour, so a test may travel with the document it pins. This assumes the
+    # project never renders or imports markdown (no MDX, no content loader, no runtime read of a
+    # .md). If yours does, remove *.md from this exemption. Counting it as a source change
     # only forced the two apart: the test pinning the soft-404 decision went in one pull request
     # and the sentence it enforces would have had to go in another, because a characterisation
     # test necessarily passes on base. Documentation drifting away from the test that holds it
