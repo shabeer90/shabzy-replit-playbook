@@ -26,4 +26,8 @@ echo '{"tool_name":"Write","tool_input":{"file_path":".replit","content":"KEY=gh
 echo '{"tool_name":"Bash","tool_input":{"command":"git push -u origin my-branch"}}' | python3 .claude/hooks/guard.py; echo "exit $?"
 ```
 
-The first two should print a reason and exit 2. The third should exit 0.
+```bash
+echo '{"tool_name":"Bash","tool_input":{"command":"gh pr create --title t --body b"}}' | python3 .claude/hooks/guard.py; echo "exit $?"
+```
+
+Run these on a branch, not `main`. The first two and the last should print a reason and exit 2 (the last because `.reviews/<branch>.md` has no `PRD:` line or sign-offs yet). The third should exit 0.

@@ -2,7 +2,7 @@
 """PreToolUse guard for Claude Code. Exit 2 blocks the tool call and shows the reason to the agent.
 
 Blocks:
-  - writing a secret-looking value into any file except an ignored .env file;
+  - writing a secret-looking value into any file except a .env* file (.env.example is still checked);
   - `git commit` when the staged diff holds a secret-looking value, and `--no-verify`;
   - `git push` to main/master, and force pushes;
   - any command containing a line from .claude/hooks/blocked-commands.txt (seeders, resets, live writes);

@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.9.2 (27 Nov 2026)
+
+- **Lite and Replit Agent made consistent everywhere.** README, rules 29 and 30, the upgrade and starter prompts, ORG.md and the reviewer agent descriptions now agree on lite's reviewers and skills, and on how a PR that Replit Agent opened gets reviewed. Rule 1 says who pulls `main` before publishing.
+- **Fixes in `template/`:**
+  - the red-then-green gate builds base before running its specs, since Playwright now serves the built app;
+  - the CI secret scan also catches AWS and Resend keys, as the guard hook does;
+  - the hooks README tests that a PR with no reviews is blocked;
+  - `replit.md` lists every check CI runs.
+- **Proofread:** a lost `\u003c` in `json-ld.ts`, field counts, British spelling, em dashes in the gate script, and the repo skeleton now lists `.claude/` and `playwright.config.ts`.
+
 ## 2.9.1 (27 Nov 2026)
 
 - **Cogniscore, lessons 21 to 24,** as improvements to existing guidance; no new rules:

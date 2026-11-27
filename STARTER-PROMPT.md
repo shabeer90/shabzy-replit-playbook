@@ -25,7 +25,7 @@ Set it up from my playbook at https://github.com/shabeer90/shabzy-replit-playboo
 9. Have **head-of-design** write `design/DESIGN.md` with the `impeccable` skill, and show it to me before anything else is designed. Then create the tokens and base components in `components/ui/`.
 10. If there's a database, have **head-of-data** write `scripts/schema.sql` with access rules for every table before any feature uses it. Decide where uploaded files live (not the published filesystem; `modules/replit-platform.md`).
 11. With me, write the first **PRDs** (the `cpo` agent, from `docs/prd/_template.md`) for the first three things under **Now** in `docs/ROADMAP.md`, and list the core user journeys in `docs/JOURNEYS.md`. Get the leadership agents to review each PRD before I approve it. Anything else we think of goes under **Parked ideas**.
-12. Open one pull request with the setup (with `PRD: fix` in the review file, since setup isn't a feature). Every reviewer that `.claude/reviewers.txt` requires signs off in `.reviews/<branch>.md` first; the hook won't open the PR otherwise.
+12. Open one pull request with the setup (with `PRD: fix` in the review file, since setup isn't a feature). Every reviewer that `.claude/reviewers.txt` requires signs off in `.reviews/<branch>.md` first; the hook won't open the PR otherwise. If you're Replit Agent, open the PR as `template/replit.md` says and I'll have Claude Code run the reviews.
 
 Setup is done when the hook tests give the expected exit codes, CI is green on the setup PR, and the journey test passes against the built app. Then go through the PLAYBOOK first-week checklist and mark each item done, mine, or not yet.
 

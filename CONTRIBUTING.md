@@ -36,7 +36,7 @@ If a change seems to belong in two places, it belongs in one, and the other link
 
 Every `learnings/<project>.md` uses the same format, from [`learnings/_template.md`](learnings/_template.md):
 - **A short About block:** what the project is, the stack, where it runs, the dates, and one line on the evidence.
-- **One numbered section per lesson**, with the same six fields in the same order:
+- **One numbered section per lesson**, with the same seven fields in the same order (Repeat of only when it applies):
   - **When**;
   - **Kind**: Went wrong, Worked or Held back;
   - **Repeat of**, only when an earlier lesson covers the same mistake;
