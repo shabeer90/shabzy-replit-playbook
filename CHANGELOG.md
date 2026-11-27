@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.1 (27 Nov 2026)
+
+- `UPGRADE-PROMPT.md`: brings an existing project up to the latest version. Linked from the README.
+
 ## 2.1.0 (27 Nov 2026)
 
 - Four further approved Ihsan lessons: distinguish Replit-provided guidance from installed skills in `SKILLS.md`; record actual review methods and bounded specialist handoffs in `template/ORG.md`; separate implementation, privacy and live-release evidence in the QA report. Raw entries extend `learnings/ihsan.md`.
