@@ -8,6 +8,10 @@ I learned most of what's here the hard way on my first project, Cogniscore. This
 
 Open a new Replit project and paste [STARTER-PROMPT.md](STARTER-PROMPT.md) as your first message to the agent. The agent copies the `template/` folder into the project and walks you through setup. It asks you for the things only you can do, like GitHub settings, secrets and the domain.
 
+## Upgrading an existing project
+
+When the playbook changes, paste [UPGRADE-PROMPT.md](UPGRADE-PROMPT.md) into the project. The agent checks what's new since the project's version, shows you the gaps, and opens a PR with the ones you approve.
+
 ## What's in here
 
 - **[PLAYBOOK.md](PLAYBOOK.md):** the rules. Each one says which project it came from and what went wrong, so you can decide whether it applies to yours. It also has the setup checklists.
