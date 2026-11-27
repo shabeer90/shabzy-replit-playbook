@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.0 (27 Nov 2026)
+
+- Four further approved Ihsan lessons: distinguish Replit-provided guidance from installed skills in `SKILLS.md`; record actual review methods and bounded specialist handoffs in `template/ORG.md`; separate implementation, privacy and live-release evidence in the QA report. Raw entries extend `learnings/ihsan.md`.
+- **Upgrade from 2.0.0 (optional):** copy the new QA report and the handoff and review-record sections of `ORG.md`. Nothing enforced changed: no new rules, reviewers, skills, hooks or CI.
+
 ## 2.0.0 (27 Nov 2026)
 
 - Eight approved Ihsan lessons: production-bundle checks (rule 17), controlled non-production integration tests (rule 18), preview proxy QA, cached private-screen access, private crawler controls, resolved dependency verification, private error logging and accurate metric labels. Raw evidence summaries are in `learnings/ihsan.md`.

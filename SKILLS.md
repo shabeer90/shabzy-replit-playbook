@@ -1,12 +1,28 @@
 # Skills
 
-Install with the [Skills CLI](https://skills.sh), which records each skill in `skills-lock.json`:
+Install community skills with the [Skills CLI](https://skills.sh), which records each skill in `skills-lock.json`:
 
 ```bash
 npx skills add <github-owner/repo> --skill <name>
 ```
 
-Every installed skill must be in `skills-lock.json`. On Cogniscore, 7 of 15 were missing, so nobody could tell where they came from or whether they had changed.
+Every CLI-installed skill must be in `skills-lock.json`. On Cogniscore, 7 of 15 were missing, so nobody could tell where they came from or whether they had changed. Replit's own guidance and Claude Code's built-in commands aren't installed this way, so they don't belong in the lockfile.
+
+## Replit's built-in guidance and tools
+
+Replit gives its Agent its own instructions and tools. They aren't skills from the Skills CLI, and a similar name doesn't make them the same thing. Before relying on one, check what the current session can actually do. A tool that worked last week, or a file that mentions it, doesn't prove it's available now. If a tool is missing, say what you used instead and what that left unchecked (see [review records](template/ORG.md#review-records)). Don't install a community skill just to fill the gap.
+
+What Ihsan's Replit environment offered (yours may differ, **check current docs**):
+
+| Replit guidance | Used for | Owner | Check before using |
+|---|---|---|---|
+| Design | Design advice and frontend work | head-of-design | Can it render and test the result here? |
+| App testing and browser tools | Running user journeys | qa-tester | Which browser tools and test runner work in this session? If you ran Playwright directly, say so. |
+| Deployment | Release status and planning a release | CEO; the owner approves publishing | Read-only status only; looking isn't permission to publish |
+| Workflows | Running the app's managed services | CEO | Use the existing managed service; don't start a second one |
+| Database | Read-only checks on production data | head-of-data | Which database is it really pointed at? Replit's own database isn't your external one. |
+
+Replit's docs: [App Testing](https://docs.replit.com/features/agent/app-testing), [Workflows](https://docs.replit.com/features/workspace-tools/workflows), [development and production databases](https://docs.replit.com/features/data-and-storage/development-and-production).
 
 ## Finding and adding skills
 

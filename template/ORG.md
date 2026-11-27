@@ -47,6 +47,28 @@ It's easy, especially on Replit, to keep building whatever gets suggested next. 
 10. **Ship.** The owner merges, pulls in Replit and publishes. The CEO runs the live check and the journeys against the live site, then moves the PRD to **Shipped**.
 11. **Learn.** After each batch, the CEO writes a retro, and anything reusable goes to the playbook.
 
+## Handing work to another agent
+
+When the CEO hands a job to another agent, the handoff says:
+- **The goal:** a link to the approved PRD (or the small fix) and its acceptance checks.
+- **Decisions already made:** a link to where they're recorded. Say which earlier ideas were replaced, and don't copy the decisions into the handoff.
+- **What it touches:** routes, files, callers and interfaces, and what mustn't break.
+- **Data and privacy:** what data the agent may use, which test accounts, and what it must clean up.
+- **What the agent may do:** advise, review or build. A review isn't permission to edit, change data or publish.
+- **What to hand back:** the output, the evidence, and what it couldn't check. Each check has one owner, so link another agent's result instead of repeating it.
+
+## Review records
+
+Each reviewer's section in `.reviews/<branch>.md` says, next to its verdict:
+- what it actually did (read the code, ran tests, used a browser);
+- on which revision and environment;
+- that it didn't build the change itself;
+- what it couldn't check.
+
+A reviewer's title isn't proof a review happened. If the right tool wasn't available, say what was used instead and what that left uncovered. A general agent reading the code isn't an architecture review, and running Playwright by hand isn't the specialised browser tool. Never mark the builder's own checks as independent.
+
+QA owns the test report. Security owns privacy findings; QA can pass it observations but doesn't give a security verdict. The CEO's checks on the live site after release stay separate from QA before the PR.
+
 ## Token budget
 
 Reviews are where the tokens go, so they're scoped:

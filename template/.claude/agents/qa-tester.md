@@ -37,10 +37,25 @@ Write your section in `.reviews/<branch>.md` (replace `/` with `-` in the branch
 
 ```
 ## QA
-| Case | Result | Evidence |
-|---|---|---|
-| ... | pass / FAIL | screenshot, test name, or command output |
+Revision and environment: <commit; which build and server; which API and database; test accounts>
+Done by: <tools used; confirm you didn't build this>
+
+| Case | How tested | Result | Evidence | Not proven |
+|---|---|---|---|---|
+| ... | mocked / real test accounts / production build | pass / FAIL / not tested | test name or command output | ... |
+
+Not tested: <what, why, and who owns that check>
+Live release: not checked here (the CEO checks it after release)
+Privacy: <what you passed to security, with a link to its verdict>
 QA: ship | fix first
 ```
+
+Say exactly how each case was tested:
+- **Mocked:** say which responses were faked. A mocked login doesn't test passwords or sessions.
+- **Real test accounts:** name the non-production services and say how the test data was cleaned up.
+- **Production build:** name the build and server, and whether the API and auth behind it were real, mocked or dev. It isn't the full production stack.
+- **Signed-in checks on the live site** aren't QA's job. They're the CEO's, after release (rule 18).
+
+Keep what works separate from what's private. A working error screen doesn't prove nothing private was logged; that's the [security reviewer's check](security-reviewer.md#check). Keep private evidence in the project, not in a public report.
 
 Use `QA: ship` only when every case passes, or a failure is listed under **Owner decisions** with the owner's call. Say plainly what you could not test, and why.
