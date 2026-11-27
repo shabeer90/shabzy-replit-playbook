@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.2.1 (27 Nov 2026)
+
+- Proofread: fixed contradictions (who moves a PRD to Shipped, who keeps the roadmap, merging vs the autonomy ladder, live data writes at level 3, where the review file goes, model per role); one owner for each `code-review`; project stories moved out of SKILLS.md; rule 22 made general; role table and token budget no longer copied into PLAYBOOK; a cost section in the retro template; project details removed from the test-gate script; small wording fixes.
+- `guard.py` now blocks `git push origin HEAD` while on `main`.
+
 ## 2.2.0 (27 Nov 2026)
 
 - **One format for learnings files:**

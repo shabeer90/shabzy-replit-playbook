@@ -1,6 +1,6 @@
 # Roadmap
 
-The only list of what we're building. If it isn't under **Now**, nobody builds it. The CEO keeps this file current, and the owner decides what moves.
+The only list of what we're building. If it isn't under **Now**, nobody builds it. The CPO keeps this file current, and the owner decides what moves.
 
 ## Now
 Approved PRDs being built, at most three at a time.

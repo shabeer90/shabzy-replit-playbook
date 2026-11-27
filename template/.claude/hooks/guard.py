@@ -87,6 +87,8 @@ def check_bash(command):
             block("force push. Ask the owner.")
         targets = {t.split(":")[-1] for t in tokens[tokens.index("push") + 1:] if not t.startswith("-")} if "push" in tokens else set()
         current = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True).stdout.strip()
+        if "HEAD" in targets:  # `git push origin HEAD` pushes the current branch
+            targets = (targets - {"HEAD"}) | {current}
         if targets & {"main", "master"} or (len(targets) <= 1 and current in ("main", "master")):
             block("push to main. Push a branch and open a pull request.")
     if re.search(r"\bgh\s+pr\s+create\b", command):

@@ -62,7 +62,6 @@
 
 ## 7. Private error logging
 
-- **When:** Nov 2026
 - **Kind:** Held back
 - **Home:** the general check is in the [security reviewer](../template/.claude/agents/security-reviewer.md). Details follow once it's fixed in Ihsan.
 

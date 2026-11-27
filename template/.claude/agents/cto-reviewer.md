@@ -15,6 +15,8 @@ When the CEO asks you to review a PRD, read only the PRD and the code or pages i
 
 ## Check, in this order
 
+Skills: Claude Code's built-in `/code-review` for a bug pass, `codebase-design` for module and interface questions, and `next-best-practices` on Next.js projects.
+
 1. **Correctness:** wrong conditions, missing awaits, null cases, off-by-one, swallowed errors. For each changed function, grep its callers and check none of them breaks.
 2. **Security:** the security-reviewer owns this. Note anything you happen to see, then move on.
 3. **Data rules from `AGENTS.md`:** anything that writes live data, published facts without evidence, the blocked scripts.

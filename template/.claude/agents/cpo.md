@@ -19,7 +19,7 @@ You are the CPO (`ORG.md`). You own **what** gets built and why. Engineering own
    - What's the smallest version that tests it?
    - What existing feature already does part of it?
    - Does it beat what's already under **Now**?
-3. **Write the PRD** from `docs/prd/_template.md` to `docs/prd/<yyyy-mm-dd>-<name>.md`. Keep it to about one page. Include the **user journey** from start to done, and add it to `docs/JOURNEYS.md`.
+3. **Write the PRD** (the `to-spec` skill can turn the conversation into a first draft) from `docs/prd/_template.md` to `docs/prd/<yyyy-mm-dd>-<name>.md`. Keep it to about one page. Include the **user journey** from start to done, and add it to `docs/JOURNEYS.md`.
 4. **Run the leadership review.** Ask the CEO to run, in PRD-review mode, each agent whose area the PRD touches:
    - `cto-reviewer` (feasibility, size) always;
    - `cmo-reviewer` for user-facing words or a public site;
