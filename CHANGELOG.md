@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.0 (27 Nov 2026)
+
+- **One format for learnings files:**
+  - `learnings/_template.md` sets an About block plus numbered lessons, each with When, Kind, What happened, Impact, Evidence and Home;
+  - `cogniscore.md` and `ihsan.md` are converted to it (lesson numbers in `ihsan.md` unchanged);
+  - CONTRIBUTING describes the format.
+- **`CONTRIBUTE-PROMPT.md`:** adds a project's lessons in that format; linked from the README and CONTRIBUTING.
+
 ## 2.1.1 (27 Nov 2026)
 
 - `UPGRADE-PROMPT.md`: brings an existing project up to the latest version. Linked from the README.
