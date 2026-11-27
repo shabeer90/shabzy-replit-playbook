@@ -64,3 +64,35 @@ Held back until fixed in Ihsan. The general check is in the [security reviewer](
 Evidence reviewed: metrics contract and aggregate tests, including trimmed, case-insensitive primary-email counting. These establish counting definitions, not audited people totals. No live counts are included.
 
 Home: [PLAYBOOK rule 9](../PLAYBOOK.md#1-the-rules); no separate metric policy was added.
+
+## 9. Skill providers and current availability
+
+*On Ihsan:* Replit-provided instructions covered design, testing, deployment, workflows and read-only production investigation. Those instructions were not CLI-installed community skills or Claude Code built-ins; usable tools varied by task environment.
+
+Evidence reviewed: current platform instructions and integrated review reports. Specialized architecture/browser callbacks were unavailable in the later review; no claim is made that they ran. Official platform references are linked in the owning section.
+
+Home: [Replit-provided guidance and tools](../SKILLS.md#replit-provided-guidance-and-tools).
+
+## 10. Honest review records
+
+*On Ihsan:* independent general workers performed source and Playwright assessments when specialized callbacks were unavailable. The record named the methods and limits, rather than treating reviewer titles as proof.
+
+Evidence reviewed: integrated review and QA assessments. Earlier design consultation was a separate input; the later assessment did not claim identical tooling.
+
+Home: [Review records](../template/ORG.md#review-records).
+
+## 11. Complete specialist handoffs
+
+*On Ihsan:* the scoped shortlisting handoff combined the approved journey, design input, interfaces, privacy boundaries and acceptance checks. The canonical plan marked the current deployment decision as replacing an earlier recommendation.
+
+Evidence reviewed: scoped workflow task and product plan. Consultation did not authorize publishing or changes to real application records.
+
+Home: [Specialist handoffs](../template/ORG.md#specialist-handoffs).
+
+## 12. Separate implementation and release verdicts
+
+*On Ihsan:* real synthetic integration, mocked failures and local production-built frontend checks established different things. The report separated working recovery from a console-privacy limitation and withheld signed-in live-release verification.
+
+Evidence reviewed: integrated review and QA reports. A local built staff journey did not establish a built investor journey or that the live release contained the reviewed assets. This extends the reporting of lessons 1, 2 and 7, not their check ownership.
+
+Home: [QA report](../template/.claude/agents/qa-tester.md#report).

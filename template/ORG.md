@@ -47,6 +47,29 @@ It's easy, especially on Replit, to keep building whatever gets suggested next. 
 10. **Ship.** The owner merges, pulls in Replit and publishes. The CEO runs the live check and the journeys against the live site, then moves the PRD to **Shipped**.
 11. **Learn.** After each batch, the CEO writes a retro, and anything reusable goes to the playbook.
 
+## Specialist handoffs
+
+Use this checklist when delegating within the flow above, not as a second approval process:
+
+- **Approved goal:** link the approved PRD or small-fix scope and its acceptance checks.
+- **Current decisions:** link their canonical home; distinguish approvals from historical proposals and superseded recommendations. Do not copy a second decision list into the handoff.
+- **Affected surface:** name routes, files, callers and interfaces, plus compatibility constraints.
+- **Privacy:** state allowed data, synthetic fixtures, disclosure boundaries and cleanup limits.
+- **Actions and exclusions:** say whether this is consultation, review or implementation, what may be changed and what is off-limits. A review request is not permission to edit, change data or publish.
+- **Deliverable and verification:** name the expected output, evidence and limitations, and assign each check to one existing owner. Link another owner's result instead of repeating their check.
+
+*On Ihsan:* a scoped shortlist-to-brief handoff carried the approved journey, privacy boundaries, interfaces and acceptance checks. The canonical plan distinguished the current shared-deployment decision from an earlier separate-deployment recommendation.
+
+## Review records
+
+Each in-scope reviewer records their role, actual method/tools, independence from the builder, evidence and limitations alongside the existing verdict. State what was read or run, on which revision and environment. A role title or delegated job is not evidence that a review occurred.
+
+If specialized callbacks are unavailable, name the substitute, what it checked and what remains uncovered. An independent general worker doing source inspection is not a specialized architecture assessment; direct Playwright checks are not a specialized browser callback. Do not label the builder's own checks independent or invent a specialist sign-off to fill a gap.
+
+Keep the existing role boundaries and verdict lines. QA owns the [test report structure](.claude/agents/qa-tester.md#report); security owns privacy findings. QA can supply synthetic observations to security without issuing a second security verdict. The CEO's separately authorized live checks remain separate from pre-PR QA.
+
+*On Ihsan:* the later integrated review recorded independent general-worker source and Playwright assessments, with specialized callbacks unavailable. The earlier design consultation was a separate input, not evidence that the later review used the same tools.
+
 ## Token budget
 
 Reviews are where the tokens go, so they're scoped:

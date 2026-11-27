@@ -37,10 +37,31 @@ Write your section in `.reviews/<branch>.md` (replace `/` with `-` in the branch
 
 ```
 ## QA
-| Case | Result | Evidence |
-|---|---|---|
-| ... | pass / FAIL | screenshot, test name, or command output |
+- Reviewed revision/build:
+- Environment: frontend/server build, API/database target, synthetic data and auth mode.
+- Actual method/tools and independence from builder:
+
+| Case / assertion | Method | Result | Evidence | Not established |
+|---|---|---|---|---|
+| ... | mocked responses / real synthetic integration / production-built frontend | pass / FAIL / not tested | test name, command and result, or safe artifact reference | ... |
+
+Untested areas: what, why, and the existing owner of each remaining check.
+Implementation verification: passed / failed / incomplete, for the scope above.
+Live-release verification: not performed here; link the CEO's separate record if available.
+Privacy: observations supplied to security; link its verdict and remaining limits.
 QA: ship | fix first
 ```
+
+Label methods precisely; combine labels when a test uses more than one:
+
+- **Source review:** code was inspected, not executed. Link the owning reviewer's result; QA does not repeat code review.
+- **Mocked responses:** state which identity/API/database responses were replaced. A mocked login does not test passwords or sessions.
+- **Real synthetic integration:** identify the non-production services and real auth/database paths exercised, plus exact fixture cleanup.
+- **Production-built frontend:** identify the served build and server, and whether its API, auth and other frontends were real, mocked or development services. This is not necessarily a complete production stack.
+- **Authenticated live-release checks:** belong to the CEO's separately authorized release check, not this QA suite (rule 18). That record needs deployed artifact identity, method, journey evidence and untested areas. A public login fetch is not a signed-in check.
+
+Separate functionality assertions from privacy assertions. A working fallback does not establish private logs; no uncaught browser errors does not establish safe console output. Link the [security reviewer's logging check](security-reviewer.md#check) rather than duplicating its ownership. Keep private evidence in the project, not a public report.
+
+*On Ihsan:* real synthetic staff sign-in and mocked error cases ran against local production-built staff assets. Another portal still used a development frontend. Recovery passed with an explicit console-privacy limitation, and signed-in production remained unverified. Passing local tests did not establish that the live release contained the reviewed build.
 
 Use `QA: ship` only when every case passes, or a failure is listed under **Owner decisions** with the owner's call. Say plainly what you could not test, and why.
