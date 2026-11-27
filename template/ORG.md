@@ -23,7 +23,7 @@ The builder is whichever agent writes the code, usually the CEO session or a sub
 
 It's easy, especially on Replit, to keep building whatever gets suggested next. The product ends up with lots of half-finished features, and nobody knows what it's for. Three files stop that:
 
-- **`docs/ROADMAP.md`** is the only list of what we build. **Now** holds three items at most. Every other idea, whoever suggested it (the owner in passing, Replit Agent, another agent, a user), goes under **Parked ideas** with its source and the date.
+- **`docs/ROADMAP.md`** is the only list of what we build. **Now** holds three items at most. **Next** holds what the owner has agreed to do after them, still without a PRD. Every other idea, whoever suggested it (the owner in passing, Replit Agent, another agent, a user), goes under **Parked ideas** with its source and the date.
 - **`docs/prd/`:** nothing bigger than a small fix is built without an approved PRD. The guard hook won't open a PR without a `PRD:` line linking one with `Status: approved`, or `PRD: fix`.
 - **`docs/JOURNEYS.md`** lists the user journeys that must always work end to end. Every feature is judged by whether the user can still get from start to done, not by whether the new piece works on its own.
 
@@ -76,7 +76,7 @@ Reviews are where the tokens go, so they're scoped:
 - **Path-scoped reviewers.** `.claude/reviewers.txt` gives each reviewer the paths it cares about. A docs-only change wakes only the EM; a copy change doesn't wake the data reviewer.
 - **One-line sign-off when out of scope.** A reviewer whose area isn't touched in substance says so and stops.
 - **Reviewers read the diff and the functions it touches,** not the whole repo.
-- **Model per role,** set in each agent's `model:` frontmatter (check current Claude Code docs for the allowed values):
+- **Model per role,** set in each agent's `model:` frontmatter (**check current docs** for the allowed values):
   - `inherit` (the session's model) for CTO, security, data and CPO, where a miss is expensive, so run the main session on the strongest model;
   - a cheaper one for EM, QA, design and CMO.
 - **No double work:** each check has one owner (the table above). If two agents' instructions overlap, fix the instructions; don't run both.

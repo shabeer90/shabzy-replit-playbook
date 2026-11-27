@@ -2,7 +2,7 @@
 
 This is how I start and run my projects. I build them on Replit with Claude Code and Replit Agent. Each project is run like a small company where the agents do the work and I make the decisions.
 
-Most of what's here I learned the hard way, first on Cogniscore and then on Ihsan. This repo exists so the next project doesn't repeat those mistakes. When a project teaches me something new, it goes back in here.
+Most of what's here I learned the hard way, first on Cogniscore, then on Ihsan and Impact Connect. This repo exists so the next project doesn't repeat those mistakes. When a project teaches me something new, it goes back in here.
 
 ## Starting a new project
 
@@ -40,10 +40,13 @@ template/
     CLAUDE.md              Claude Code reads this; it pulls in AGENTS.md
     replit.md              Replit Agent reads this; it points to AGENTS.md
   ORG.md                   who owns what
+  .gitignore               keeps secrets, builds and review notes out of git
   GLOSSARY.md              the project's words, defined once
   .claude/agents/          the product, design and data leads, and the reviewers
   .claude/reviewers.txt    which reviewers this project needs
-  .claude/hooks/guard.py   stops secrets being committed, pushes to main, and PRs nobody has reviewed
+  .claude/settings.json    turns the guard hook on for Claude Code
+  .claude/hooks/           the guard (stops secrets, pushes to main, and PRs nobody has reviewed),
+                           its blocked-commands list, and how to test it
   .agents/memory/          facts agents shouldn't have to relearn
   .github/workflows/       the checks every pull request has to pass
   design/                  the design direction and design tokens
@@ -61,3 +64,4 @@ template/
 
 - **Cogniscore** ([cogniscore.co.uk](https://cogniscore.co.uk)), May to November 2026: [learnings/cogniscore.md](learnings/cogniscore.md).
 - **Ihsan**, November 2026: [learnings/ihsan.md](learnings/ihsan.md).
+- **Impact Connect**, August to November 2026: [learnings/impact-connect.md](learnings/impact-connect.md).

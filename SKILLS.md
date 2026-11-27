@@ -66,12 +66,10 @@ All were checked to exist in their repos on 27 Nov 2026. Read each SKILL.md befo
 |---|---|---|---|
 | webapp-testing | anthropics/skills | qa-tester | Drives the local app with Playwright: checks features, screenshots, browser logs |
 | code-review (mattpocock) | mattpocock/skills | em-reviewer only | Reviews a diff against the PRD and the repo's standards, in parallel sub-agents |
-| to-spec | mattpocock/skills | cpo | Turns a conversation into a written spec; the cpo puts it in the PRD template |
+| to-spec | mattpocock/skills | cpo | Turns a conversation into a first PRD draft |
 | grilling | mattpocock/skills | cpo | Questions the owner one at a time until the ask is clear |
 | tdd | mattpocock/skills | the builder | Red-green-refactor, so features arrive with tests |
-| diagnosing-bugs | mattpocock/skills | anyone | A diagnosis loop for hard bugs, before guessing at a fix |
-
-
+| diagnosing-bugs | mattpocock/skills | CEO | A diagnosis loop for hard bugs, before guessing at a fix |
 
 ## When the project needs it
 

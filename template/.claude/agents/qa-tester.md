@@ -47,7 +47,7 @@ Done by: <tools used; confirm you didn't build this>
 Not tested: <what, why, and who owns that check>
 Live release: not checked here (the CEO checks it after release)
 Privacy: <what you passed to security, with a link to its verdict>
-QA: ship | fix first
+QA: ship | fix first | rethink
 ```
 
 Say exactly how each case was tested:

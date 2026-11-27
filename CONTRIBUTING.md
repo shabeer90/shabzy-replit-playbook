@@ -58,7 +58,8 @@ Platform behaviour you haven't confirmed is marked **(check current docs)**.
 
 ## Versions
 
-- **Minor (1.x):** additions that don't change what an existing project must do.
-- **Major (2.0):** a change that existing projects should adopt, such as a new required reviewer or a hook behaviour change. Say how to upgrade.
+- **Patch (x.y.z):** wording, links, corrections and bug fixes that don't change what a project must do.
+- **Minor (x.y):** additions that don't change what an existing project must do.
+- **Major (x.0):** a change that existing projects must adopt, such as a new required reviewer or a new thing the hook blocks. Say how to upgrade.
 
 Each project records the version it started from in its `AGENTS.md`, so it knows what to pick up later.
