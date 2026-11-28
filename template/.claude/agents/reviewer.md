@@ -1,7 +1,7 @@
 ---
 name: reviewer
 description: Independent review of a Feature or Bet branch before its PR, with the lenses its paths wake (security, data, design, words), and PRD-mode review of a Bet. Use when a branch is ready for review, on a PR Replit Agent opened, or when a Bet's PRD needs its review lines. Not for Fixes.
-tools: Read, Grep, Glob, Bash
+tools: Read, Grep, Glob, Bash, Write, Edit
 model: inherit
 ---
 

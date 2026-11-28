@@ -22,7 +22,7 @@ Paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into the project. The agent f
 - **[modules/](modules/):** what only some projects need: public sites (SEO, GEO, growth), databases and sign-in, and Replit platform notes. The `lane` skill says when a change needs one.
 - **[template/ORG.md](template/ORG.md):** who does what. I'm the board, the main session is the CEO, and specialists wake only when a change needs them. It also covers the stages, the autonomy ladder and how to keep token use down.
 - **[SKILLS.md](SKILLS.md):** the skills the agents use, what each one is for, and how to check a new one before installing it.
-- **[template/](template/):** the files every project starts with: agent instructions, three project skills (lane, review, release), CI that checks every PR's lane and the live site's commit, a Claude Code hook that blocks risky actions, and starter files for design and product planning.
+- **[template/](template/):** the files every project starts with: agent instructions, three project skills (lane, review, release), CI that checks every PR's lane, a daily check that the live site runs `main`, a Claude Code hook that blocks risky actions, and starter files for design and product planning.
 - **[learnings/](learnings/):** one file per project, all in the same format ([`_template.md`](learnings/_template.md)).
 - **[CONTRIBUTING.md](CONTRIBUTING.md):** where each kind of change goes, so the playbook doesn't end up saying the same thing twice in different words.
 - **[CHANGELOG.md](CHANGELOG.md):** what changed, and when.
@@ -31,7 +31,7 @@ Paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into the project. The agent f
 
 **Process follows the door.** A typo fix and a payments change don't get the same process. Anything that can't be undone (money, sent emails, deleted data, sign-in, public claims, URLs) is a Bet and gets the careful path, however small. Everything else moves fast.
 
-**No feature gets built without a PRD.** Replit is quick to suggest new features, and it's tempting to build them all. My projects drifted that way. Now every idea goes on a parked list in `docs/ROADMAP.md`, and only Features and Bets with an approved PRD get built.
+**No feature gets built without a PRD.** Replit is quick to suggest new features, and it's tempting to build them all. My projects drifted that way. Now every idea goes on a parked list in `docs/ROADMAP.md`, and nothing bigger than a Fix gets built without an approved PRD.
 
 **The user's journey has to work end to end.** A new feature that works on its own but breaks the path a user takes through the product isn't finished. CI runs every journey's test on every PR, and QA won't sign off a Feature or Bet that broke one.
 
@@ -48,7 +48,7 @@ template/
   .agents/skills/          lane (how much process), review (one reviewer, with lenses by path), release
   .claude/agents/          the product, design and data leads, the reviewer and QA
   .claude/settings.json    turns the guard hook on for Claude Code
-  .claude/hooks/           the guard (stops secrets, pushes to main, and Feature PRs nobody has reviewed),
+  .claude/hooks/           the guard (stops secrets, pushes to main, and Feature or Bet PRs nobody has reviewed),
                            its blocked-commands list, and how to test it
   .agents/memory/          facts agents shouldn't have to relearn
   .github/workflows/       the checks every PR must pass, the lane check, and the daily live-drift check

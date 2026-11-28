@@ -20,8 +20,7 @@ If the diff touches no schema, query, data job or stored data, say so in one lin
   - nulls are handled.
 - **Privacy:**
   - personal data is minimised;
-  - consent is recorded where needed;
-  - nothing personal goes to logs or analytics.
+  - consent is recorded where needed.
 
 Use the `supabase-postgres-best-practices` skill for Postgres or Supabase.
 

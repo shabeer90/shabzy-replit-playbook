@@ -10,7 +10,7 @@ The easiest way is to paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into th
 |---|---|---|
 | What happened on a project (raw) | `learnings/<project>.md`, in the format of `learnings/_template.md` | PLAYBOOK.md |
 | A rule the next project should follow | `PLAYBOOK.md` "The rules", as a new number at the end | anywhere else; other files link to the rule |
-| A checklist item or baseline | the matching PLAYBOOK section (Day 0, security, CI, first week), or the module it belongs to (`modules/public-site.md` for SEO, GEO and growth; `modules/database.md` for data, admin and sign-in) | the rules |
+| A checklist item or baseline | the matching PLAYBOOK section (Day 0, security, CI, before launch), or the module it belongs to (`modules/public-site.md` for SEO, GEO and growth; `modules/database.md` for data, admin and sign-in) | the rules |
 | A role, the stages, the roadmap and PRD process, the token budget, the autonomy ladder | `template/ORG.md` | PLAYBOOK.md (which only links to it) |
 | What an agent checks | that agent's file in `template/.claude/agents/`, or for a review, its lens in `template/.agents/skills/review/lenses/` | other agents' files or lenses |
 | A procedure every change follows (picking the lane, reviewing, releasing) | that skill in `template/.agents/skills/` | PLAYBOOK.md or ORG.md, which link to it |
@@ -37,7 +37,7 @@ If a change seems to belong in two places, it belongs in one, and the other link
 
 Every `learnings/<project>.md` uses the same format, from [`learnings/_template.md`](learnings/_template.md):
 - **A short About block:** what the project is, the stack, where it runs, the dates, and one line on the evidence.
-- **One numbered section per lesson**, with the same seven fields in the same order (Repeat of only when it applies):
+- **One numbered section per lesson**, with the same seven fields in the same order:
   - **When**;
   - **Kind**: Went wrong, Worked or Held back;
   - **Repeat of**, only when an earlier lesson covers the same mistake;

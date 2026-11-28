@@ -119,7 +119,7 @@ Write one with skill-creator when the project repeats a workflow with house rule
 So nobody re-evaluates these from scratch:
 - **frontend-design (anthropics/skills):** a good, small design skill. `impeccable` covers the same job in more depth. Use it only if `impeccable` can't be installed.
 - **stop-slop (hardikpandya/stop-slop):** the same job as `humanizer`, which is more detailed and maintained.
-- **EveryInc compound-engineering `ce-code-review` and `ce-test-browser`:** a heavier multi-reviewer plugin that overlaps our own review agents.
+- **EveryInc compound-engineering `ce-code-review` and `ce-test-browser`:** a heavier multi-reviewer plugin that overlaps our own `reviewer` and its lenses.
 - **Community "engineering-manager" skills on skills.sh:** these are about managing people, not reviewing features.
 - **The Caveman CLI and its other features (juliusbrussee/caveman):** "Read less", "Auto", "Blocks", "Waste fixes" and "Browse" fail the vetting above:
   - the installer runs `npx ...@latest`;

@@ -2,7 +2,7 @@
 
 Every project runs as a small AI company. The owner is the board. Agents hold the jobs, and **each job has exactly one owner**, so two agents never do the same work and spend tokens twice.
 
-Most changes never meet most of the company. A Fix involves the builder, CI and the owner. Specialists wake only for the changes that need them: the `lane` skill decides which.
+Most changes never meet most of the company. A Fix involves the builder, CI and the owner. Specialists wake only for the changes that need them: the lane, and the paths in `.agents/skills/review/lenses.txt`, decide which.
 
 ## The roles
 
@@ -38,8 +38,8 @@ It's easy, especially on Replit, to keep building whatever gets suggested next. 
 
 The `lane` skill (`.agents/skills/lane/SKILL.md`) is the source for each lane's steps. In short:
 
-- **Fix:** build it, CI passes, the owner reads the PR and merges, then the `release` skill.
-- **Feature:** a one-page PRD under **Now**, approved by the owner. head-of-design and head-of-data go first if it needs something new from them. Build test-first. One review and QA. The owner merges, then the `release` skill.
+- **Fix:** build it, CI passes, the owner reads the PR and merges (at autonomy level 2, an agent merges once CI passes), then the `release` skill.
+- **Feature:** a one-page PRD under **Now**, approved by the owner. head-of-design and head-of-data go first if it needs something new from them. Build test-first. One review, and QA if it touches the app. The owner merges, then the `release` skill.
 - **Bet:** a full PRD with **Undo** and **How we'd notice**, reviewed in PRD mode before the owner approves it. Then as a Feature, released behind a switch where there can be one, and watched for the first hour.
 
 A good idea that comes up while building is parked, not built. After each batch, the CEO writes a retro, and anything reusable goes to the playbook.

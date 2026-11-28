@@ -1,6 +1,6 @@
 ---
 name: lane
-description: Decide how much process a change needs. Use at the start of every piece of work (a bug, a tweak, a feature, anything you or the owner suggest), again before opening its PR, and whenever a change grows or starts touching money, stored data, sign-in, emails, URLs or public claims.
+description: Decide how much process a change needs. Use at the start of every piece of work (a bug, a tweak, a feature, anything you or the owner suggests), again before opening its PR, and whenever a change grows or starts touching money, stored data, sign-in, emails, URLs or public claims.
 ---
 
 # Pick the lane

@@ -25,7 +25,7 @@ jobs:
       - uses: actions/setup-python@<sha> # v5
         with:
           python-version: '<version>'
-      - run: pip install -r requirements.txt pytest
+      - run: pip install pytest && if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Secrets in the tree
         run: "! git grep -nE 'ghp_[A-Za-z0-9]{36}|github_pat_|sk-ant-|sk_live_|sb_secret_|BEGIN [A-Z ]*PRIVATE KEY|AKIA[0-9A-Z]{16}|\\bre_[A-Za-z0-9]{8}_' -- . ':!*.md' ':!.claude/hooks/guard.py' ':!.github/workflows/pr-checks.yml'"
       - name: Types (the build may skip them)
