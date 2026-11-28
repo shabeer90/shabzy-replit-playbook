@@ -26,9 +26,9 @@ The builder is whichever agent writes the code: usually Replit Agent (`replit.md
 On lite:
 - **Kept:** the guard hook, CI (including the day-one checks in the PLAYBOOK CI baseline), PRD-first with the roadmap's parked ideas, the journeys, and the release loop.
 - **Reviewers:** QA, plus CMO on a public site. Comment out the rest in `.claude/reviewers.txt`.
-- **PRDs** are short, and the owner approves them without a leadership review.
+- **PRDs** are short. The CEO writes them, and the owner approves them without a leadership review. The owner also confirms a `PRD: fix` really is small.
 - **Agents:** head-of-design writes `design/DESIGN.md` once at the start. The CPO, Head of Data, CTO, EM and security reviewers aren't used.
-- **Skills:** the *Every project* and *Product, review and QA* lists in `SKILLS.md`.
+- **Skills:** the *Every project* list, `impeccable` from *Products with a UI*, and `webapp-testing`, `tdd` and `diagnosing-bugs` from *Product, review and QA*.
 - **Reading:** `PLAYBOOK.md`, plus `modules/public-site.md` on a public site and `modules/replit-platform.md` when Replit misbehaves. Not `modules/database.md`.
 
 Move to full the day the project gets a database, sign-in or payments, and say so in the next PR.

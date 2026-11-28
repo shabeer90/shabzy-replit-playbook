@@ -9,7 +9,7 @@
 The guard hook in `.claude/hooks/` doesn't run for you, so these rules hold because you follow them. GitHub branch protection and CI are what enforce them.
 
 1. Start every piece of work on a new branch from an up-to-date `main`. Never commit or push to `main`.
-2. Before you push, run the same checks CI runs (`.github/workflows/pr-checks.yml`): the secrets scan, types, `python scripts/check_design_system.py`, tests, `pnpm build`, the bundle check, and the Playwright journeys against the built app. Fix what fails; don't skip or weaken a check to get green.
+2. Before you push, run the same checks CI runs (`.github/workflows/pr-checks.yml`): the secrets scan, types, `python scripts/check_design_system.py`, tests, `pnpm build`, the bundle check, `scripts/assert_new_tests_fail_on_base.sh origin/main`, and the Playwright journeys against the built app. Fix what fails; don't skip or weaken a check to get green.
 3. Never put a secret in a file. Secrets live in Replit's Secrets tool.
 4. Open a pull request. In its description, link the PRD (or write `PRD: fix`), list what you changed and what you ran, and write "Built by Replit Agent. Reviews not run yet."
 5. Don't write reviewer verdicts in `.reviews/`. The reviews are run by Claude Code on your branch, not by the agent that built it. Don't merge; the owner merges once reviews and CI pass.

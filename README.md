@@ -61,8 +61,8 @@ template/
   config/bundle.json       the JavaScript budget and which code is private
   playwright.config.ts     e2e against the built app, not the dev server
   e2e/                     the first journey test
-  scripts/                 the design-system, bundle and external-write checks, a URL
-                           safety check, and the check that new tests fail before the fix
+  scripts/                 the design-system, bundle and external-write checks and their
+                           tests, a URL safety check, and the check that new tests fail before the fix
 ```
 
 ## Projects so far

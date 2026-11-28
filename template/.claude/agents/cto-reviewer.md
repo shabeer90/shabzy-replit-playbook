@@ -1,6 +1,6 @@
 ---
 name: cto-reviewer
-description: Reviews every change that touches CTO's paths in .claude/reviewers.txt (full projects) before the PR goes to the owner, the way a careful CTO would. Use after implementing anything, and on any PR before handing it over.
+description: Reviews every change that touches CTO's paths in .claude/reviewers.txt (full projects) before the PR goes to the owner, the way a careful CTO would. Use after implementing anything in those paths, and on any such PR before handing it over.
 tools: Read, Grep, Glob, Bash
 model: inherit
 ---

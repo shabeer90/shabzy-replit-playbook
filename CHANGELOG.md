@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.9.3 (27 Nov 2026)
+
+- **CI fix:** the red-then-green gate runs Playwright specs in the `checks` job, which had no browser, so every spec would have "failed" on base and passed the gate. The job now installs Chromium on PRs.
+- **Lite made complete:** the CEO writes lite PRDs and the owner confirms `PRD: fix`; lite's skills now include `impeccable` and leave out the CPO's and EM's.
+- **Proofread:** fixes left by 2.9.2 (`AGENTS.md` still said Replit pulls `main`, the security and CTO descriptions, `replit.md` missing the gate), and small consistency fixes in STARTER-PROMPT, PLAYBOOK, SKILLS, README and `modules/public-site.md`.
+
 ## 2.9.2 (27 Nov 2026)
 
 - **Lite and Replit Agent made consistent everywhere.** README, rules 29 and 30, the upgrade and starter prompts, ORG.md and the reviewer agent descriptions now agree on lite's reviewers and skills, and on how a PR that Replit Agent opened gets reviewed. Rule 1 says who pulls `main` before publishing.

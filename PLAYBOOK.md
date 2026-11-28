@@ -109,7 +109,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     - CI retries a failing e2e test once. Investigate the cause. A passing retry doesn't clear the failure.
 
     *On Cogniscore:* a click landing before hydration failed about one CI run in three, and never once in 60 local runs.
-    *On Cogniscore:* Replit Agent pushed new search specs straight to `main`, written against the live catalogue, so CI never ran them. The mock lacked the two brands they searched for, and 13 to 14 specs then failed on every later PR until the mock was fixed.
+    *On Cogniscore:* Replit Agent pushed new search specs straight to `main`, written against the live catalogue, so CI never ran them. The mock lacked the two brands they searched for, and 13 to 14 browser tests then failed on every later PR until the mock was fixed.
     *On Ihsan:* synthetic accounts exercised real password validation, sessions and role revocation against the development API and database. Mocked browser responses remained useful for deterministic runtime failures.
     Was mock-only until Ihsan showed that real password, session, role and database checks needed controlled non-production integration tests.
 
@@ -217,7 +217,7 @@ docs/ROADMAP.md         the only list of what gets built
 docs/JOURNEYS.md        the user journeys that must always work
 .replit                 runtime config only: no secrets
 components/ui/          shared components every page uses
-design/tokens/          colour, type and spacing tokens
+design/tokens/          colour, font, spacing and radius tokens
 e2e/                    Playwright journeys
 .agents/memory/         facts agents shouldn't relearn
 GLOSSARY.md             the project's words

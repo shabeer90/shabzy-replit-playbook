@@ -1,6 +1,6 @@
 ---
 name: security-reviewer
-description: Security review of every feature before its PR. Looks for real ways an attacker or a mistake could expose data, run code, or spend money. Runs automatically: Runs when SECURITY is in .claude/reviewers.txt (every full project) and the diff touches its paths.
+description: Security review of every feature before its PR. Looks for real ways an attacker or a mistake could expose data, run code, or spend money. Runs automatically when SECURITY is in .claude/reviewers.txt (every full project) and the diff touches its paths.
 tools: Read, Grep, Glob, Bash
 model: inherit
 ---

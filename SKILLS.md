@@ -12,7 +12,7 @@ Every CLI-installed skill must be in `skills-lock.json`. Otherwise nobody can te
 
 Replit gives its Agent its own instructions and tools. They aren't skills from the Skills CLI, and a similar name doesn't make them the same thing. Before relying on one, check what the current session can actually do. A tool that worked last week, or a file that mentions it, doesn't prove it's available now. If a tool is missing, say what you used instead and what that left unchecked (see [review records](template/ORG.md#review-records)). Don't install a community skill just to fill the gap.
 
-What one Replit environment offered (yours may differ) **(check current docs)**:
+What one Replit environment offered; yours may differ **(check current docs)**:
 
 | Replit guidance | Used for | Owner | Check before using |
 |---|---|---|---|
