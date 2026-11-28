@@ -1,9 +1,15 @@
 # Required check on main: the PR's Lane, Door, Blast radius and PRD lines fit what it changes (PLAYBOOK rule 31).
 # Its own workflow so that editing the PR description re-runs this check, not the whole build.
+#
+# pull_request_target runs this file, the checker and config/lanes.json as they are on the base branch, so a PR
+# can't pass by editing any of them, this workflow included. That is only safe because nothing from the PR is
+# checked out or run: its commits are fetched as data and read with git diff and git show. Never add a step that
+# checks out, installs or runs the PR's code here.
+# The first PR to run it is the one after the setup PR, because the base branch must already hold this file.
 # Pin each <sha> as in pr-checks.yml.
 name: pr-lane
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, edited, synchronize, reopened]
 permissions:
   contents: read
@@ -14,16 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@<sha> # v4
         with:
-          persist-credentials: false
-          fetch-depth: 0
+          fetch-depth: 0   # the base branch; the token is read-only and no PR code runs
       - uses: actions/setup-python@<sha> # v5
         with:
           python-version: '<version>'
       - name: Lane fits the change
         env:   # the description is untrusted text: pass it through env, never ${{ }} inside run
           PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
           BASE: origin/${{ github.base_ref }}
-        # Use base's checker and config, so a PR can't pass by editing them. The setup PR, with no base copy, uses its own.
         run: |
-          git checkout "$BASE" -- scripts/check_lane.py config/lanes.json 2>/dev/null || true
-          python scripts/check_lane.py "$BASE"
+          git fetch --no-tags origin "+refs/pull/$PR_NUMBER/head:refs/remotes/pr/head"
+          python scripts/check_lane.py "$BASE" refs/remotes/pr/head

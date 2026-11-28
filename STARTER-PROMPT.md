@@ -21,6 +21,6 @@ Set it up from my playbook at https://github.com/shabeer90/shabzy-replit-playboo
 11. **Claude Code only:** make the hooks in `.claude/hooks/` executable and check they block what they should (`.claude/hooks/README.md`). Then run the `reviewer` agent on the setup PRD in PRD mode, and on the branch, and `qa-tester` on the branch.
 12. Open one pull request with the setup. Its description starts with `Lane: bet`, `Door: one-way (it adds CI and hooks)`, a blast radius, and `PRD: docs/prd/<date>-setup.md`. If you're Replit Agent, open it as `template/replit.md` says, and I'll have Claude Code review it or read it myself.
 
-Setup is done when CI, including the lane check, is green on the setup PR and the journey test passes against the built app. If the stage is launched, go through the PLAYBOOK before-launch list and mark each item done, mine, or not yet. If it's exploring, stop there.
+Setup is done when CI is green on the setup PR (the lane check starts with the next PR, because it runs from `main`) and the journey test passes against the built app. If the stage is launched, go through the PLAYBOOK before-launch list and mark each item done, mine, or not yet. If it's exploring, stop there.
 
 From then on, start every change with the `lane` skill: nothing becomes a Feature or Bet without an approved PRD under **Now**, and new ideas, including your own suggestions, get parked. Write to me in plain English, and put anything worth reusing into the playbook.

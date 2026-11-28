@@ -27,7 +27,7 @@ Unsure? It's one-way. `config/lanes.json` lists the paths that make a change one
 | | Fix | Feature | Bet |
 |---|---|---|---|
 | Door | two-way | two-way | one-way |
-| Size | up to `fix_max_lines` in `config/lanes.json` | any, but split big PRs | any, but split big PRs |
+| Size | up to `fix_max_lines` added lines in `config/lanes.json` (deletions are free) | any, but split big PRs | any, but split big PRs |
 | Before building | nothing | the top half of `docs/prd/_template.md`, approved by the owner, under **Now** | the whole PRD, including **Undo** and **How we'd notice**, reviewed in PRD mode (`review` skill), approved by the owner, under **Now** |
 | Review | CI, and the owner reads the PR | CI, one review with the lenses its paths wake (`review` skill), and QA if it touches the app | as Feature, and the security and data lenses never retire |
 | Release | `release` skill | `release` skill | `release` skill, behind a switch where there can be one, and watched for the first hour |

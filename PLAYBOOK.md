@@ -215,7 +215,7 @@ Without Claude Code, a Feature's review is a new Replit Agent chat with the `rev
 
 ## Day 0: before the first prompt to an agent
 
-- [ ] **Create the GitHub repo first.** Protect `main` with a ruleset: PRs required, no force pushes, `pr-checks`, `pr-e2e` and `pr-lane` required (GitHub lists a check to require once it has run on a PR, so add them after the setup PR). On a private repo this needs GitHub Pro; without it, nothing stops a push to `main`.
+- [ ] **Create the GitHub repo first.** Protect `main` with a ruleset: PRs required, no force pushes, `pr-checks`, `pr-e2e` and `pr-lane` required (GitHub lists a check to require once it has run on a PR, so add `pr-checks` and `pr-e2e` after the setup PR, and `pr-lane` after the next one: it runs from the base branch, so the setup PR can't run it). On a private repo this needs GitHub Pro; without it, nothing stops a push to `main`.
 - [ ] **Import the repo into Replit.** Whoever writes code (Replit Agent, Claude Code, or both) works through branches and PRs.
 - [ ] **Store secrets only in Replit's Secrets tool** and in GitHub Actions secrets **(check current docs for how Replit splits workspace and deployment secrets)**. Write down which key lives where, without the values.
 - [ ] **Turn on GitHub secret scanning and push protection** where the plan offers them **(check current docs)**. The CI secret scan runs either way.
@@ -285,7 +285,7 @@ GLOSSARY.md             the project's words
    - **e2e on the built app:** `playwright.config.ts` serves the production output, and `scripts/test_release_guards.py` fails if it points at a dev server (rule 17);
    - **bundle:** `scripts/check_bundle.py` fails when a public entry statically imports private code or goes over the JavaScript budget in `config/bundle.json` (Vite; other frameworks swap in their own check);
    - **external writes:** `scripts/check_external_writes.py` fails when a known provider write isn't wrapped in `checked()` from `lib/checked.ts` (rule 20). Add the project's providers to its list.
-8. **The lane check** (`pr-lane.yml`, `scripts/check_lane.py`): the PR's Lane, Door, Blast radius and PRD lines fit what it changes (rule 31). It's a separate workflow so editing the description re-runs it, and it's required on `main`.
+8. **The lane check** (`pr-lane.yml`, `scripts/check_lane.py`): the PR's Lane, Door, Blast radius and PRD lines fit what it changes (rule 31). It's a separate workflow so editing the description re-runs it, and it's required on `main`. It runs on `pull_request_target`, from the base branch, so a PR can't edit the check it's judged by; it reads the PR's files as data and must never run them.
 9. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
 
 For apps with split routes, check the built manifest's transitive static imports. Private routes must stay out of the public entry graph, and protected screens out of the login graph. Server-only page registries must stay out of the browser graph; an SSR conditional in the source doesn't prove the imports' side effects are gone. Set a JavaScript size budget for the project and fail the check when the built JavaScript exceeds it. Deferring code is not access control; private APIs still need authentication.

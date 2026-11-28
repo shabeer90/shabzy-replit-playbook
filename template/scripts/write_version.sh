@@ -7,8 +7,10 @@
 set -u
 out="${1:-public/version.txt}"
 sha=$(git rev-parse HEAD 2>/dev/null) || sha=unknown
-# Tracked changes only: Replit workspaces hold untracked tool folders (.local, .cache, .upm).
-if [ "$sha" != unknown ] && [ -n "$(git status --porcelain --untracked-files=no 2>/dev/null)" ]; then
+# Tracked changes only: Replit workspaces hold untracked tool folders (.local, .cache, .upm). Lockfiles are left
+# out because an install step in the publish build can rewrite them, which would make every build dirty.
+if [ "$sha" != unknown ] && [ -n "$(git status --porcelain --untracked-files=no -- . \
+    ':!*pnpm-lock.yaml' ':!*package-lock.json' ':!*yarn.lock' 2>/dev/null)" ]; then
   sha="$sha-dirty"
 fi
 mkdir -p "$(dirname "$out")"

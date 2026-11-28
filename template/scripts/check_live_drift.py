@@ -6,7 +6,8 @@ but not reaching the live site. This reads the commit the site reports (scripts/
   - the site reports nothing, or `unknown`;
   - the build had uncommitted changes (`-dirty`);
   - the commit isn't on main (published from a branch, or from a commit nobody pushed);
-  - a merge to main has waited more than MAX_HOURS without being published.
+  - a merge to main that changes the site has waited more than MAX_HOURS without being published.
+    Merges that only touch docs/ or the Markdown files at the root don't count: republishing for them changes nothing.
 
 Usage: SITE_URL=https://example.com python scripts/check_live_drift.py [max_hours, default 24]
 """
@@ -39,7 +40,8 @@ def problems(live, main="origin/main", max_hours=24, now=None):
     if git("merge-base", "--is-ancestor", sha, main)[0]:
         return [f"the live commit {sha[:12]} isn't on main: it was published from a branch, before review."]
     # First-parent commits on main are the merges themselves, dated when they landed.
-    waiting = [int(t) for t in git("log", "--first-parent", "--format=%ct", f"{sha}..{main}")[1].split()]
+    waiting = [int(t) for t in git("log", "--first-parent", "--format=%ct", f"{sha}..{main}", "--",
+                                   ".", ":(exclude)docs", ":(exclude,glob)*.md")[1].split()]
     if waiting:
         hours = ((now or time.time()) - min(waiting)) / 3600
         if hours > max_hours:
