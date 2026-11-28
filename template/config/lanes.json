@@ -38,5 +38,5 @@
     "*.md",
     "*/author[!i]*"
   ],
-  "_not_one_way": "*/author[!i]* keeps author pages out of *auth* (authorize and authority stay in). shortcut: it also exempts a file like auth/author-roles.ts; narrow it if this project has one."
+  "_not_one_way": "*/author[!i]* keeps author pages out of *auth* (authorize and authority stay in). Shortcut: it also exempts a file like auth/author-roles.ts; narrow it if this project has one."
 }

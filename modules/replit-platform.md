@@ -1,6 +1,6 @@
 # Replit platform notes
 
-Read during setup, and whenever Replit behaves in a way the code doesn't explain. The release loop itself is in [PLAYBOOK.md](../PLAYBOOK.md#release-loop-on-replit).
+Read during setup, and whenever Replit behaves in a way the code doesn't explain. The release steps are in the [`release` skill](../template/.agents/skills/release/SKILL.md).
 
 These are project observations from Cogniscore, Ihsan, Impact Connect and Adam Accounting, not platform guarantees. Replit changes, so **(check current docs)** before relying on them.
 

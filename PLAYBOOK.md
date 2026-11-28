@@ -20,14 +20,14 @@ Behaviour of Replit, GitHub or Claude Code that wasn't confirmed on a project is
 
 ## How much process a change gets
 
-Process follows the door, not the size (rule 31). Jeff Bezos's 2015 letter to shareholders splits decisions in two. One-way doors can't be walked back, so they're made slowly and carefully. Two-way doors can, so one person or a small group should make them fast. His warning is about running the slow process on everything, and the opposite mistake is worse.
+Process follows the door, not the size (rule 31). Jeff Bezos's 2015 letter to shareholders splits decisions in two. One-way doors can't be walked back, so they're made slowly and carefully. Two-way doors can, so one person or a small group should make them fast. His warning was against using the slow process on everything. Here the opposite mistake, walking through a one-way door fast, does more damage.
 
 | | Fix | Feature | Bet |
 |---|---|---|---|
 | Door | two-way | two-way | one-way |
 | For example | a typo, a broken link, a dependency bump | a search bar, a new page, a filter | payments, sign-in, dropping a column, an email to every user, changing URLs |
 | Before building | nothing | a one-page PRD the owner approved | a full PRD with an **Undo**, reviewed, then approved by the owner |
-| Before merging | CI, and the owner reads the PR | CI, one review, QA if it touches the app | the same |
+| Before merging | CI, and the owner reads the PR (at autonomy level 2, CI alone) | CI, one review, QA if it touches the app | the same |
 | Release | the release loop | the release loop | the release loop, behind a switch where there can be one, watched for an hour |
 
 A change is a one-way door if it moves money, sends something that can't be recalled, deletes or overwrites data, touches sign-in, secrets or personal data, publishes an indexed claim or changes URLs, can't be switched off within five minutes, wouldn't be noticed within the hour, or changes something others depend on. When unsure, it's one-way. The full test and each lane's steps are in the [`lane` skill](template/.agents/skills/lane/SKILL.md). [`config/lanes.json`](template/config/lanes.json) lists the paths that make a PR a Bet, and CI checks every PR against it, whoever wrote it.
@@ -162,7 +162,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 
 24. **Reviews cost tokens, so they follow the lane, and checks that find nothing retire.** Fixes get no review agents. Lenses wake only for their paths. The retro counts each lens's runs and findings, and a lens with none in 10 runs is switched off with the owner's OK, except security and data on Bets. The full budget is in `template/ORG.md`. Retiring after 10 empty runs is borrowed from gstack's review specialists (garrytan/gstack).
 
-25. **A finding seen twice becomes a check.** A test or a CI step (a hook rule binds Claude Code only), so no reviewer has to spot it a third time. This is how the work gets cheaper and more autonomous from one project to the next.
+25. **A finding seen twice becomes a check.** Make it a test or a CI step (a hook rule binds Claude Code only), so no reviewer has to spot it a third time. This is how the work gets cheaper and more autonomous from one project to the next.
 
 26. **Autonomy is earned, one level at a time, and only the owner moves it.** The ladder, and what's never delegated, are in `template/ORG.md`.
 
@@ -188,7 +188,7 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 
     A feature that works on its own but breaks the journey is a failed feature.
 
-31. **Process follows the door, not the size.** Every change is a Fix, a Feature or a Bet ([How much process a change gets](#how-much-process-a-change-gets)). A one-way door is a Bet however small. A two-way door takes the light path however big, split into small PRs. Signals only raise a lane: CI makes any PR that touches a path in `config/lanes.json` a Bet, and a Fix over the size limit a Feature.
+31. **Process follows the door, not the size.** Every change is a Fix, a Feature or a Bet ([How much process a change gets](#how-much-process-a-change-gets)). A one-way door is a Bet however small. A two-way door takes the light path however big, split into small PRs. Signals only raise a lane: CI makes any PR that touches a path in `config/lanes.json` a Bet, and a Fix that adds more lines than the limit a Feature (deletions don't count).
     From Bezos's 2015 letter to shareholders, and Matt Pocock's `/pr` skill, which puts the door and the blast radius in every PR. The rule is new from here.
 
 ## What enforces each rule
@@ -207,7 +207,7 @@ Some things look like rails and aren't:
 - Secret push protection isn't offered on private repos for personal accounts **(check current docs)**, so the CI secret scan is the floor there.
 - Whether a git hook runs when Replit Agent commits is untested ([modules/replit-platform.md](modules/replit-platform.md)). Don't count on one.
 
-Without Claude Code, a Feature's review is a new Replit Agent chat with the `review` skill, which shares the builder's blind spots, or the owner reading the diff with that skill open. The PR says which.
+Without Claude Code, a Feature's or Bet's review is a new Replit Agent chat with the `review` skill, which shares the builder's blind spots, or the owner reading the diff with that skill open. The PR says which.
 
 ## How the company works
 
@@ -238,7 +238,7 @@ scripts/                one-off scripts + scripts/test_*.py (CI runs these)
 scripts/schema.sql      every table, RLS policy and grant (the source of truth for the DB)
 evidence/               saved source files for every published fact (if a content site)
 config/                 allowlists (image hosts etc.) and lanes.json, read by code, tests and CI
-.github/workflows/      pr-checks.yml first; scheduled jobs later
+.github/workflows/      pr-checks.yml, pr-lane.yml, live-drift.yml; other scheduled jobs later
 .claude/                agents, hooks, settings.json, and a skills link to .agents/skills
 .agents/skills/         lane, review (with its lenses) and release
 playwright.config.ts    e2e against the built app
@@ -267,7 +267,7 @@ GLOSSARY.md             the project's words
 | Rendering | No `dangerouslySetInnerHTML` without sanitising. JSON-LD through one helper that escapes `<`. Outbound links allowlisted to http(s). |
 | Fetching URLs from data | An SSRF guard: block private IPs, re-check every redirect, pin DNS. |
 | Headers | HSTS and a CSP on public pages. Don't trust `X-Forwarded-Host`; pin the site URL. |
-| CI | Actions pinned to a SHA. Never `pull_request_target`. `workflow_dispatch` inputs passed via `env:`, never `${{ }}` inside `run:`. `persist-credentials: false`. Tokens with write access kept in protected environments. |
+| CI | Actions pinned to a SHA. No `pull_request_target`, except a check like `pr-lane.yml` that never checks out, installs or runs the PR's code. `workflow_dispatch` inputs passed via `env:`, never `${{ }}` inside `run:`. `persist-credentials: false`. Tokens with write access kept in protected environments. |
 | Supply chain | A lockfile with integrity hashes. Nothing installed unpinned at runtime (`npx x@latest`). Review what Replit's `postMerge` script runs. After a dependency fix, check what actually got installed and re-run the audit. A more specific pnpm override can beat a broad one, so editing `package.json` doesn't prove the fix. |
 | LLM | Model output is data. Validate it against the source before publishing, and add a human approval step for anything public. |
 
@@ -338,18 +338,17 @@ Everything is in [`template/`](template/). The README lists [each file and what 
 
 Do these when the project moves from exploring to launched, not on Day 0.
 
-
 - [ ] `pr-checks`, `pr-e2e` and `pr-lane` are green and required on `main`.
 - [ ] Secrets inventory written (names and locations, no values). Secret scanning is on.
 - [ ] If there's a database: `schema.sql` committed with RLS on every table. Live `pg_policies` checked against it.
 - [ ] If there's an admin or sign-in: done as [modules/database.md](modules/database.md#admin-and-sign-in) says, or none yet.
-- [ ] `find-skills` is installed, and every skill is in `skills-lock.json` and `SKILLS.md`.
+- [ ] `find-skills` is installed, and every installed skill is in `skills-lock.json` and has a row in the playbook's `SKILLS.md`.
 - [ ] `.agents/memory/` has the port map and any platform quirks found during setup.
 - [ ] The design system exists (tokens, base components) and its CI check passes.
-- [ ] If you use Claude Code: the hooks block a test push to main, a test secret, and a PR with no `Lane:` line, and allow a branch push (`template/.claude/hooks/README.md`).
+- [ ] If you use Claude Code: the hooks block a test push to main, a test secret, and `gh pr create` before `.reviews/<branch>.md` has a `Lane:` line, and allow a branch push (`template/.claude/hooks/README.md`).
 - [ ] `.agents/skills/review/lenses.txt` and `config/lanes.json` match this repo's real folders.
 - [ ] `design/DESIGN.md` approved; voice written in `AGENTS.md`.
-- [ ] `docs/ROADMAP.md` has the first three items under **Now**, each with an approved PRD; `docs/JOURNEYS.md` lists the core journeys, each with an e2e test.
+- [ ] `docs/ROADMAP.md` has its first one to three items under **Now**, each Feature or Bet with an approved PRD; `docs/JOURNEYS.md` lists the core journeys, each with an e2e test.
 - [ ] Public site: canonical host, sitemap, robots, Search Console ([modules/public-site.md](modules/public-site.md)).
 - [ ] A live-check script exists for the main pages.
 - [ ] The build runs `scripts/write_version.sh`, `SITE_URL` is set, and `live-drift.yml` is green.

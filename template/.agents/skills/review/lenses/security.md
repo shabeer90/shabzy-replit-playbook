@@ -9,7 +9,7 @@ Look for **real trust-boundary failures**: who could do what they shouldn't, and
 - **Input to output:**
   - user, scraped and model text is never put into HTML without sanitising;
   - JSON-LD goes through `lib/json-ld.ts`;
-  - URLs from data go through `safe_url`;
+  - URLs from data go through `safe_url` (`scripts/safe_url.py`, or the same check in the app's language);
   - SQL is parameterised.
 - **Database access:** anon or public access is limited to the rows and columns the page needs; the service role is never used on a public path without size and rate limits.
 - **Server-side fetches** of URLs from data or users: SSRF guard, no private IPs, redirects re-checked.

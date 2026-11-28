@@ -11,7 +11,7 @@ Use the `webapp-testing` skill (anthropics/skills) to drive the app with Playwri
 
 ## The journeys come first
 
-`docs/JOURNEYS.md` lists the end-to-end paths that must always work. **Run every journey test on every PR that touches the app**, not only the new feature's tests. A green feature that breaks a journey is a fail. If the PRD adds or changes a journey, write or update its test in `e2e/journeys/`.
+`docs/JOURNEYS.md` lists the end-to-end paths that must always work. **Run every journey test on every Feature or Bet you test**, not only the new feature's tests. A green feature that breaks a journey is a fail. If the PRD adds or changes a journey, write or update its test in `e2e/journeys/`.
 
 Then test the feature as a user would, from where they start to where they're done. That means through the real navigation, not by opening the page's URL directly.
 

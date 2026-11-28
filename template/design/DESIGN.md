@@ -1,6 +1,6 @@
 # Design direction
 
-Written by head-of-design with the `impeccable` skill at project start, and approved by the owner before any component is built.
+Written by head-of-design with the `impeccable` skill, and approved by the owner before the first page meant for real users (by launch at the latest).
 
 - **For:** <who uses it, and in what situation>
 - **The feeling:** <one word or phrase>

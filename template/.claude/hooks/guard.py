@@ -50,7 +50,7 @@ def check_file_write(tool_input):
 
 
 def changed_files():
-    """Files this branch changes against main, or None if that can't be worked out (then every reviewer is required)."""
+    """Files this branch changes against main, or None if that can't be worked out (then QA is required)."""
     for base in ("origin/main", "main"):
         out = subprocess.run(["git", "diff", "--name-only", f"{base}...HEAD"], capture_output=True, text=True)
         if out.returncode == 0:
@@ -99,7 +99,7 @@ def check_bash(command):
                        if not re.search(rf"^{r}: ship\s*$", text, re.M)]
             if missing:
                 block(f"a {lane.group(1)} needs sign-off from {' and '.join(missing)} in {os.path.relpath(review)}. "
-                      "Run the reviewer and qa-tester agents, fix what they find, then open the PR.")
+                      "Run the agents it names (reviewer, qa-tester), fix what they find, then open the PR.")
     if re.search(r"\bgit\b.*\bcommit\b", command):
         if "--no-verify" in command:
             block("--no-verify skips the checks.")

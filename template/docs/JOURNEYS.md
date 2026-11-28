@@ -1,6 +1,6 @@
 # User journeys
 
-The end-to-end paths that must always work. Each one has an e2e test, and QA runs all of them on every PR that touches the app. A PR that breaks one doesn't ship, even if its own feature works.
+The end-to-end paths that must always work. Each one has an e2e test, CI runs all of them on every PR, and QA runs them on every Feature or Bet that touches the app. A PR that breaks one doesn't ship, even if its own feature works.
 
 | Journey | Steps (start to done) | Test | Added by |
 |---|---|---|---|

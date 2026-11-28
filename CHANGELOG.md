@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.0.1 (28 Nov 2026)
+
+Proofread of 3.0.
+- **CI fix:** `pr-checks.yml` installed `requirements.txt`, which the template doesn't ship, so a copied template failed. It now installs it only if present.
+- **Security baseline:** "Never `pull_request_target`" now allows the one exception, `pr-lane.yml`, which never runs the PR's code.
+- **Design timing:** `DESIGN.md` and head-of-design still said "at project start"; both now say before the first page for real users (rule 28).
+- **QA scope:** `JOURNEYS.md`, `qa-tester` and ORG.md said QA runs on every PR touching the app; it runs on Features and Bets.
+- **`.reviews/` file name:** CLAUDE.md and the hooks README now say `/` in the branch name becomes `-`, as `guard.py` expects. Without it, a PR from `feat/x` stayed blocked.
+- The `reviewer` agent can now write its report. Privacy in logs belongs to the security lens only. Wording fixes across README, PLAYBOOK, CONTRIBUTING, SKILLS and the template.
+
 ## 3.0.0 (28 Nov 2026)
 
 Process now depends on whether a change can be undone, and the rails that matter hold without Claude Code.
@@ -7,8 +17,8 @@ Process now depends on whether a change can be undone, and the rails that matter
 - **Lanes (rule 31).** Every change is a Fix, a Feature or a Bet. A one-way door (money, sent messages, deleted data, sign-in, secrets, personal data, public claims, URLs, anything that can't be switched off fast or wouldn't be noticed) is a Bet however small. A Fix needs CI and the owner's read; a Feature a one-page PRD, one review and QA; a Bet a full PRD with an Undo, a PRD review, and a watched release. From Bezos's one-way and two-way doors, and Matt Pocock's `/pr` door line.
 - **Enforced in CI, for every author.** `pr-lane.yml` runs `scripts/check_lane.py`: the PR description must carry Lane, Door, Blast radius and PRD lines; a PR touching a path in `config/lanes.json` must be a Bet; a Fix adding over 100 lines must be a Feature (deletions don't count); a Feature or Bet must link an approved PRD, and a Bet's PRD must have an Undo. Rule 29 was enforced only by the Claude Code hook before.
 - **A PR can't loosen its own lane check.** `pr-lane.yml` runs on `pull_request_target`, so the workflow, `check_lane.py` and `config/lanes.json` all come from the base branch, and the PR's files are read from git as data, never run. Paths match whatever their case (`PaymentForm.tsx` is a payment file). A PRD added in the same PR is approved by the owner's merge (rule 29).
-- **Live drift check (rule 1).** The build writes its commit to `version.txt` (`scripts/write_version.sh`), and the daily `live-drift.yml` fails when the live site runs uncommitted changes, a commit not on `main`, or is more than a day behind it on anything but docs. Lockfiles an install step rewrites don't count as uncommitted. Replit publishes the workspace, so branch protection alone never covered this.
-- **One reviewer with lenses (rules 14, 23, 24).** The CTO, EM, security and CMO reviewer agents are merged into one `reviewer`, following the new `review` skill. Their checks moved to lenses (security, data, design, words) that wake by path. QA stays its own agent. A lens with no findings in 10 runs retires with the owner's OK, except security and data on Bets (from gstack). The leadership review now runs only on Bets.
+- **Live drift check (rule 1).** The build writes its commit to `version.txt` (`scripts/write_version.sh`), and the daily `live-drift.yml` fails when the live site runs uncommitted changes or a commit not on `main`, or is more than a day behind `main` on anything but docs. Lockfiles an install step rewrites don't count as uncommitted. Replit publishes the workspace, so branch protection alone never covered this.
+- **One reviewer with lenses (rules 14, 23, 24).** The CTO, EM, security and CMO reviewer agents are merged into one `reviewer`, following the new `review` skill. Their checks moved to lenses (security, data, design, words) that wake by path. QA stays its own agent. A lens with no findings in 10 runs retires with the owner's OK, except security and data on Bets (from gstack). The PRD review (was the leadership review) runs only on Bets, by the reviewer in PRD mode.
 - **Project skills.** `lane`, `review` and `release` ship in `template/.agents/skills/`, which Replit Agent loads, linked for Claude Code at `.claude/skills`. The release loop moved into the `release` skill.
 - **What enforces each rule (rule 15, new PLAYBOOK section).** Three tiers: GitHub (free on public repos, GitHub Pro for private ones), paid Replit, and Claude Code. `replit.md`, `AGENTS.md` and skills are named as guidance, not rails.
 - **Stages replace lite and full.** A project is exploring or launched (`ORG.md`). Exploring does the Day 0 list only; DESIGN.md (rule 28), the domain and the rest wait for the before-launch list (was the first-week checklist).

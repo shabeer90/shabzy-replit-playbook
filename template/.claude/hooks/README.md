@@ -6,7 +6,7 @@
 - commits that contain secrets, and `--no-verify`;
 - pushes to `main` and force pushes;
 - anything listed in `blocked-commands.txt`;
-- `gh pr create` until `.reviews/<branch>.md` has a `Lane:` line and, for a Feature or Bet, `REVIEW: ship`, plus `QA: ship` when the branch touches QA's paths in `.agents/skills/review/lenses.txt`. A Fix opens without reviews.
+- `gh pr create` until `.reviews/<branch>.md` (`/` in the branch name becomes `-`) has a `Lane:` line and, for a Feature or Bet, `REVIEW: ship`, plus `QA: ship` when the branch touches QA's paths in `.agents/skills/review/lenses.txt`. A Fix opens without reviews.
 
 Hooks bind Claude Code only. Everything else rests on GitHub: branch protection with the `pr-checks`, `pr-e2e` and `pr-lane` checks required, and secret scanning (PLAYBOOK, "What enforces each rule"). The lane and PRD are checked there, in CI, for every author, so the hook doesn't repeat them.
 
