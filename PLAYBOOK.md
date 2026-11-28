@@ -1,9 +1,12 @@
 # Playbook
 
-Read this before starting a project. Most rules are something that went wrong, or worked, on a real project. "*On <project>:*" says what happened, so you can judge whether a rule fits the next one. Rules without a project line are how we've chosen to work, not lessons yet.
+Most rules here are something that went wrong, or worked, on a real project. "*On <project>:*" says what happened, so you can judge whether a rule fits the next one. Rules without a project line are how we've chosen to work, not lessons yet.
+
+Read it all once, when you set a project up. After that, nobody reads it before every change: agents start each change with the `lane` skill, which says how much process the change needs and which rules and modules it triggers.
 
 - **Start a project:** [STARTER-PROMPT.md](STARTER-PROMPT.md).
 - **Files:** in [`template/`](template/), including [ORG.md](template/ORG.md), which defines how the AI company is organised.
+- **Project skills,** which Replit Agent and Claude Code both load: [`lane`](template/.agents/skills/lane/SKILL.md), [`review`](template/.agents/skills/review/SKILL.md) and [`release`](template/.agents/skills/release/SKILL.md).
 - **Skills:** [SKILLS.md](SKILLS.md).
 - **Modules:** read the ones that fit the project.
   - [modules/public-site.md](modules/public-site.md): SEO and GEO launch baseline, and growth;
@@ -15,12 +18,29 @@ Behaviour of Replit, GitHub or Claude Code that wasn't confirmed on a project is
 
 ---
 
+## How much process a change gets
+
+Process follows the door, not the size (rule 31). Jeff Bezos's 2015 letter to shareholders splits decisions in two. One-way doors can't be walked back, so they're made slowly and carefully. Two-way doors can, so one person or a small group should make them fast. His warning is about running the slow process on everything, and the opposite mistake is worse.
+
+| | Fix | Feature | Bet |
+|---|---|---|---|
+| Door | two-way | two-way | one-way |
+| For example | a typo, a broken link, a dependency bump | a search bar, a new page, a filter | payments, sign-in, dropping a column, an email to every user, changing URLs |
+| Before building | nothing | a one-page PRD the owner approved | a full PRD with an **Undo**, reviewed, then approved by the owner |
+| Before merging | CI, and the owner reads the PR | CI, one review, QA if it touches the app | the same |
+| Release | the release loop | the release loop | the release loop, behind a switch where there can be one, watched for an hour |
+
+A change is a one-way door if it moves money, sends something that can't be recalled, deletes or overwrites data, touches sign-in, secrets or personal data, publishes an indexed claim or changes URLs, can't be switched off within five minutes, wouldn't be noticed within the hour, or changes something others depend on. When unsure, it's one-way. The full test and each lane's steps are in the [`lane` skill](template/.agents/skills/lane/SKILL.md). [`config/lanes.json`](template/config/lanes.json) lists the paths that make a PR a Bet, and CI checks every PR against it, whoever wrote it.
+
+**Stages.** A project is *exploring* (no real users yet) or *launched* ([ORG.md](template/ORG.md#stages)). While exploring, do the Day 0 list and nothing more; the before-launch list waits until there's something to launch. Bets are Bets in both.
+
 ## The rules
 
 Rule numbers are permanent. New rules are added at the end. A rule that turns out wrong is rewritten in place, with one line saying what changed.
 
 1. **GitHub is the source of truth. Replit publishes only from `main`.**
-   Make every change on a branch and merge it through a pull request, whoever writes it (Claude Code or Replit Agent). Pull `main` in the Replit Shell, then publish.
+   Make every change on a branch and merge it through a pull request, whoever writes it (Claude Code or Replit Agent). Pull `main` in the Replit Shell, then publish (the `release` skill).
+   The build writes its commit to `version.txt` (`scripts/write_version.sh`), and a daily job (`live-drift.yml`) fails when the live site runs anything other than a clean commit on `main`. Branch protection can't do this: Replit publishes the workspace, not GitHub.
    Was "Replit only runs and publishes" until Cogniscore showed Replit Agent building and pushing (2.8.0).
    *On Cogniscore:* Replit publishes from its own workspace copy, not from GitHub. The live site lagged `main` several times until someone ran `git pull origin main` in the Replit Shell and republished. A merged PR is not a deployed PR.
 
@@ -76,13 +96,12 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
 
     *On Cogniscore:* the colours lived in the Tailwind config, with no owner and no check. The rule is new from here.
 
-14. **Every change is reviewed by the agents who own that area, never by the one who wrote it.** The reviewers are em, qa, cto, security, design, cmo and data (`template/ORG.md`). `.claude/reviewers.txt` says which ones a project has, and which paths wake each one. Each writes a verdict to `.reviews/<branch>.md`, and the guard hook blocks `gh pr create` until every required reviewer says `ship`. That makes the reviews automatic, not something anyone has to ask for.
-    *On Cogniscore:* the security audit, the SEO audits and the data retros each found real problems, but only when someone asked. The rule is new from here.
+14. **Features and Bets are reviewed by an agent that didn't write them, with lenses chosen by what they touch.** One reviewer opens the security, data, design and words lenses whose paths the change wakes (`template/.agents/skills/review/`), and QA tests changes to the app. A Fix gets CI and the owner's read. The guard hook blocks `gh pr create` on a Feature or Bet until the review says `ship`.
+    Was "every change is reviewed by the agents who own that area" (seven of them) until 3.0.0. A panel of seven on a one-line fix is the one-size-fits-all process rule 31 exists to stop.
+    *On Cogniscore:* the security audit, the SEO audits and the data retros each found real problems, but only when someone asked. Reviews still happen without anyone asking; they're sized to the change.
 
-15. **Rules that matter are enforced, not just written.**
-    - Hooks (`.claude/hooks/guard.py`) block secrets, pushes to main and the project's dangerous scripts.
-    - CI blocks type errors, design drift and failing tests.
-    - GitHub branch protection and push protection cover Replit Agent and humans, which hooks don't.
+15. **Rules that matter are enforced by something that binds every author, not just written.** GitHub branch protection and CI bind Replit Agent, Claude Code and people alike. The guard hook binds Claude Code only, and `replit.md`, `AGENTS.md` and skills are guidance. Which tier enforces what is in [What enforces each rule](#what-enforces-each-rule).
+    Was "hooks block, CI blocks, branch protection covers the rest" until 3.0.0, when Replit Agent, not Claude Code, became the builder most changes come from.
 
 16. **A test that passes before the fix proves nothing.** CI runs the PR's new tests against the base commit and requires them to fail there (`template/scripts/assert_new_tests_fail_on_base.sh`).
     *On Cogniscore:* three fixes shipped on a plausible mechanism in one day, and two did nothing. The gate stopped that happening again.
@@ -138,54 +157,68 @@ Rule numbers are permanent. New rules are added at the end. A rule that turns ou
     *On Cogniscore:* `check_live_site.py` and `live-observables.yml`.
     *On Impact Connect:* the logo validator checked that files existed, not what the published image URLs returned, so it couldn't confirm the live site had no broken logos.
 
-23. **Every project runs as an AI company.** The owner is the board. The main session is the CEO. The CPO, CTO and CMO and their teams are agents with one owner per job (`template/ORG.md`). No two agents do the same check.
+23. **Every project runs as a small AI company, and most changes meet only part of it.** The owner is the board and the main session is the CEO. Specialists own one job each and wake only when a change needs them (`template/ORG.md`). No two agents do the same check.
+    Was "the CPO, CTO and CMO and their teams" until 3.0.0 merged the CTO, EM, security and CMO reviewers into one reviewer with lenses.
 
-24. **Reviews cost tokens, so they're scoped.** Reviewers wake only for their paths, and the retro records what each batch cost. The full budget is in `template/ORG.md`.
+24. **Reviews cost tokens, so they follow the lane, and checks that find nothing retire.** Fixes get no review agents. Lenses wake only for their paths. The retro counts each lens's runs and findings, and a lens with none in 10 runs is switched off with the owner's OK, except security and data on Bets. The full budget is in `template/ORG.md`. Retiring after 10 empty runs is borrowed from gstack's review specialists (garrytan/gstack).
 
-25. **A finding seen twice becomes a check.** A test, a hook rule or a CI step, so no reviewer has to spot it a third time. This is how the work gets cheaper and more autonomous from one project to the next.
+25. **A finding seen twice becomes a check.** A test or a CI step (a hook rule binds Claude Code only), so no reviewer has to spot it a third time. This is how the work gets cheaper and more autonomous from one project to the next.
 
 26. **Autonomy is earned, one level at a time, and only the owner moves it.** The ladder, and what's never delegated, are in `template/ORG.md`.
 
-27. **Words read like a person wrote them.** Every user-facing word, and every report to the owner, is plain and specific, with no AI tells. The CMO reviewer checks with the `humanizer` skill.
+27. **Words read like a person wrote them.** Every user-facing word, and every report to the owner, is plain and specific, with no AI tells. The words lens checks with the `humanizer` skill.
     *On Cogniscore:* drafts were rewritten for plain English again and again, by hand. The rule is new from here.
 
-28. **The product looks agency-built, not AI-made.** head-of-design writes `design/DESIGN.md`, with real references and a point of view, before any component exists, using the `impeccable` skill. Generic AI patterns (purple gradients, glass cards, three equal icon cards, emoji icons, invented stats) are never the default.
+28. **The product looks agency-built, not AI-made.** head-of-design writes `design/DESIGN.md`, with real references and a point of view, using the `impeccable` skill, before the first page meant for real users and by launch at the latest. While exploring, plain components are enough. Generic AI patterns (purple gradients, glass cards, three equal icon cards, emoji icons, invented stats) are never the default.
+    Was "before any component exists" until 3.0.0. An approved design direction before you know the idea works is effort in the wrong place.
 
 29. **No PRD, no feature: the project is not a feature factory.**
     - `docs/ROADMAP.md` is the only list of what gets built, with at most three items under **Now**. Every other idea, including Replit Agent's suggestions, is parked with its source and date.
-    - Anything bigger than a small fix needs a PRD that the owner has approved, after a leadership review on full projects (lite skips it, `template/ORG.md`).
-    - The guard hook won't open a PR without a link to an approved PRD, or `PRD: fix` for a small fix.
+    - A Feature needs a one-page PRD the owner approved. A Bet needs the full PRD, with an **Undo**, reviewed before the owner approves it. A Fix needs none.
+    - CI (`scripts/check_lane.py`) fails a Feature or Bet PR that doesn't link an approved PRD, whoever opened it. CI can't tell who wrote `Status: approved`: a PRD added in the same PR is approved by the owner's merge, so the owner reads it first.
+
+    Was "a PRD for anything bigger than a small fix, after a leadership review", enforced by the Claude Code hook alone, until 3.0.0.
 
     *On the owner's Replit projects:* Replit kept suggesting features, and building them was tempting. Products drifted, and what was actually planned got forgotten.
 
 30. **The user's end-to-end journey always works.**
     - `docs/JOURNEYS.md` lists the paths a user takes from start to done, each with an e2e test.
-    - QA runs all of them on every PR that touches the app, and the EM (QA on lite) won't sign off if one broke.
+    - CI runs their tests on every PR. QA also runs them by hand on Features and Bets that touch the app, and won't sign off if one broke.
     - After a release, the CEO runs them against the live site.
 
     A feature that works on its own but breaks the journey is a failed feature.
 
+31. **Process follows the door, not the size.** Every change is a Fix, a Feature or a Bet ([How much process a change gets](#how-much-process-a-change-gets)). A one-way door is a Bet however small. A two-way door takes the light path however big, split into small PRs. Signals only raise a lane: CI makes any PR that touches a path in `config/lanes.json` a Bet, and a Fix over the size limit a Feature.
+    From Bezos's 2015 letter to shareholders, and Matt Pocock's `/pr` skill, which puts the door and the blast radius in every PR. The rule is new from here.
+
+## What enforces each rule
+
+Replit Agent does most of the building, and Claude Code is optional. So every rule that matters has to hold without Claude Code.
+
+| Tier | Costs | What enforces it | Binds |
+|---|---|---|---|
+| 1. GitHub | Free on a public repo. A private repo needs GitHub Pro (about $4 a month) for branch protection **(check current docs)**. | `main` protected: PRs required, no force pushes, `pr-checks`, `pr-e2e` and `pr-lane` required. CI: the secret scan, types, tests, the red-then-green gate, the day-one checks and the lane check. The daily live-drift check. | Everyone: Replit Agent, Claude Code, people |
+| 2. Replit, paid | A paid Replit plan | Replit's security scan, which can block publishing above a severity you set on team plans **(check current docs)**. Agent Skills in `.agents/skills/`, which guide but don't enforce. | Replit Agent |
+| 3. Claude Code | A Claude subscription | The guard hook: secrets in files, pushes to `main`, the blocked scripts, a Feature or Bet PR without review ([what it blocks](template/.claude/hooks/README.md)). Reviews by agents that didn't build the change. | Claude Code only |
+
+Some things look like rails and aren't:
+- `replit.md`, `AGENTS.md` and skills are guidance. Replit's docs say strict requirements in custom instructions "aren't guaranteed". Telling Agent to freeze the code doesn't stop it.
+- Replit checkpoints roll back code, and the development database if you tick it. They never restore the production database; only its own backups or point-in-time restore can.
+- Secret push protection isn't offered on private repos for personal accounts **(check current docs)**, so the CI secret scan is the floor there.
+- Whether a git hook runs when Replit Agent commits is untested ([modules/replit-platform.md](modules/replit-platform.md)). Don't count on one.
+
+Without Claude Code, a Feature's review is a new Replit Agent chat with the `review` skill, which shares the builder's blind spots, or the owner reading the diff with that skill open. The PR says which.
+
 ## How the company works
 
-Each project is run as an AI company. [`template/ORG.md`](template/ORG.md) is the single source for:
-- who owns what (the owner as board; the CEO, CPO, CTO, CMO and their teams);
-- how work moves from ask to PRD to live;
-- how the roadmap stops a feature factory;
-- the token budget;
-- the autonomy ladder.
-
-The agent files are in [`template/.claude/agents/`](template/.claude/agents/), and ORG.md's roles table says which agent owns what.
-
-What the guard hook blocks is listed in [`template/.claude/hooks/README.md`](template/.claude/hooks/README.md).
-
-Hooks bind Claude Code only. When Replit Agent builds, `template/replit.md` has it work on a branch, run the CI checks and open a PR without reviewer verdicts; branch protection and CI enforce the rest. Have Claude Code run the reviews on that branch before you merge.
+[`template/ORG.md`](template/ORG.md) is the single source for who owns what, the stages, the roadmap that stops a feature factory, the token budget and the autonomy ladder. The agent files are in [`template/.claude/agents/`](template/.claude/agents/). When Replit Agent builds, [`template/replit.md`](template/replit.md) has it pick the lane, work on a branch, run the CI checks and open a PR.
 
 ## Day 0: before the first prompt to an agent
 
-- [ ] **Create the GitHub repo first.** Protect `main`: PRs required, CI required.
+- [ ] **Create the GitHub repo first.** Protect `main` with a ruleset: PRs required, no force pushes, `pr-checks`, `pr-e2e` and `pr-lane` required (GitHub lists a check to require once it has run on a PR, so add them after the setup PR). On a private repo this needs GitHub Pro; without it, nothing stops a push to `main`.
 - [ ] **Import the repo into Replit.** Whoever writes code (Replit Agent, Claude Code, or both) works through branches and PRs.
 - [ ] **Store secrets only in Replit's Secrets tool** and in GitHub Actions secrets **(check current docs for how Replit splits workspace and deployment secrets)**. Write down which key lives where, without the values.
-- [ ] **Turn on GitHub secret scanning and push protection** for the repo.
+- [ ] **Turn on GitHub secret scanning and push protection** where the plan offers them **(check current docs)**. The CI secret scan runs either way.
 - [ ] **Commit a `.gitignore`.** It covers `.env*` (including `.env.production`), `.venv`, `node_modules`, `.next*`, `.reviews/`, logs and local tool folders.
 - [ ] **Commit `CLAUDE.md` / `AGENTS.md`** with the project rules (template in `template/`).
 - [ ] **Choose the stack and pin it.**
@@ -193,7 +226,7 @@ Hooks bind Claude Code only. When Replit Agent builds, `template/replit.md` has 
   - Commit one lockfile.
   - Pin Python versions; add hashes if you can.
 - [ ] **Separate test and live environments.** Use a second Supabase project, or at least a separate schema, so agents and tests never write live data.
-- [ ] **Buy the domain and decide www or apex now.** Pick one canonical host and redirect the other.
+- [ ] **Set the stage** in `AGENTS.md`: exploring, unless real people already use it.
 
 ## Repo skeleton
 
@@ -204,15 +237,16 @@ agents/ or jobs/        scheduled Python/Node jobs
 scripts/                one-off scripts + scripts/test_*.py (CI runs these)
 scripts/schema.sql      every table, RLS policy and grant (the source of truth for the DB)
 evidence/               saved source files for every published fact (if a content site)
-config/                 allowlists (image hosts etc.), read by code and tests
+config/                 allowlists (image hosts etc.) and lanes.json, read by code, tests and CI
 .github/workflows/      pr-checks.yml first; scheduled jobs later
-.claude/                agents, hooks, reviewers.txt, settings.json
+.claude/                agents, hooks, settings.json, and a skills link to .agents/skills
+.agents/skills/         lane, review (with its lenses) and release
 playwright.config.ts    e2e against the built app
 AGENTS.md, CLAUDE.md    rules for agents
 ORG.md                  who owns what
 design/DESIGN.md        the visual direction
 docs/                   runbooks, retros, decisions
-docs/prd/               PRDs (cpo writes; leadership reviews; owner approves)
+docs/prd/               PRDs for Features and Bets (cpo writes; owner approves)
 docs/ROADMAP.md         the only list of what gets built
 docs/JOURNEYS.md        the user journeys that must always work
 .replit                 runtime config only: no secrets
@@ -251,7 +285,8 @@ GLOSSARY.md             the project's words
    - **e2e on the built app:** `playwright.config.ts` serves the production output, and `scripts/test_release_guards.py` fails if it points at a dev server (rule 17);
    - **bundle:** `scripts/check_bundle.py` fails when a public entry statically imports private code or goes over the JavaScript budget in `config/bundle.json` (Vite; other frameworks swap in their own check);
    - **external writes:** `scripts/check_external_writes.py` fails when a known provider write isn't wrapped in `checked()` from `lib/checked.ts` (rule 20). Add the project's providers to its list.
-8. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
+8. **The lane check** (`pr-lane.yml`, `scripts/check_lane.py`): the PR's Lane, Door, Blast radius and PRD lines fit what it changes (rule 31). It's a separate workflow so editing the description re-runs it, and it's required on `main`.
+9. Turn on Auto-fix or a CI monitor on every PR. Don't auto-merge unless the project's autonomy level allows it (`template/ORG.md`).
 
 For apps with split routes, check the built manifest's transitive static imports. Private routes must stay out of the public entry graph, and protected screens out of the login graph. Server-only page registries must stay out of the browser graph; an SSR conditional in the source doesn't prove the imports' side effects are gone. Set a JavaScript size budget for the project and fail the check when the built JavaScript exceeds it. Deferring code is not access control; private APIs still need authentication.
 
@@ -263,14 +298,14 @@ For apps with split routes, check the built manifest's transitive static imports
 
 *On Adam Accounting:* critical CSS meant for the mobile homepage also applied on desktop and caused layout shifts ([lesson 1](learnings/adam-accounting.md#1-a-mobile-speed-fix-changed-the-desktop-layout)).
 
-Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get the least permission they need and only the secrets they use.
+Scheduled jobs (scrape, monitor, reports, and `live-drift.yml` from the template) go in their own workflows. They get the least permission they need and only the secrets they use.
 
 ## Writing and design quality
 
 **Writing (every project).** The test is whether a busy person would read it once and understand it.
 - Short sentences, the reader's words, numbers instead of adjectives.
-- No AI tells (the list is in `template/.claude/agents/cmo-reviewer.md`).
-- The `humanizer` skill rewrites a draft; the CMO reviewer checks every user-facing change. The project's voice is in `AGENTS.md`.
+- No AI tells (the list is in the [words lens](template/.agents/skills/review/lenses/words.md)).
+- The `humanizer` skill rewrites a draft; the words lens checks user-facing changes on Features and Bets. The project's voice is in `AGENTS.md`.
 
 **Design (anything with a UI).** The test is whether it could pass as the work of a good agency for this specific client.
 - `design/DESIGN.md` first: audience, one feeling, three named reference sites, type, colour, grid, motion, what the brand never does. The owner approves it.
@@ -280,17 +315,7 @@ Scheduled jobs (scrape, monitor, reports) go in their own workflows. They get th
 
 ## Release loop on Replit
 
-1. Merge the PR on GitHub.
-2. In the Replit Shell, run `git pull origin main` (and `pnpm install` if the lockfile changed).
-3. Publish or redeploy in Replit. You must do this after **any** site code or `next.config` change; ISR pages don't pick up config changes alone.
-4. Run the live-check script (rule 22).
-    - For static artifacts, check `.replit-artifact/artifact.toml` and `public/_redirects` together; test both a known route and an unknown path over HTTP.
-    - If the Replit dev workflow renders client-only pages but the published artifact is prerendered, test hydration in a browser against the built artifact too.
-5. Write down what shipped in `docs/` (a retro per batch: what worked, what went wrong, and the decisions taken).
-
-Things to remove before launch:
-- Replit leftovers you don't use: canvas or mockup sandboxes, an extra `api-server` that only has `/healthz`, stale `.replit-artifact` files.
-- Anything deployed and unused is attack surface and cost.
+The steps are in the [`release` skill](template/.agents/skills/release/SKILL.md): publish only from a clean, up-to-date `main`, run the live check and the journeys, and watch a Bet for its first hour. Replit publishes the workspace, so anything uncommitted there goes live too, and the daily drift check (rule 1) is what catches it.
 
 ## Working with the owner
 
@@ -309,20 +334,27 @@ How the agents should work with you, on any project:
 
 Everything is in [`template/`](template/). The README lists [each file and what it's for](README.md#the-template-file-by-file).
 
-## First-week checklist
+## Before launch
 
-- [ ] The CI gate is green and required on `main`.
+Do these when the project moves from exploring to launched, not on Day 0.
+
+
+- [ ] `pr-checks`, `pr-e2e` and `pr-lane` are green and required on `main`.
 - [ ] Secrets inventory written (names and locations, no values). Secret scanning is on.
 - [ ] If there's a database: `schema.sql` committed with RLS on every table. Live `pg_policies` checked against it.
 - [ ] If there's an admin or sign-in: done as [modules/database.md](modules/database.md#admin-and-sign-in) says, or none yet.
 - [ ] `find-skills` is installed, and every skill is in `skills-lock.json` and `SKILLS.md`.
 - [ ] `.agents/memory/` has the port map and any platform quirks found during setup.
 - [ ] The design system exists (tokens, base components) and its CI check passes.
-- [ ] The hooks block a test push to main, a test secret, and a PR with no reviews, and allow a branch push (`template/.claude/hooks/README.md`).
-- [ ] `.claude/reviewers.txt` lists the right reviewers and paths for this project.
+- [ ] If you use Claude Code: the hooks block a test push to main, a test secret, and a PR with no `Lane:` line, and allow a branch push (`template/.claude/hooks/README.md`).
+- [ ] `.agents/skills/review/lenses.txt` and `config/lanes.json` match this repo's real folders.
 - [ ] `design/DESIGN.md` approved; voice written in `AGENTS.md`.
 - [ ] `docs/ROADMAP.md` has the first three items under **Now**, each with an approved PRD; `docs/JOURNEYS.md` lists the core journeys, each with an e2e test.
 - [ ] Public site: canonical host, sitemap, robots, Search Console ([modules/public-site.md](modules/public-site.md)).
 - [ ] A live-check script exists for the main pages.
-- [ ] The release loop (above) written into `docs/`, with who presses Publish.
+- [ ] The build runs `scripts/write_version.sh`, `SITE_URL` is set, and `live-drift.yml` is green.
+- [ ] The domain is bought, with one canonical host and the other redirected.
+- [ ] Replit leftovers you don't use are gone: canvas or mockup sandboxes, an extra `api-server` that only has `/healthz`, stale `.replit-artifact` files. Anything deployed and unused is attack surface and cost.
+- [ ] Who presses Publish is written in `AGENTS.md`.
+- [ ] The stage in `AGENTS.md` says launched.
 - [ ] A security pass before launch: run an audit (Cloudflare `security-audit` skill or similar) on a read-only copy, outside the repo, with no network.

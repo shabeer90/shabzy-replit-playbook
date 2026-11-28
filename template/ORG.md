@@ -2,69 +2,52 @@
 
 Every project runs as a small AI company. The owner is the board. Agents hold the jobs, and **each job has exactly one owner**, so two agents never do the same work and spend tokens twice.
 
+Most changes never meet most of the company. A Fix involves the builder, CI and the owner. Specialists wake only for the changes that need them: the `lane` skill decides which.
+
 ## The roles
 
-| Role | Who | Owns | Doesn't do |
+| Role | Who | Owns | Wakes up for |
 |---|---|---|---|
-| **Board** | the owner (a human) | Strategy, approving PRDs, what goes under Now on the roadmap, anything that goes live, merging, money, secrets, the autonomy level | Day-to-day building |
-| **CEO** | the main agent session | The plan, delegating to the right role, running PRD reviews, the token budget, reporting to the owner, retros and playbook contributions | Writing PRDs, reviewing its own work |
-| **CPO** | `cpo` agent | What gets built and why: PRDs, the leadership review of each PRD, `docs/ROADMAP.md`, `docs/JOURNEYS.md`, parking every unplanned idea | How it's built |
-| ↳ Head of Design | `head-of-design` | `design/DESIGN.md`, tokens, `components/ui/`; making it look agency-built, not AI-made; DESIGN review | Copy, code quality |
-| **CTO** | `cto-reviewer` | How the code is built: correctness, callers, size, tests | Security depth, delivery against the PRD |
-| ↳ Engineering manager | `em-reviewer` | Delivery: built what the PRD asked, nothing extra, the journeys still work end to end, clean handover | Whether the PRD was right |
-| ↳ QA | `qa-tester` | Every journey in `docs/JOURNEYS.md` end to end, plus the new feature like a user; e2e tests | Code review |
-| ↳ Security | `security-reviewer` | Trust-boundary failures | General code style |
-| ↳ Head of Data | `head-of-data` | Schema, access rules, migrations, live writes, data quality (projects with a database) | UI |
-| **CMO** | `cmo-reviewer` | Every word a customer reads (no AI slop), claims, SEO and GEO on public sites; growth plans | Code, visuals |
+| **Board** | the owner (a human) | Strategy, approving PRDs, what goes under Now, anything that goes live, merging, money, secrets, the stage and the autonomy level | Every PR (reading it), every PRD, every release |
+| **CEO** | the main agent session | Picking the lane, delegating, the token budget, reporting to the owner, retros and playbook contributions | Every change |
+| **Builder** | usually Replit Agent (`replit.md`), sometimes the CEO or a subagent | Writing the code, test-first, the smallest complete change | Every change; never reviews its own work |
+| **CPO** | `cpo` agent | PRDs, `docs/ROADMAP.md`, `docs/JOURNEYS.md`, parking unplanned ideas | Features and Bets |
+| **Head of Design** | `head-of-design` | `design/DESIGN.md`, tokens, `components/ui/` | A change that needs a new component; DESIGN.md before launch |
+| **Head of Data** | `head-of-data` | Schema, access rules, migrations, live-write steps (projects with a database) | A schema or data change, before it's built |
+| **Reviewer** | `reviewer` agent, following the `review` skill | One independent review, with the security, data, design and words lenses that the paths wake | Features and Bets; a Bet's PRD |
+| **QA** | `qa-tester` | Every journey end to end, the new feature like a user, e2e tests | Features and Bets that touch the app |
 
-The builder is whichever agent writes the code: usually Replit Agent (`replit.md`), sometimes the CEO session or a subagent it starts. It never reviews its own work.
+## Stages
 
-## Lite or full
+`AGENTS.md` records the stage. The owner moves it.
 
-**Lite** is for a site with no database, no sign-in and no payments, such as a portfolio or a brochure site. **Full** is everything in this file. `AGENTS.md` says which one this project runs.
+- **Exploring:** no real users yet. Do the Day 0 list and nothing more of the setup. Spikes (branches that are never merged) are fine. Write a journey's test once the journey exists. `DESIGN.md`, the live check and the rest of the before-launch list wait.
+- **Launched:** real people use it. The before-launch list is done, journeys and the live check are required, and the drift check runs daily.
 
-On lite:
-- **Kept:** the guard hook, CI (including the day-one checks in the PLAYBOOK CI baseline), PRD-first with the roadmap's parked ideas, the journeys, and the release loop.
-- **Reviewers:** QA, plus CMO on a public site. Comment out the rest in `.claude/reviewers.txt`.
-- **PRDs** are short. The CEO writes them, and the owner approves them without a leadership review. The owner also confirms a `PRD: fix` really is small.
-- **Agents:** head-of-design writes `design/DESIGN.md` once at the start. The CPO, Head of Data, CTO, EM and security reviewers aren't used.
-- **Skills:** the *Every project* list, `impeccable` from *Products with a UI*, and `webapp-testing`, `tdd` and `diagnosing-bugs` from *Product, review and QA*.
-- **Reading:** `PLAYBOOK.md`, plus `modules/public-site.md` on a public site and `modules/replit-platform.md` when Replit misbehaves. Not `modules/database.md`.
-
-Move to full the day the project gets a database, sign-in or payments, and say so in the next PR.
+Lanes apply in both stages. A Bet is a Bet even with no users, because secrets, money and sent emails don't care whether you've launched.
 
 ## No feature factory
 
 It's easy, especially on Replit, to keep building whatever gets suggested next. The product ends up with lots of half-finished features, and nobody knows what it's for. Three files stop that:
 
-- **`docs/ROADMAP.md`** is the only list of what we build. **Now** holds three items at most. **Next** holds what the owner has agreed to do after them, still without a PRD. Every other idea, whoever suggested it (the owner in passing, Replit Agent, another agent, a user), goes under **Parked ideas** with its source and the date.
-- **`docs/prd/`:** nothing bigger than a small fix is built without an approved PRD. The guard hook won't open a PR without a `PRD:` line linking one with `Status: approved`, or `PRD: fix`.
+- **`docs/ROADMAP.md`** is the only list of what we build. **Now** holds three Features or Bets at most. **Next** holds what the owner has agreed to do after them, still without a PRD. Every other idea, whoever suggested it (the owner in passing, Replit Agent, another agent, a user), goes under **Parked ideas** with its source and the date.
+- **`docs/prd/`:** no Feature or Bet is built without an approved PRD. CI (`scripts/check_lane.py`) fails a PR that says Feature or Bet without a `PRD:` line linking one with `Status: approved`.
 - **`docs/JOURNEYS.md`** lists the user journeys that must always work end to end. Every feature is judged by whether the user can still get from start to done, not by whether the new piece works on its own.
 
 ## How a piece of work moves
 
-1. **The owner asks.** The CEO checks the roadmap.
-   - **Not under Now:** the idea is parked, or the owner chooses to move it up.
-   - **Small fix** (a bug, a copy tweak, a dependency bump): skips the PRD.
-2. **PRD.** The CPO writes it from `docs/prd/_template.md`, including the user journey.
-3. **Leadership review of the PRD.** The CEO runs the agents whose area it touches in PRD-review mode (CTO always; CMO, security, data and design as relevant). Each writes one line in the PRD. Problems are fixed here, where they're cheapest.
-4. **The owner approves** the PRD, and it moves to **Now**.
-5. **Before building:**
-   - head-of-design adds any missing component;
-   - head-of-data designs any schema change.
-6. **Build** test-first (`tdd`), with ponytail. Only what the PRD says. A good idea that comes up while building gets parked, not built.
-7. **Review the build.** Every reviewer in `.claude/reviewers.txt` whose paths the change touches reviews it, in parallel, and writes to `.reviews/<branch>.md`, which also carries the `PRD:` line.
-   - **QA** runs every journey end to end, not only the new feature.
-   - **EM** checks the build against the PRD and confirms the journeys passed.
-8. **Fix and re-run.** The builder fixes confirmed findings, and only the reviewer that raised each one re-runs.
-9. **Open the PR.** The hook allows `gh pr create` once the PRD is approved and every required reviewer says `ship`. The review file is pasted into the PR description (`.reviews/` is git-ignored), and Auto-fix is turned on. When Replit Agent built it, the PR is already open: Claude Code runs step 7 on that branch and pastes the review file into the PR, and the owner merges only once every required reviewer says `ship`.
-10. **Ship.** The owner merges, pulls in Replit and publishes. The CEO runs the live check and the journeys against the live site, then moves the PRD to **Shipped**.
-11. **Learn.** After each batch, the CEO writes a retro, and anything reusable goes to the playbook.
+The `lane` skill (`.agents/skills/lane/SKILL.md`) is the source for each lane's steps. In short:
+
+- **Fix:** build it, CI passes, the owner reads the PR and merges, then the `release` skill.
+- **Feature:** a one-page PRD under **Now**, approved by the owner. head-of-design and head-of-data go first if it needs something new from them. Build test-first. One review and QA. The owner merges, then the `release` skill.
+- **Bet:** a full PRD with **Undo** and **How we'd notice**, reviewed in PRD mode before the owner approves it. Then as a Feature, released behind a switch where there can be one, and watched for the first hour.
+
+A good idea that comes up while building is parked, not built. After each batch, the CEO writes a retro, and anything reusable goes to the playbook.
 
 ## Handing work to another agent
 
 When the CEO hands a job to another agent, the handoff says:
-- **The goal:** a link to the approved PRD (or the small fix) and its acceptance checks.
+- **The goal:** a link to the approved PRD (or the Fix) and its acceptance checks.
 - **Decisions already made:** a link to where they're recorded. Say which earlier ideas were replaced, and don't copy the decisions into the handoff.
 - **What it touches:** routes, files, callers and interfaces, and what mustn't break.
 - **Data and privacy:** what data the agent may use, which test accounts, and what it must clean up.
@@ -73,7 +56,7 @@ When the CEO hands a job to another agent, the handoff says:
 
 ## Review records
 
-Each reviewer's section in `.reviews/<branch>.md` says, next to its verdict:
+The review and QA sections in `.reviews/<branch>.md` each say, next to the verdict:
 - what it actually did (read the code, ran tests, used a browser);
 - on which revision and environment;
 - that it didn't build the change itself;
@@ -81,36 +64,31 @@ Each reviewer's section in `.reviews/<branch>.md` says, next to its verdict:
 
 A reviewer's title isn't proof a review happened. If the right tool wasn't available, say what was used instead and what that left uncovered. A general agent reading the code isn't an architecture review, and running Playwright by hand isn't the specialised browser tool. Never mark the builder's own checks as independent.
 
-QA owns the test report. Security owns privacy findings; QA can pass it observations but doesn't give a security verdict. The CEO's checks on the live site after release stay separate from QA before the PR.
+QA owns the test report. The security lens owns privacy findings; QA can pass it observations but doesn't give a security verdict. The CEO's checks on the live site after release stay separate from QA before the PR.
 
 ## Token budget
 
-Reviews are where the tokens go, so they're scoped:
+Reviews are where the tokens go, so they follow the lane:
 
-- **Path-scoped reviewers.** `.claude/reviewers.txt` gives each reviewer the paths it cares about. A docs-only change wakes only the EM; a copy change doesn't wake the data reviewer.
-- **One-line sign-off when out of scope.** A reviewer whose area isn't touched in substance says so and stops.
+- **Fixes get no review agents.** CI and the owner's read cover a small, reversible change.
+- **One reviewer, not a panel.** A lens is a checklist the reviewer opens, not another agent reading the same diff. `.agents/skills/review/lenses.txt` says which paths wake which lens.
+- **Retire what finds nothing.** The retro counts each lens's runs and findings. A lens with no findings in 10 runs is switched off, with the owner's OK, after any test or CI step that can catch its risk is in place. Security and data never retire for Bets.
 - **Reviewers read the diff and the functions it touches,** not the whole repo.
-- **Model per role,** set in each agent's `model:` frontmatter (**check current docs** for the allowed values):
-  - `inherit` (the session's model) for CTO, security, data and CPO, where a miss is expensive, so run the main session on the strongest model;
-  - a cheaper one for EM, QA, design and CMO.
-- **No double work:** each check has one owner (the table above). If two agents' instructions overlap, fix the instructions; don't run both.
+- **Model per role,** set in each agent's `model:` frontmatter (**check current docs** for the allowed values): `inherit` (the session's model) for the reviewer and CPO, where a miss is expensive; a cheaper one for QA and design.
 - **Expensive skills by decision only:** the full `security-audit`, a full site crawl (`audit-website`), a full `impeccable` critique of every page. These run at launch and at milestones, with the owner choosing the depth.
-- **Measure it:**
-  - The CEO notes agents run and rough token use per batch in the retro.
-  - Usage per feature should fall over time.
-  - If it doesn't, the retro says which review cost the most and whether it found anything.
+- **Measure it.** The retro notes agents run and rough token use per batch. Usage per feature should fall over time.
 
 ## Getting better and more autonomous
 
-- **A finding seen twice becomes a check.** The CEO turns it into a test, a hook rule or a CI step, so no reviewer has to spot it a third time. This is how review cost falls and autonomy rises.
+- **A finding seen twice becomes a check.** The CEO turns it into a test or a CI step (a hook rule only binds Claude Code), so no reviewer has to spot it a third time. This is how review cost falls and autonomy rises.
 - **Every batch ends with a retro** (`docs/retro-template.md`). Lessons that apply beyond this project go to the playbook's `learnings/<project>.md`, and become PLAYBOOK rules when they'd change what the next project does.
 - **The autonomy ladder.** The owner moves the project up a level, never an agent, and records it in `AGENTS.md`.
 
 | Level | Agents may, without asking | Earned by |
 |---|---|---|
 | 0: Setup | Research, draft, open PRs | Default |
-| 1: Trusted builder | Build features from an approved PRD; fix CI and review comments on their own PRs | A clean first release |
-| 2: Trusted shipper | Merge PRs that touch only docs, copy or tests, once every reviewer says ship | Several batches with no incident traced to a review miss |
+| 1: Trusted builder | Build Features from an approved PRD; fix CI and review comments on their own PRs | A clean first release |
+| 2: Trusted shipper | Merge Fixes once CI passes | Several batches with no incident traced to a Fix |
 | 3: Operator | Run approved, scripted live jobs on a schedule (reports, checks), never live data writes | The owner's explicit decision, per job |
 
-Never delegated, at any level: secrets, live data writes, merging code changes to `main`, spending money, posting publicly as the owner.
+Never delegated, at any level: secrets, live data writes, merging a Feature or Bet, spending money, posting publicly as the owner.

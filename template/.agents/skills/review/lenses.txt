@@ -1,0 +1,9 @@
+# Which review lenses wake for which paths (the review skill, and guard.py for QA).
+# Format: LENS path patterns. `*` matches across folders. Set the paths to this repo's real folders.
+# Comment out a lens the project doesn't need, or one retired after 10 runs with no findings (add the date).
+# QA is its own agent, because it runs the app; it's required on Features and Bets that touch its paths.
+SECURITY  app/api/* *route.* *actions.* *server* lib/* *.sql *.yml .replit next.config.* middleware.* package.json
+DESIGN    app/* src/* components/* pages/* design/* *.css
+WORDS     app/* src/* components/* pages/* content/* emails/* public/*.txt *.mdx
+# DATA    *.sql supabase/* agents/* jobs/* lib/db/* scripts/*      <- projects with a database
+QA        app/* src/* components/* lib/* pages/* e2e/*

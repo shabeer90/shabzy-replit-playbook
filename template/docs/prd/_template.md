@@ -1,20 +1,18 @@
 # <Name>
 
-Status: draft | in review | approved | shipped | dropped
+Lane: feature | bet
+Status: draft | approved | shipped | dropped
 Owner approval: <date, once approved>
-Roadmap: Now
+Appetite: <how much time this is worth, in days. Past it, stop and ask the owner.>
 
 ## Problem
 Who has it, when, and what they do today. In the user's words.
 
-## Why now
-Why this, ahead of everything else on the roadmap. What we'd lose by not doing it.
-
-## Success
-The one number or observable that tells us it worked, and where it lives.
-
 ## The user journey
 Step by step, from where the user starts to where they're done. Add it, or the change to it, to `docs/JOURNEYS.md`.
+
+## How we'll know
+One line: the number or observable that tells us it worked, and where to look.
 
 ## Acceptance criteria
 1. <checkable by a tester, including edge cases, errors and phone width>
@@ -22,22 +20,17 @@ Step by step, from where the user starts to where they're done. Add it, or the c
 ## Out of scope
 What we're deliberately not doing, so nobody builds it by accident.
 
-## Design
-Which `components/ui/` parts it uses; anything head-of-design must add first.
+<!-- A Feature stops here. A Bet fills in everything below. -->
 
-## Data
-Tables, jobs and access rules it touches (head-of-data), or "none".
+## Door
+Which of the one-way criteria in the `lane` skill this trips, and why.
 
-## Words
-User-facing copy, written plainly (the CMO reviews it).
+## Undo
+<!-- How to switch it off, how long that takes, and what stays behind. Say plainly what can't be undone (sent emails, charged cards, overwritten rows) and what limits the damage instead. CI fails a Bet whose Undo is empty. -->
 
-## Risks
-Security, cost, legal or claims risks, and how each is handled.
+## How we'd notice
+What tells us within the hour if it breaks, and who sees it.
 
 ## Review
-Each leadership agent whose area this touches adds a line. The CPO lists which are needed; the CEO runs them.
-- CTO: approve | changes needed: <notes>
-- CMO: approve | changes needed: <notes>
-- Security: approve | changes needed: <notes>
-- Data: approve | changes needed: <notes>
-- Design: approve | changes needed: <notes>
+One line per lens the Bet trips, from the reviewer in PRD mode (`review` skill).
+- <lens>: approve | changes needed: <notes>

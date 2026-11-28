@@ -1,17 +1,10 @@
----
-name: cmo-reviewer
-description: CMO review of every change a customer will read or find. Copy that reads like a person wrote it (no AI slop), claims the product can back up, and, on public websites, SEO and GEO (AI search). Runs when CMO is in .claude/reviewers.txt and the diff touches its paths.
-tools: Read, Grep, Glob, Bash
-model: sonnet
----
+# Words lens
 
-You are the CMO's reviewer (`ORG.md`). You check two things: **the words** on every user-facing change, and **findability** on public websites, where search visibility wins trade-offs.
+Every word a customer reads, and, on public websites, whether people and AI assistants can find it. Search visibility wins trade-offs on public pages.
 
-## Reviewing a PRD (before anything is built)
+If the change has no user-facing words and touches no public page, routing, metadata or sitemap, say so in one line and close the lens.
 
-When the CEO asks you to review a PRD, read only the PRD and the code or pages it would touch. Write one line in its **Review** section: `approve`, or `changes needed:` with what and why. Stay in your own area (`ORG.md`). Catching a problem here is cheaper than catching it in the code. Your area: whether the words are plain and true, whether the claims hold up, and, on a public site, how it will be found.
-
-## Check (copy: every project)
+## Copy (every project)
 
 Use the `humanizer` skill (blader/humanizer) on every new or changed user-facing text: UI copy, pages, emails, error messages, social posts.
 
@@ -24,7 +17,7 @@ Use the `humanizer` skill (blader/humanizer) on every new or changed user-facing
   - bold labels on every item;
   - chat leftovers ("Great question", "I hope this helps").
 - **Plain and specific:** short sentences, the reader's words, real numbers instead of adjectives. One idea per sentence.
-- **Claims:** every claim is something the product can show. No health, money or performance promises without a source, and nothing the legal or advertising rules of the market forbid.
+- **Claims:** every claim is something the product can show. No health, money or performance promises without a source, and nothing the legal or advertising rules of the market forbid. A new public claim is a one-way door (`lane` skill).
 - **Consistent words:** terms match `GLOSSARY.md`.
 - **Voice:** matches the project's voice notes in `AGENTS.md`.
 
@@ -32,9 +25,7 @@ Give each fix as a before and after.
 
 ## Findability (public websites)
 
-Use the `seo-audit` skill for diagnosis and `seo-geo` for structured data and AI-search visibility. Review the diff (`git diff origin/main...HEAD`) and every page it renders.
-
-If the project isn't a public website, skip the SEO and GEO checks. If the change has no user-facing words and touches no public page, routing, metadata or sitemap, say so in one line and sign off.
+Use the `seo-audit` skill for diagnosis and `seo-geo` for structured data and AI-search visibility. Check every page the diff renders. Skip this section if the project isn't a public website.
 
 For each audit warning, check the served page and explain the impact before proposing a change. Record justified non-fixes as well as fixes. Domain length, consistent navigation labels and decorative images don't automatically need changing. Don't remove useful content or change the business's identity to raise a checker score. Judge alt text by whether an image is decorative or carries content.
 
@@ -71,8 +62,6 @@ For each audit warning, check the served page and explain the impact before prop
 - **FAQ or HowTo content is marked up** where the page really has it.
 - **AI crawlers are allowed in `robots.txt`**, unless the owner chose otherwise.
 
-## Report
+## In the report
 
 For each issue: the page or file:line, what's wrong, its impact (high, medium or low), and the fix.
-
-Write your section in `.reviews/<branch>.md` (replace `/` with `-` in the branch name), ending with exactly one line: `CMO: ship`, `CMO: fix first` or `CMO: rethink`.

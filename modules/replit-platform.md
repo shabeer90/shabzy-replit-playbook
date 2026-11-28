@@ -4,7 +4,10 @@ Read during setup, and whenever Replit behaves in a way the code doesn't explain
 
 These are project observations from Cogniscore, Ihsan, Impact Connect and Adam Accounting, not platform guarantees. Replit changes, so **(check current docs)** before relying on them.
 
-- **Publishing uses the workspace copy:** pull `main` in the Shell before you publish.
+- **Publishing uses the workspace copy:** pull `main` in the Shell before you publish, with nothing uncommitted. The daily drift check in the template (PLAYBOOK rule 1) fails when the live site runs anything else.
+- **Git hooks and Replit Agent: untested.** Nobody has checked whether a `pre-commit` or `pre-push` hook runs when Replit Agent commits, checkpoints or pushes from the Git pane, so don't rely on one as a guard. To find out, in a throwaway Repl: add `.git/hooks/pre-commit` that appends a timestamp to `/tmp/hook.log` and exits 0, `chmod +x` it, ask Agent for a small change, and check the log after the checkpoint appears. Repeat with `pre-push` and the Git pane's Push button. Record the answer here.
+- **Instructions are guidance.** Replit's docs say Agent is guided by custom instructions (`replit.md`) but strict requirements aren't guaranteed. Anything that must hold goes in CI or branch protection (PLAYBOOK, "What enforces each rule").
+- **Checkpoints don't cover production data.** A rollback restores code, and the development database if ticked, never the production database (Replit docs, checked 27 Nov 2026).
 - **Uploaded assets need durable storage:** do not treat the published filesystem as the permanent copy. Await the storage write and check its result before reporting that an upload is durable. If it fails, report failure or clearly mark the upload as not backed up; retries alone are not success.
   *On Impact Connect:* logo paths depended on uploaded files. Backup calls were made awaitable with retries, but the helper still returns `false` when they fail, so callers must handle that result. This is not evidence that every production logo is backed up.
   [Replit's current guidance](https://docs.replit.com/build/troubleshooting) says published filesystems are not persistent; use [App Storage](https://docs.replit.com/features/data-and-storage/object-storage) or another durable store for uploads (checked 27 Nov 2026).

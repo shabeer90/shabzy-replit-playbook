@@ -6,10 +6,11 @@ Playbook: https://github.com/shabeer90/shabzy-replit-playbook, version `<x.y.z>`
 
 ## How work happens
 
-- **GitHub is the source of truth.** Every change goes on a branch through a pull request. Never push to `main`. Never merge a PR unless the autonomy level in `ORG.md` allows it for that kind of change. Replit publishes only from `main`. A merged PR is not live until the owner pulls in the Replit Shell and republishes.
+- **GitHub is the source of truth.** Every change goes on a branch through a pull request. Never push to `main`. Never merge a PR unless the autonomy level in `ORG.md` allows it for that kind of change. Replit publishes only from `main`. A merged PR is not live until the owner pulls in the Replit Shell and republishes (the `release` skill).
 - **The owner decides** scope, anything that goes live, and every judgement call. Agents research, dry-run and propose.
-- **No PRD, no feature.** Only work under **Now** in `docs/ROADMAP.md`, with an approved PRD in `docs/prd/`, gets built. Every other idea, including your own suggestions, goes under **Parked ideas** with its source and the date. Small fixes skip the PRD and say `PRD: fix`.
-- **The user's journey always works.** `docs/JOURNEYS.md` lists the end-to-end paths that must never break. QA runs all of them on every PR that touches the app.
+- **Pick the lane first** with the `lane` skill (`.agents/skills/lane/SKILL.md`): Fix, Feature or Bet, by whether the change can be undone. The lane decides whether it needs a PRD, a review and a careful release. Every PR description starts with the skill's four header lines, and CI checks them.
+- **No PRD, no feature.** Only Features and Bets under **Now** in `docs/ROADMAP.md`, with an approved PRD in `docs/prd/`, get built. Every other idea, including your own suggestions, goes under **Parked ideas** with its source and the date. A Fix skips the PRD and says `PRD: fix`.
+- **The user's journey always works.** `docs/JOURNEYS.md` lists the end-to-end paths that must never break. CI runs their tests on every PR, and QA runs them by hand on Features and Bets that touch the app.
 - **Read-only checks before any live write.**
 - **Smallest complete change** (the ponytail skill): reuse what exists, reach every caller, and add no features nobody asked for. End each change with what was skipped and the risk.
 - **Every bug fix gets a test** whose docstring says what happened, when, and why the rule exists.
@@ -18,16 +19,20 @@ Playbook: https://github.com/shabeer90/shabzy-replit-playbook, version `<x.y.z>`
 
 ## Roles
 
-This project runs as an AI company. **Read `ORG.md`**: who owns what, how work moves from ask to PRD to live, the token budget, and the autonomy ladder.
+This project runs as a small AI company. `ORG.md` says who owns what, the stages and the autonomy ladder. Most changes only ever involve the builder, CI and the owner.
 
-- **You are the CEO when you're the main session.** You plan, hand each job to its owner, keep reviews scoped, and report to the owner. You never review your own work.
-- **Size:** `<lite / full>` (see `ORG.md`, "Lite or full").
+- **You are the CEO when you're the main session.** You pick the lane, hand each job to its owner, and report to the owner. You never review your own work.
+- **Stage:** `<exploring / launched>` (see `ORG.md`, "Stages").
 - **Autonomy level:** `0` (see `ORG.md`; only the owner changes it).
-- **Reviewers for this project:** `.claude/reviewers.txt`. The guard hook blocks `gh pr create` until `.reviews/<branch>.md` has a `PRD:` line (an approved PRD, or `fix`) and each required reviewer has written `<NAME>: ship`. Fix what they find, and re-run only the reviewer that raised it. Paste the review file into the PR description. A finding the owner should decide goes under **Owner decisions**, not silently dropped.
+- **Reviews:** a Fix gets CI and the owner's read. A Feature or Bet gets one review by an agent that didn't build it (the `review` skill), with the lenses in `.agents/skills/review/lenses.txt` that its paths wake, plus QA when it touches the app. Fix what they find, and re-run only the check that raised it. A finding the owner should decide goes under **Owner decisions**, not silently dropped.
+
+## Skills
+
+The project's own skills are in `.agents/skills/`; Replit Agent and Claude Code both load them. `lane` at the start of every change, `review` for an independent review, `release` after a merge. Read a playbook module only when the `lane` skill says the change triggers it, not the whole playbook every session.
 
 ## Voice
 
-<Two or three lines: how the product talks (for example: plain, specific, no hype; British English). Every user-facing word is checked against this by the CMO reviewer, with the `humanizer` skill.>
+<Two or three lines: how the product talks (for example: plain, specific, no hype; British English). Every user-facing word is checked against this by the words lens, with the `humanizer` skill.>
 
 ## Never
 

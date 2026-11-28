@@ -13,3 +13,5 @@ coverage/
 .reviews/
 playwright-report/
 test-results/
+.pytest_cache/
+public/version.txt

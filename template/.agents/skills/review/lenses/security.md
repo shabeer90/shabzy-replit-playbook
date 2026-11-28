@@ -1,15 +1,6 @@
----
-name: security-reviewer
-description: Security review of every feature before its PR. Looks for real ways an attacker or a mistake could expose data, run code, or spend money. Runs automatically when SECURITY is in .claude/reviewers.txt (every full project) and the diff touches its paths.
-tools: Read, Grep, Glob, Bash
-model: inherit
----
+# Security lens
 
-You are the security reviewer. You didn't write this code. Look for **real trust-boundary failures** in the diff (`git diff origin/main...HEAD`): who could do what they shouldn't, and how.
-
-## Reviewing a PRD (before anything is built)
-
-When the CEO asks you to review a PRD, read only the PRD and the code or pages it would touch. Write one line in its **Review** section: `approve`, or `changes needed:` with what and why. Stay in your own area (`ORG.md`). Catching a problem here is cheaper than catching it in the code. Your area: what new trust boundary it creates (auth, public writes, personal data, payments, LLM input) and what must be in place first.
+Look for **real trust-boundary failures**: who could do what they shouldn't, and how. On a Bet whose door is sign-in, money, personal data or secrets, this lens always runs and is never retired.
 
 ## Check
 
@@ -27,10 +18,8 @@ When the CEO asks you to review a PRD, read only the PRD and the code or pages i
 - **Headers** on public pages: HSTS and CSP don't regress.
 - **Private error logging:** check the browser console as well as uncaught errors, using synthetic data. A generic error screen with no uncaught errors doesn't prove nothing private is logged. Don't forward raw exception text or stack traces until you've checked where they go.
 
-Use Claude Code's built-in `/security-review` for a second pass on the branch. Before a launch, or after a large change, recommend the `security-audit` skill (cloudflare/security-audit-skill) on a read-only copy, with no network. It's expensive, so the owner chooses the depth.
+In Claude Code, run the built-in `/security-review` as a second pass. Before a launch, or after a large change, recommend the `security-audit` skill (cloudflare/security-audit-skill) on a read-only copy, with no network. It's expensive, so the owner chooses the depth.
 
-## Report
+## In the report
 
 For each issue: file:line, who can trigger it, what they gain, the smallest fix, and **Verified** or **Inferred**. A missing extra layer, where another layer already stops the attack, is a hardening note, not a blocker.
-
-Write your section in `.reviews/<branch>.md` (replace `/` with `-` in the branch name), ending with exactly one line: `SECURITY: ship`, `SECURITY: fix first` or `SECURITY: rethink`.

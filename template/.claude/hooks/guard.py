@@ -6,8 +6,9 @@ Blocks:
   - `git commit` when the staged diff holds a secret-looking value, and `--no-verify`;
   - `git push` to main/master, and force pushes;
   - any command containing a line from .claude/hooks/blocked-commands.txt (seeders, resets, live writes);
-  - `gh pr create` until .reviews/<branch>.md has `<NAME>: ship` for every reviewer in .claude/reviewers.txt
-    whose paths the branch touches, and a `PRD:` line linking an approved PRD (or `PRD: fix`).
+  - `gh pr create` until .reviews/<branch>.md has a `Lane:` line and, for a Feature or Bet, `REVIEW: ship`,
+    plus `QA: ship` when the branch touches QA's paths in .agents/skills/review/lenses.txt. A Fix needs no review:
+    CI and the owner's read cover it. CI (scripts/check_lane.py) checks the lane and the PRD, for every author.
 
 Why: on an earlier project, provider keys were committed to a config file and stayed in git history.
 """
@@ -57,21 +58,15 @@ def changed_files():
     return None
 
 
-def required_reviewers():
-    """Reviewers from .claude/reviewers.txt. A line with path patterns applies only if a changed file matches one."""
-    listed = os.path.join(os.path.dirname(HERE), "reviewers.txt")
-    if not os.path.exists(listed):
-        return ["EM", "QA", "CTO", "SECURITY"]
+def qa_required():
+    """QA signs off when the branch touches QA's paths in lenses.txt, or when the changed files can't be worked out."""
+    lenses = os.path.join(os.path.dirname(os.path.dirname(HERE)), ".agents", "skills", "review", "lenses.txt")
     files = changed_files()
-    names = []
-    for line in open(listed, encoding="utf-8"):
+    for line in open(lenses, encoding="utf-8") if os.path.exists(lenses) else []:
         parts = line.split("#")[0].split()
-        if not parts:
-            continue
-        name, patterns = parts[0], parts[1:]
-        if not patterns or files is None or any(fnmatch.fnmatch(f, p) for f in files for p in patterns):
-            names.append(name)
-    return names
+        if parts and parts[0] == "QA":
+            return files is None or any(fnmatch.fnmatch(f, p) for f in files for p in parts[1:])
+    return False
 
 
 def check_bash(command):
@@ -95,20 +90,16 @@ def check_bash(command):
         branch = subprocess.run(["git", "branch", "--show-current"], capture_output=True, text=True).stdout.strip()
         review = os.path.join(os.path.dirname(os.path.dirname(HERE)), ".reviews", branch.replace("/", "-") + ".md")
         text = open(review, encoding="utf-8").read() if os.path.exists(review) else ""
-        prd = re.search(r"^PRD:\s*(\S+)", text, re.M)
-        root = os.path.dirname(os.path.dirname(HERE))
-        if not prd:
-            block(f"{os.path.relpath(review)} has no `PRD:` line. Link the approved PRD (`PRD: docs/prd/<file>.md`), "
-                  "or write `PRD: fix` for a small fix. No PRD, no feature.")
-        if prd.group(1) != "fix":
-            path = os.path.join(root, prd.group(1))
-            body = open(path, encoding="utf-8").read() if os.path.exists(path) else ""
-            if not re.search(r"^Status:\s*approved\b", body, re.M):
-                block(f"{prd.group(1)} is missing or not `Status: approved`. The owner approves the PRD before the PR.")
-        missing = [r for r in required_reviewers() if not re.search(rf"^{r}: ship\s*$", text, re.M)]
-        if missing:
-            block(f"no sign-off yet from {', '.join(missing)} in {os.path.relpath(review)}. Run those reviewer "
-                  "agents (see AGENTS.md), fix what they find, then open the PR.")
+        lane = re.search(r"^\**Lane:\**\s*(fix|feature|bet)\b", text, re.M | re.I)
+        if not lane:
+            block(f"{os.path.relpath(review)} has no `Lane:` line. Use the lane skill (.agents/skills/lane) and put "
+                  "its four header lines first. They go into the PR description, where CI checks them.")
+        if lane.group(1).lower() != "fix":
+            missing = [r for r in ["REVIEW"] + (["QA"] if qa_required() else [])
+                       if not re.search(rf"^{r}: ship\s*$", text, re.M)]
+            if missing:
+                block(f"a {lane.group(1)} needs sign-off from {' and '.join(missing)} in {os.path.relpath(review)}. "
+                      "Run the reviewer and qa-tester agents, fix what they find, then open the PR.")
     if re.search(r"\bgit\b.*\bcommit\b", command):
         if "--no-verify" in command:
             block("--no-verify skips the checks.")

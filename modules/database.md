@@ -1,6 +1,6 @@
 # Database and sign-in
 
-For projects with a database, sign-in, admin or payments. Rules 3, 4, 6 and 10 in [PLAYBOOK.md](../PLAYBOOK.md#the-rules) are the rules; this is the baseline that goes with them. A lite project doesn't need this file until it gets one of those.
+For projects with a database, sign-in, admin or payments. Rules 3, 4, 6 and 10 in [PLAYBOOK.md](../PLAYBOOK.md#the-rules) are the rules; this is the baseline that goes with them. A project doesn't need this file until it gets one of those, and changes to them are Bets (the `lane` skill).
 
 ## Database (Supabase)
 

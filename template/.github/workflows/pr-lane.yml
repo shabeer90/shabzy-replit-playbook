@@ -1,0 +1,29 @@
+# Required check on main: the PR's Lane, Door, Blast radius and PRD lines fit what it changes (PLAYBOOK rule 31).
+# Its own workflow so that editing the PR description re-runs this check, not the whole build.
+# Pin each <sha> as in pr-checks.yml.
+name: pr-lane
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  lane:
+    name: pr-lane   # the name to require in main's ruleset
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<sha> # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@<sha> # v5
+        with:
+          python-version: '<version>'
+      - name: Lane fits the change
+        env:   # the description is untrusted text: pass it through env, never ${{ }} inside run
+          PR_BODY: ${{ github.event.pull_request.body }}
+          BASE: origin/${{ github.base_ref }}
+        # Use base's checker and config, so a PR can't pass by editing them. The setup PR, with no base copy, uses its own.
+        run: |
+          git checkout "$BASE" -- scripts/check_lane.py config/lanes.json 2>/dev/null || true
+          python scripts/check_lane.py "$BASE"

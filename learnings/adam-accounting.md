@@ -78,7 +78,7 @@
 - **What happened:** the SEO review separated actionable findings from warnings that did not justify a change. It kept the established business domain and consistent navigation labels, and treated decorative backgrounds differently from content images.
 - **Impact:** the site could address real problems without changing useful content or business identity just to satisfy a checker.
 - **Evidence:** commit `acbe766`; `artifacts/adam-accounting/SEO-NOTES.md`, especially its findings that did not need a code change. The notes record the reasoning, not a measured ranking improvement. A decorative image can use empty alt text or an appropriate CSS background; conversion is not automatically required by a warning.
-- **Home:** [CMO review of audit findings](../template/.claude/agents/cmo-reviewer.md#findability-public-websites).
+- **Home:** [the words lens on audit findings](../template/.agents/skills/review/lenses/words.md#findability-public-websites).
 
 ## 9. Short search titles did not need short article headlines
 
@@ -87,7 +87,7 @@
 - **What happened:** search titles and descriptions were shortened while full article headlines and copy were kept. A shared metadata helper applied the same choices when a post came from bundled content or the CMS.
 - **Impact:** search metadata could fit the project's audit budget without removing useful detail from the article.
 - **Evidence:** commit `b66996b`; `artifacts/adam-accounting/src/lib/blog-seo.ts`, `src/pages/blog/post.tsx` and `SEO-NOTES.md`. The regression script checks title width and initial versus rendered metadata. Its pixel-width budget is project-specific, not a universal search-engine limit or a promise about the snippet shown.
-- **Home:** [CMO title checks](../template/.claude/agents/cmo-reviewer.md#seo).
+- **Home:** [the words lens's title checks](../template/.agents/skills/review/lenses/words.md#seo).
 
 ## 10. The first paint was unstyled before JavaScript loaded the CSS
 
