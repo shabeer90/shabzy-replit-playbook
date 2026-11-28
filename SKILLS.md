@@ -8,6 +8,18 @@ npx skills add <github-owner/repo> --skill <name>
 
 Every CLI-installed skill must be in `skills-lock.json`. Otherwise nobody can tell where a skill came from or whether it has changed. Replit's own guidance and Claude Code's built-in commands aren't installed this way, so they don't belong in the lockfile.
 
+## The project's own skills
+
+Three skills ship in [`template/.agents/skills/`](template/.agents/skills/) and are copied in with the template, not installed. Replit Agent loads skills from `.agents/skills/` (managing them depends on the Replit plan **(check current docs)**), and Claude Code reaches them through the `.claude/skills` link. They follow the same `SKILL.md` format, so one copy serves both.
+
+| Skill | Used by | Job |
+|---|---|---|
+| lane | CEO and the builder, at the start of every change | Fix, Feature or Bet, by whether the change can be undone; what to read; the PR header |
+| review | the `reviewer` agent, or a fresh Replit Agent chat | One independent review, with lenses (security, data, design, words) chosen by path |
+| release | CEO and the owner, after a merge | Publishing from a clean `main` on Replit, the live check, and the drift check |
+
+Skills are guidance. What has to hold is enforced in CI (PLAYBOOK, "What enforces each rule").
+
 ## Replit's built-in guidance and tools
 
 Replit gives its Agent its own instructions and tools. They aren't skills from the Skills CLI, and a similar name doesn't make them the same thing. Before relying on one, check what the current session can actually do. A tool that worked last week, or a file that mentions it, doesn't prove it's available now. If a tool is missing, say what you used instead and what that left unchecked (see [review records](template/ORG.md#review-records)). Don't install a community skill just to fill the gap.
@@ -48,8 +60,8 @@ Replit's docs: [App Testing](https://docs.replit.com/features/agent/app-testing)
 | skill-creator | anthropics/skills | CEO | Writing a project skill when nothing fits |
 | ponytail | local copy; record the source when installing | the builder | The smallest change that fully solves the task |
 | caveman | juliusbrussee/caveman (core `caveman` skill only, pinned to a commit) | CEO, in chat | Shorter chat replies: answer first, no padding, code and errors exact. Written work (code, docs, commits, PRs, memory) stays in plain prose. Switch on with `/caveman`, off with `normal mode`. |
-| humanizer | blader/humanizer | cmo-reviewer, and anyone writing for a person | Rewriting text so it reads like a person wrote it, with no AI tells |
-| codebase-design | mattpocock/skills | cto-reviewer | Module and interface design |
+| humanizer | blader/humanizer | the words lens, and anyone writing for a person | Rewriting text so it reads like a person wrote it, with no AI tells |
+| codebase-design | mattpocock/skills | reviewer | Module and interface design |
 
 ## Products with a UI
 
@@ -66,7 +78,6 @@ All were checked to exist in their repos on 27 Nov 2026. Read each SKILL.md befo
 | Skill | Source | Used by | Job |
 |---|---|---|---|
 | webapp-testing | anthropics/skills | qa-tester | Drives the local app with Playwright: checks features, screenshots, browser logs |
-| code-review (mattpocock) | mattpocock/skills | em-reviewer only | Reviews a diff against the PRD and the repo's standards, in parallel sub-agents |
 | to-spec | mattpocock/skills | cpo | Turns a conversation into a first PRD draft |
 | grilling | mattpocock/skills | cpo | Questions the owner one at a time until the ask is clear |
 | tdd | mattpocock/skills | the builder | Red-green-refactor, so features arrive with tests |
@@ -76,13 +87,13 @@ All were checked to exist in their repos on 27 Nov 2026. Read each SKILL.md befo
 
 | Skill | Source | Used by | When |
 |---|---|---|---|
-| next-best-practices | vercel-labs/next-skills | the builder, cto-reviewer | Next.js projects |
+| next-best-practices | vercel-labs/next-skills | the builder, reviewer | Next.js projects |
 | supabase-postgres-best-practices | supabase/agent-skills | head-of-data | Postgres or Supabase: schema, RLS, migrations |
-| seo-audit | coreyhaines31/marketingskills | cmo-reviewer | Public sites: ranking and indexing |
-| seo-geo | resciencelab/opc-skills | cmo-reviewer | Public sites: structured data, AI-search visibility |
-| audit-website | squirrelscan/skills | cmo-reviewer, by owner decision | A full site crawl before launch and monthly after |
-| security-audit | cloudflare/security-audit-skill | security-reviewer, by owner decision | Before launch and after big changes. Run on a read-only copy, outside the repo, with no network. Expensive: choose the depth first. |
-| improve-codebase-architecture | mattpocock/skills | cto-reviewer, by owner decision | When the code has grown and needs restructuring |
+| seo-audit | coreyhaines31/marketingskills | the words lens | Public sites: ranking and indexing |
+| seo-geo | resciencelab/opc-skills | the words lens | Public sites: structured data, AI-search visibility |
+| audit-website | squirrelscan/skills | the words lens, by owner decision | A full site crawl before launch and monthly after |
+| security-audit | cloudflare/security-audit-skill | the security lens, by owner decision | Before launch and after big changes. Run on a read-only copy, outside the repo, with no network. Expensive: choose the depth first. |
+| improve-codebase-architecture | mattpocock/skills | reviewer, by owner decision | When the code has grown and needs restructuring |
 
 ## Working style (mattpocock/skills)
 
@@ -95,8 +106,8 @@ All were checked to exist in their repos on 27 Nov 2026. Read each SKILL.md befo
 
 ## Built into Claude Code (no install)
 
-- `/code-review`: a bug pass on the current diff. cto-reviewer uses it; it's a different thing from mattpocock's `code-review` skill, which the EM uses.
-- `/security-review`: a security pass on the branch. security-reviewer uses it.
+- `/code-review`: a bug pass on the current diff. The reviewer uses it.
+- `/security-review`: a security pass on the branch, for the security lens.
 - `/simplify`: cleanup without hunting bugs.
 
 ## Project skills

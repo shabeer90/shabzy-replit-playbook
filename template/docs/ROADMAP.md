@@ -3,7 +3,7 @@
 The only list of what we're building. If it isn't under **Now**, nobody builds it. The CPO keeps this file current, and the owner decides what moves.
 
 ## Now
-Approved PRDs being built, at most three at a time.
+Features and Bets with approved PRDs, at most three at a time. Fixes don't go here.
 - <PRD link>: <one line>
 
 ## Next

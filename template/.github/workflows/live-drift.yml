@@ -1,0 +1,27 @@
+# Daily: the live site runs what's on main, with nothing uncommitted (PLAYBOOK rule 1).
+# Replit publishes its workspace, not GitHub, so this is the only thing that notices when they differ.
+# Set the repository variable SITE_URL (Settings > Secrets and variables > Actions > Variables).
+# A failed scheduled run emails whoever last changed this workflow. Pin each <sha> as in pr-checks.yml.
+name: live-drift
+on:
+  schedule:
+    - cron: '17 7 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  drift:
+    if: vars.SITE_URL != ''   # off until launch, when SITE_URL is set
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@<sha> # v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@<sha> # v5
+        with:
+          python-version: '<version>'
+      - name: Live site matches main
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: python scripts/check_live_drift.py

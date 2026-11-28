@@ -11,11 +11,12 @@ The easiest way is to paste [CONTRIBUTE-PROMPT.md](CONTRIBUTE-PROMPT.md) into th
 | What happened on a project (raw) | `learnings/<project>.md`, in the format of `learnings/_template.md` | PLAYBOOK.md |
 | A rule the next project should follow | `PLAYBOOK.md` "The rules", as a new number at the end | anywhere else; other files link to the rule |
 | A checklist item or baseline | the matching PLAYBOOK section (Day 0, security, CI, first week), or the module it belongs to (`modules/public-site.md` for SEO, GEO and growth; `modules/database.md` for data, admin and sign-in) | the rules |
-| A role, the work flow, the roadmap and PRD process, the token budget, the autonomy ladder | `template/ORG.md` | PLAYBOOK.md (which only links to it) |
-| What an agent checks | that agent's file in `template/.claude/agents/` | other agents' files |
+| A role, the stages, the roadmap and PRD process, the token budget, the autonomy ladder | `template/ORG.md` | PLAYBOOK.md (which only links to it) |
+| What an agent checks | that agent's file in `template/.claude/agents/`, or for a review, its lens in `template/.agents/skills/review/lenses/` | other agents' files or lenses |
+| A procedure every change follows (picking the lane, reviewing, releasing) | that skill in `template/.agents/skills/` | PLAYBOOK.md or ORG.md, which link to it |
 | A skill | `SKILLS.md` | the agent files, which name the skill but don't describe it |
 | Platform behaviour (Replit, GitHub, Claude Code) | `modules/replit-platform.md`, or the relevant baseline | rules |
-| An enforced check | the hook, CI or script in `template/`, plus one line in the rule it enforces | prose alone |
+| An enforced check | CI or a script in `template/` where possible, the Claude Code hook only for what CI can't see, plus one line in the rule it enforces | prose alone |
 
 If a change seems to belong in two places, it belongs in one, and the other links to it.
 
@@ -56,7 +57,7 @@ Improve existing guidance rather than keep adding rules. A small website fix bel
 - **It happened.** A real incident, cost or win. Say what the evidence proves and what it leaves unverified. General advice is fine in the checklists, but mark it as general.
 - **It changes the next build.** Say what another project should do differently to avoid repeated mistakes, rework, unnecessary cost or broken user journeys. A list of fixes alone is not a lesson.
 - **It says what to do.** "Decide RLS per column on day one", not "be careful with RLS".
-- **It's checked by something where possible:** a hook, a CI step or a test. A rule that's only in prose gets forgotten (rule 15).
+- **It's checked by something where possible:** a CI step or a test first, since those bind Replit Agent too; a hook rule only binds Claude Code. A rule that's only in prose gets forgotten (rule 15).
 
 Platform behaviour you haven't confirmed is marked **(check current docs)**.
 
@@ -64,6 +65,6 @@ Platform behaviour you haven't confirmed is marked **(check current docs)**.
 
 - **Patch (x.y.z):** wording, links, corrections and bug fixes that don't change what a project must do.
 - **Minor (x.y):** additions that don't change what an existing project must do.
-- **Major (x.0):** a change that existing projects must adopt, such as a new required reviewer or a new thing the hook blocks. Say how to upgrade.
+- **Major (x.0):** a change that existing projects must adopt, such as a new required check or a new thing the hook blocks. Say how to upgrade.
 
 Each project records the playbook version it's on in its `AGENTS.md`, so it knows what to pick up later.

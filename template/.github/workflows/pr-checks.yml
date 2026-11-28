@@ -9,6 +9,7 @@ permissions:
   contents: read
 jobs:
   checks:
+    name: pr-checks   # the names to require in main's ruleset: pr-checks, pr-e2e, pr-lane
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@<sha> # v4
@@ -42,6 +43,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: scripts/assert_new_tests_fail_on_base.sh "origin/${{ github.base_ref }}"
   e2e:
+    name: pr-e2e
     needs: checks
     runs-on: ubuntu-latest
     steps:

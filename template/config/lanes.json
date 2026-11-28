@@ -1,0 +1,42 @@
+{
+  "_comment": "Read by scripts/check_lane.py (CI), which runs the copy on the base branch so a PR can't loosen its own check. Paths are matched lowercased (PaymentForm.tsx counts as a payment file), so write patterns in lowercase; * also matches /. A changed file that matches one_way_paths, and not not_one_way, makes the PR a Bet whatever it says. Edit for this project's real folders; changing this file is itself a Bet.",
+  "fix_max_lines": 100,
+  "ignore_for_size": [
+    "pnpm-lock.yaml",
+    "package-lock.json",
+    "yarn.lock",
+    "*.snap"
+  ],
+  "one_way_paths": [
+    "*.sql",
+    "supabase/*",
+    "*migrations/*",
+    "*auth*",
+    "*session*",
+    "*payment*",
+    "*billing*",
+    "*stripe*",
+    "*checkout*",
+    "*email*",
+    "*webhook*",
+    "middleware.*",
+    "next.config.*",
+    "public/robots.txt",
+    "*sitemap*",
+    "*redirects*",
+    ".replit",
+    ".github/workflows/*",
+    ".claude/hooks/*",
+    ".claude/settings.json",
+    "config/lanes.json",
+    "scripts/check_lane.py",
+    "scripts/check_live_drift.py",
+    "scripts/write_version.sh"
+  ],
+  "not_one_way": [
+    "docs/*",
+    "*.md",
+    "*/author[!i]*"
+  ],
+  "_not_one_way": "*/author[!i]* keeps author pages out of *auth* (authorize and authority stay in). shortcut: it also exempts a file like auth/author-roles.ts; narrow it if this project has one."
+}

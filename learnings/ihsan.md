@@ -64,7 +64,7 @@
 ## 7. Private error logging
 
 - **Kind:** Held back
-- **Home:** the general check is in the [security reviewer](../template/.claude/agents/security-reviewer.md). Details follow once it's fixed in Ihsan.
+- **Home:** the general check is in the [security lens](../template/.agents/skills/review/lenses/security.md). Details follow once it's fixed in Ihsan.
 
 ## 8. Metric labels must match what's counted
 
